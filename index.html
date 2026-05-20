@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sonu Classes - Premium Quiz App</title>
+    <title>Sonu Classes - Multi-Category Quiz App</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -17,24 +17,34 @@
 
         <div id="dashboard-screen" class="screen" style="display: none;">
             <h1 class="brand-title">Sonu Classes</h1>
-            <p class="welcome-text">नमस्ते, <span id="user-display-name"></span>!</p>
+            <p class="welcome-text">नमस्ते, <span id="user-display-name"></span>! अपनी कैटेगरी चुनें:</p>
             
             <div class="quiz-options">
-                <div class="option-card free-card" onclick="startQuiz('free')">
-                    <h3>फ्री क्विज़ (Free Quiz)</h3>
-                    <p>सामान्य ज्ञान और डेली टेस्ट</p>
-                    <span class="badge">FREE</span>
+                <div class="option-card gk-card" onclick="startCategoryQuiz('gk')">
+                    <h3>रोज़ाना सामान्य ज्ञान (Daily GK)</h3>
+                    <p>current affairs और बेसिक ज्ञान</p>
+                    <span class="badge free-badge">FREE</span>
                 </div>
                 
-                <div class="option-card premium-card" onclick="startQuiz('premium')">
-                    <h3>प्रीमियम क्विज़ (VIP Quiz) 🔒</h3>
-                    <p>खास नोट्स और वीआईपी प्रश्न</p>
-                    <span class="badge premium-badge" id="premium-status-text">LOCKED</span>
+                <div class="option-card ipl-card" onclick="startCategoryQuiz('ipl')">
+                    <h3>IPL और क्रिकेट चैलेंज 🏏</h3>
+                    <p>क्रिकेट रिकॉर्ड्स और महामुकाबला</p>
+                    <span class="badge free-badge">FREE</span>
+                </div>
+
+                <div class="option-card upsc-card" onclick="startCategoryQuiz('upsc')">
+                    <h3>UPSC (IAS) स्पेशल टेस्ट 🔒</h3>
+                    <p>इतिहास, भूगोल और कठिन स्तर के प्रश्न</p>
+                    <span class="badge premium-badge" id="upsc-status-text">PREMIUM</span>
                 </div>
             </div>
         </div>
 
         <div id="quiz-screen" class="screen" style="display: none;">
+            <div class="quiz-header">
+                <span id="category-indicator">कैटेगरी</span>
+                <button class="back-home-btn" onclick="goBackToDashboard()">🏠 होम</button>
+            </div>
             <h2 id="question">प्रश्न लोड हो रहा है...</h2>
             <div class="options-container">
                 <button class="option-btn" id="btn0">Option 1</button>
