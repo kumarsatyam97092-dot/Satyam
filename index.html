@@ -3,24 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sonu Classes - Quiz App</title>
+    <title>Sonu Classes - Premium Quiz App</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="quiz-container">
-        <h1 class="brand-title">Sonu Classes</h1>
-        
-        <div id="quiz-box">
-            <h2 id="question">प्रश्न यहाँ लोड होगा...</h2>
+    <div class="app-container">
+        <div id="login-screen" class="screen">
+            <h1 class="brand-title">Sonu Classes</h1>
+            <p class="subtitle">प्रीमियम क्विज़ ऐप में आपका स्वागत है</p>
+            <input type="text" id="username-input" placeholder="अपना नाम यहाँ लिखें..." />
+            <button class="action-btn" onclick="handleLogin()">ऐप में प्रवेश करें</button>
+        </div>
+
+        <div id="dashboard-screen" class="screen" style="display: none;">
+            <h1 class="brand-title">Sonu Classes</h1>
+            <p class="welcome-text">नमस्ते, <span id="user-display-name"></span>!</p>
             
-            <div class="options">
-                <button class="btn" id="btn0">Option 1</button>
-                <button class="btn" id="btn1">Option 2</button>
-                <button class="btn" id="btn2">Option 3</button>
-                <button class="btn" id="btn3">Option 4</button>
+            <div class="quiz-options">
+                <div class="option-card free-card" onclick="startQuiz('free')">
+                    <h3>फ्री क्विज़ (Free Quiz)</h3>
+                    <p>सामान्य ज्ञान और डेली टेस्ट</p>
+                    <span class="badge">FREE</span>
+                </div>
+                
+                <div class="option-card premium-card" onclick="startQuiz('premium')">
+                    <h3>प्रीमियम क्विज़ (VIP Quiz) 🔒</h3>
+                    <p>खास नोट्स और वीआईपी प्रश्न</p>
+                    <span class="badge premium-badge" id="premium-status-text">LOCKED</span>
+                </div>
             </div>
-            
-            <button id="next-btn">अगला प्रश्न</button>
+        </div>
+
+        <div id="quiz-screen" class="screen" style="display: none;">
+            <h2 id="question">प्रश्न लोड हो रहा है...</h2>
+            <div class="options-container">
+                <button class="option-btn" id="btn0">Option 1</button>
+                <button class="option-btn" id="btn1">Option 2</button>
+                <button class="option-btn" id="btn2">Option 3</button>
+                <button class="option-btn" id="btn3">Option 4</button>
+            </div>
+            <button id="next-btn" style="display: none;">अगला प्रश्न</button>
         </div>
     </div>
 
