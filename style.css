@@ -23,7 +23,7 @@ body {
 }
 
 .screen {
-    animation: fadeIn 0.5s ease;
+    animation: fadeIn 0.4s ease;
 }
 
 @keyframes fadeIn {
@@ -36,18 +36,21 @@ body {
     color: #e74c3c;
     margin-bottom: 5px;
     font-weight: bold;
+    text-align: center;
 }
 
 .subtitle {
     color: #7f8c8d;
     font-size: 14px;
     margin-bottom: 25px;
+    text-align: center;
 }
 
 .welcome-text {
-    font-size: 18px;
+    font-size: 16px;
     margin-bottom: 20px;
     color: #2c3e50;
+    font-weight: 500;
 }
 
 #username-input {
@@ -91,45 +94,58 @@ body {
     border: 2px solid transparent;
 }
 
-.free-card {
-    background-color: #e8f4fd;
-    border-color: #3498db;
-    color: #2c3e50;
+.option-card:hover {
+    transform: scale(1.02);
 }
 
-.premium-card {
-    background-color: #fef5e7;
-    border-color: #f39c12;
-    color: #2c3e50;
-}
+.gk-card { background-color: #e8f8f5; border-color: #2ecc71; color: #16a085; }
+.ipl-card { background-color: #fef5e7; border-color: #f39c12; color: #d35400; }
+.upsc-card { background-color: #f4ecf7; border-color: #9b59b6; color: #6c3483; }
 
-.option-card h3 {
-    margin-bottom: 5px;
-    font-size: 18px;
-}
-
-.option-card p {
-    font-size: 13px;
-    color: #7f8c8d;
-}
+.option-card h3 { margin-bottom: 5px; font-size: 18px; }
+.option-card p { font-size: 13px; color: #7f8c8d; }
 
 .badge {
     position: absolute;
     top: 15px;
     right: 15px;
     font-size: 10px;
-    background-color: #3498db;
-    color: white;
     padding: 4px 8px;
     border-radius: 20px;
     font-weight: bold;
+    color: white;
 }
 
-.premium-badge {
-    background-color: #f39c12;
-}
+.free-badge { background-color: #2ecc71; }
+.premium-badge { background-color: #9b59b6; }
 
 /* क्विज़ स्क्रीन के स्टाइल्स */
+.quiz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+#category-indicator {
+    font-weight: bold;
+    color: #7f8c8d;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+.back-home-btn {
+    background: #bdc3c7;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+}
+
 #question {
     font-size: 20px;
     color: #2c3e50;
@@ -147,17 +163,11 @@ body {
     font-size: 16px;
     cursor: pointer;
     text-align: left;
-    transition: 0.2s;
-}
-
-.option-btn:hover {
-    border-color: #3498db;
-    background-color: #f9f9f9;
 }
 
 #next-btn {
     width: 100%;
-    background-color: #2ecc71;
+    background-color: #3498db;
     color: white;
     border: none;
     padding: 15px;
