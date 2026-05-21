@@ -1,61 +1,465 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sonu Classes - Multi-Category Quiz App</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sonu Classes</title>
+  <style>
+    /* पूरे ऐप की मुख्य डिज़ाइन */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f6f9;
+      color: #333;
+    }
+
+    /* हेडर (ऊपर की पट्टी) */
+    .header {
+      background: linear-gradient(135deg, #ff416c, #ff4b2b);
+      color: white;
+      text-align: center;
+      padding: 15px;
+      font-size: 22px;
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 99;
+    }
+
+    .container {
+      padding: 15px;
+      max-width: 500px;
+      margin: 0 auto;
+      padding-bottom: 100px; /* नीचे बटन के लिए जगह */
+    }
+
+    .welcome-text {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #555;
+      text-align: center;
+    }
+
+    /* केटेगरी कार्ड्स की डिज़ाइन */
+    .card {
+      background: white;
+      border-radius: 15px;
+      padding: 18px;
+      margin-bottom: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      border-left: 6px solid #28a745;
+      transition: 0.3s;
+    }
+
+    .card h3 {
+      margin: 0 0 8px 0;
+      font-size: 18px;
+      color: #222;
+    }
+
+    .card p {
+      margin: 0 0 12px 0;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .card button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    /* अलग-अलग सेक्शन के रंगों के बॉर्डर */
+    .ipl-card { border-left-color: #ffc107; }
+    .ipl-card button { background-color: #ffc107; color: #222; }
+    
+    .upsc-card { border-left-color: #6f42c1; }
+    .upsc-card button { background-color: #6f42c1; }
+
+    .class9-card { border-left-color: #17a2b8; }
+    .class9-card button { background-color: #17a2b8; }
+
+    .class10-card { border-left-color: #007bff; }
+    .class10-card button { background-color: #007bff; }
+
+    /* सोनू का एआई बटन की डिज़ाइन */
+    .ai-btn-container {
+      text-align: center;
+      margin: 25px 0;
+    }
+    .ai-btn {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(118, 75, 162, 0.3);
+      width: 90%;
+    }
+
+    /* क्विज़ स्क्रीन की डिज़ाइन */
+    .screen { display: none; }
+    .active-screen { display: block; }
+
+    .quiz-box {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .question-text {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .option-btn {
+      display: block;
+      width: 100%;
+      background-color: #f8f9fa;
+      border: 2px solid #e9ecef;
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      text-align: left;
+      font-size: 15px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .option-btn:hover { background-color: #e9ecef; }
+    .correct { background-color: #d4edda !important; border-color: #c3e6cb !important; color: #155724; }
+    .wrong { background-color: #f8d7da !important; border-color: #f5c6cb !important; color: #721c24; }
+
+    .nav-btn {
+      background-color: #ff4b2b;
+      color: white;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    /* एआई चैटबॉक्स पॉप-अप विंडो */
+    .chat-modal {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 320px;
+      height: 420px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+      z-index: 1000;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid #ddd;
+    }
+    .chat-header {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 12px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .close-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 22px;
+      cursor: pointer;
+    }
+    .chat-box {
+      flex: 1;
+      padding: 12px;
+      overflow-y: auto;
+      background: #f7f7f7;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .message {
+      padding: 8px 12px;
+      border-radius: 10px;
+      max-width: 85%;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .ai-message { background: #e9ecef; color: #333; align-self: flex-start; border-bottom-left-radius: 0; }
+    .user-message { background: #764ba2; color: white; align-self: flex-end; border-bottom-right-radius: 0; }
+    
+    .chat-input-area { display: flex; padding: 8px; background: white; border-top: 1px solid #ddd; }
+    .chat-input-area input { flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 5px; outline: none; }
+    .chat-input-area button { background: #764ba2; color: white; border: none; padding: 0 12px; margin-left: 5px; border-radius: 5px; cursor: pointer; }
+
+    /* तैरता हुआ व्हाट्सएप बटन */
+    .whatsapp-float {
+      position: fixed;
+      width: 55px;
+      height: 55px;
+      bottom: 20px;
+      left: 20px;
+      background-color: #25d366;
+      border-radius: 50px;
+      text-align: center;
+      box-shadow: 2px 2px 5px #999;
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .whatsapp-icon {
+      width: 35px;
+      height: 35px;
+    }
+  </style>
 </head>
 <body>
-    <div class="app-container">
-        <div id="login-screen" class="screen">
-            <h1 class="brand-title">Sonu Classes</h1>
-            <p class="subtitle">प्रीमियम क्विज़ ऐप में आपका स्वागत है</p>
-            <input type="text" id="username-input" placeholder="अपना नाम यहाँ लिखें..." />
-            <button class="action-btn" onclick="handleLogin()">ऐप में प्रवेश करें</button>
-        </div>
 
-        <div id="dashboard-screen" class="screen" style="display: none;">
-            <h1 class="brand-title">Sonu Classes</h1>
-            <p class="welcome-text">नमस्ते, <span id="user-display-name"></span>! अपनी कैटेगरी चुनें:</p>
-            
-            <div class="quiz-options">
-                <div class="option-card gk-card" onclick="startCategoryQuiz('gk')">
-                    <h3>रोज़ाना सामान्य ज्ञान (Daily GK)</h3>
-                    <p>current affairs और बेसिक ज्ञान</p>
-                    <span class="badge free-badge">FREE</span>
-                </div>
-                
-                <div class="option-card ipl-card" onclick="startCategoryQuiz('ipl')">
-                    <h3>IPL और क्रिकेट चैलेंज 🏏</h3>
-                    <p>क्रिकेट रिकॉर्ड्स और महामुकाबला</p>
-                    <span class="badge free-badge">FREE</span>
-                </div>
+  <div class="header">Sonu Classes</div>
 
-                <div class="option-card upsc-card" onclick="startCategoryQuiz('upsc')">
-                    <h3>UPSC (IAS) स्पेशल टेस्ट 🔒</h3>
-                    <p>इतिहास, भूगोल और कठिन स्तर के प्रश्न</p>
-                    <span class="badge premium-badge" id="upsc-status-text">PREMIUM</span>
-                </div>
-            </div>
-        </div>
+  <div class="container">
+    
+    <div id="home-screen" class="screen active-screen">
+      <div class="welcome-text">नमस्ते, अपनी कैटेगरी चुनें:</div>
 
-        <div id="quiz-screen" class="screen" style="display: none;">
-            <div class="quiz-header">
-                <span id="category-indicator">कैटेगरी</span>
-                <button class="back-home-btn" onclick="goBackToDashboard()">🏠 होम</button>
-            </div>
-            <h2 id="question">प्रश्न लोड हो रहा है...</h2>
-            <div class="options-container">
-                <button class="option-btn" id="btn0">Option 1</button>
-                <button class="option-btn" id="btn1">Option 2</button>
-                <button class="option-btn" id="btn2">Option 3</button>
-                <button class="option-btn" id="btn3">Option 4</button>
-            </div>
-            <button id="next-btn" style="display: none;">अगला प्रश्न</button>
-        </div>
+      <div class="card gk-card">
+        <h3>रोज़ाना सामान्य ज्ञान (Daily GK) 📝</h3>
+        <p>करंट अफेयर्स और बेसिक सामान्य ज्ञान के सवाल।</p>
+        <button onclick="startQuiz('gk')">क्विज़ शुरू करें</button>
+      </div>
+
+      <div class="card ipl-card">
+        <h3>IPL और क्रिकेट चैलेंज 🏏</h3>
+        <p>क्रिकेट रिकॉर्ड्स और आईपीएल के मज़ेदार सवाल।</p>
+        <button onclick="startQuiz('ipl')">चैलेंज शुरू करें</button>
+      </div>
+
+      <div class="card upsc-card">
+        <h3>UPSC (IAS) स्पेशल टेस्ट 🏆</h3>
+        <p>इतिहास, भूगोल और कठिन स्तर के महत्वपूर्ण प्रश्न।</p>
+        <button onclick="startQuiz('upsc')">टेस्ट शुरू करें</button>
+      </div>
+
+      <div class="card class9-card">
+        <h3>कक्षा 9वीं (PDF नोट्स) 📁</h3>
+        <p>सभी विषयों के परीक्षा उपयोगी और सटीक PDF नोट्स।</p>
+        <button onclick="openClass9()">नोट्स देखें</button>
+      </div>
+
+      <div class="card class10-card">
+        <h3>कक्षा 10वीं (ऑफलाइन क्लास) 🏫</h3>
+        <p>मैट्रिक बोर्ड परीक्षा 2027 की तैयारी के लिए ऑफलाइन स्पेशल बैच।</p>
+        <button onclick="openClass10()">जानकारी देखें</button>
+      </div>
+
+      <div class="ai-btn-container">
+        <button class="ai-btn" onclick="toggleAIChat()">🤖 सोनू का एआई (AI) से पूछें</button>
+      </div>
     </div>
 
-    <script src="script.js"></script>
+    <div id="quiz-screen" class="screen">
+      <div class="quiz-box">
+        <div id="question-box" class="question-text">सवाल यहाँ लोड होगा...</div>
+        <div id="options-box">
+          </div>
+        <button id="next-btn" class="nav-btn" onclick="nextQuestion()" style="display:none;">अगला प्रश्न</button>
+        <button class="nav-btn" onclick="goHome()" style="background-color:#6c757d; margin-top:10px;">मुख्य मेन्यू में जाएँ</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="aiChatModal" class="chat-modal">
+    <div class="chat-header">
+      <span>🤖 सोनू का एआई असिस्टेंट</span>
+      <button class="close-btn" onclick="toggleAIChat()">×</button>
+    </div>
+    <div class="chat-box" id="chatBox">
+      <div class="message ai-message">
+        नमस्ते! मैं सोनू का एआई हूँ। आप मुझसे पढ़ाई से जुड़ा कोई भी सवाल पूछ सकते हैं।
+      </div>
+    </div>
+    <div class="chat-input-area">
+      <input type="text" id="userInput" placeholder="यहाँ अपना सवाल लिखें..." onkeypress="checkEnter(event)">
+      <button onclick="sendMessage()">पूछें</button>
+    </div>
+  </div>
+
+  <a href="https://wa.me/918521057039text=नमस्ते सोनू सर, मुझे आपके सोनू क्लासेस ऐप से मदद चाहिए!" class="whatsapp-float" target="_blank">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="whatsapp-icon">
+  </a>
+
+  <script>
+    // क्विज़ के प्रश्न बैंक
+    var quizData = {
+      gk: [
+        { q: "भारत का सबसे बड़ा राज्य (क्षेत्रफल के आधार पर) कौन सा है?", o: ["उत्तर प्रदेश", "राजस्थान", "बिहार", "मध्य प्रदेश"], a: 1 },
+        { q: "विश्व का सबसे बड़ा महासागर कौन सा है?", o: ["हिंद महासागर", "अटलांटिक महासागर", "प्रशांत महासागर", "आर्कटिक महासागर"], a: 2 }
+      ],
+      ipl: [
+        { q: "आईपीएल (IPL) इतिहास में सबसे ज़्यादा रन बनाने वाले खिलाड़ी कौन हैं?", o: ["रोहित शर्मा", "विराट कोहली", "एमएस धोनी", "सुरेश रैना"], a: 1 }
+      ],
+      upsc: [
+        { q: "भारतीय संविधान का जनक किसे माना जाता है?", o: ["महात्मा गांधी", "डॉ. राजेंद्र प्रसाद", "डॉ. बी.आर. अम्बेडकर", "जवाहरलाल नेहरू"], a: 2 }
+      ]
+    };
+
+    var currentCategory = "";
+    var currentQuestionIndex = 0;
+    var score = 0;
+
+    // क्विज़ शुरू करने का फंक्शन
+    function startQuiz(category) {
+      currentCategory = category;
+      currentQuestionIndex = 0;
+      score = 0;
+      showScreen("quiz-screen");
+      loadQuestion();
+    }
+
+    // प्रश्न स्क्रीन पर लोड करना
+    function loadQuestion() {
+      document.getElementById("next-btn").style.display = "none";
+      var qBox = document.getElementById("question-box");
+      var oBox = document.getElementById("options-box");
+      
+      var qInfo = quizData[currentCategory][currentQuestionIndex];
+      qBox.innerText = qInfo.q;
+      oBox.innerHTML = "";
+
+      qInfo.o.forEach(function(option, index) {
+        var btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.innerText = option;
+        btn.onclick = function() { checkAnswer(index, btn); };
+        oBox.appendChild(btn);
+      });
+    }
+
+    // सही या गलत उत्तर की जांच
+    function checkAnswer(selectedIndex, clickedBtn) {
+      var qInfo = quizData[currentCategory][currentQuestionIndex];
+      var allButtons = document.querySelectorAll(".option-btn");
+      
+      // सभी बटन को बंद करें ताकि दोबारा क्लिक न हो
+      allButtons.forEach(function(btn) { btn.disabled = true; });
+
+      if (selectedIndex === qInfo.a) {
+        clickedBtn.classList.add("correct");
+        score++;
+      } else {
+        clickedBtn.classList.add("wrong");
+        allButtons[qInfo.a].classList.add("correct"); // सही जवाब दिखाएँ
+      }
+      
+      document.getElementById("next-btn").style.display = "block";
+    }
+
+    // अगले प्रश्न पर जाना
+    function nextQuestion() {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < quizData[currentCategory].length) {
+        loadQuestion();
+      } else {
+        alert("शानदार! आपने क्विज़ पूरा किया। आपका स्कोर: " + score + "/" + quizData[currentCategory].length);
+        goHome();
+      }
+    }
+
+    // स्क्रीन बदलने का फंक्शन
+    function showScreen(screenId) {
+      document.querySelectorAll(".screen").forEach(function(s) { s.classList.remove("active-screen"); });
+      document.getElementById(screenId).classList.add("active-screen");
+    }
+
+    function goHome() { showScreen("home-screen"); }
+
+    // क्लास 9वीं और 10वीं के बटन के काम
+    function openClass9() {
+      alert("कक्षा 9वीं के पीडीएफ नोट्स जल्द ही यहाँ उपलब्ध होंगे, काम चल रहा है!");
+    }
+
+    function openClass10() {
+      alert("हमारी ऑफलाइन क्लासेस महेशखूंट में चालू हैं। विशेष जानकारी के लिए नीचे दिए गए व्हाट्सएप बटन पर क्लिक करें!");
+    }
+
+    // एआई चैटबॉक्स खोलने/बंद करने का फंक्शन
+    function toggleAIChat() {
+      var modal = document.getElementById("aiChatModal");
+      if (modal.style.display === "flex") {
+        modal.style.display = "none";
+      } else {
+        modal.style.display = "flex";
+      }
+    }
+
+    function checkEnter(event) {
+      if (event.key === "Enter") { sendMessage(); }
+    }
+
+    // एआई को मैसेज भेजने का असली फंक्शन
+    async function sendMessage() {
+      var input = document.getElementById("userInput");
+      var text = input.value.trim();
+      if (text === "") return;
+
+      var box = document.getElementById("chatBox");
+
+      // यूज़र का मैसेज जोड़ें
+      var uDiv = document.createElement("div");
+      uDiv.className = "message user-message";
+      uDiv.innerText = text;
+      box.appendChild(uDiv);
+      input.value = "";
+      box.scrollTop = box.scrollHeight;
+
+      // 'सोच रहा हूँ...' मैसेज दिखाएँ
+      var tDiv = document.createElement("div");
+      tDiv.className = "message ai-message";
+      tDiv.innerText = "सोच रहा हूँ...";
+      box.appendChild(tDiv);
+      box.scrollTop = box.scrollHeight;
+
+      // यहाँ अपनी असली Gemini API Key डालें
+      var API_KEY = "YOUR_GEMINI_API_KEY_HERE"; 
+
+      try {
+        var res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: "You are Sonu's Study AI assistant. Answer this student's question in Hindi shortly and educationally: " + text }] }]
+          })
+        });
+        var data = await res.json();
+        var aiText = data.candidates[0].content.parts[0].text;
+        tDiv.innerText = aiText; // जवाब से बदलें
+      } catch (err) {
+        tDiv.innerText = "माफ़ कीजिएगा, अभी सर्वर डाउन है। कृपया थोड़ी देर बाद प्रयास करें।";
+      }
+      box.scrollTop = box.scrollHeight;
+    }
+  </script>
 </body>
 </html>
