@@ -94,24 +94,6 @@
     .upsc-card { border-left-color: #6f42c1; }
     .upsc-card button { background-color: #6f42c1; }
 
-    /* सोनू का एआई बटन की डिज़ाइन */
-    .ai-btn-container {
-      text-align: center;
-      margin: 25px 0;
-    }
-    .ai-btn {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      border: none;
-      padding: 14px 28px;
-      font-size: 16px;
-      font-weight: bold;
-      border-radius: 50px;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(118, 75, 162, 0.3);
-      width: 90%;
-    }
-
     /* क्विज़ स्क्रीन की डिज़ाइन */
     .screen { display: none; }
     .active-screen { display: block; }
@@ -164,7 +146,7 @@
     .chat-modal {
       display: none;
       position: fixed;
-      bottom: 20px;
+      bottom: 85px; /* बटन के ऊपर खुलेगा */
       right: 20px;
       width: 320px;
       height: 420px;
@@ -215,7 +197,7 @@
     .chat-input-area input { flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 5px; outline: none; }
     .chat-input-area button { background: #764ba2; color: white; border: none; padding: 0 12px; margin-left: 5px; border-radius: 5px; cursor: pointer; }
 
-    /* तैरता हुआ व्हाट्सएप बटन */
+    /* तैरता हुआ व्हाट्सएप बटन (बायीं तरफ) */
     .whatsapp-float {
       position: fixed;
       width: 55px;
@@ -234,6 +216,30 @@
     .whatsapp-icon {
       width: 35px;
       height: 35px;
+    }
+
+    /* तैरता हुआ AI बटन (दायीं तरफ) */
+    .ai-float-btn {
+      position: fixed;
+      width: 55px;
+      height: 55px;
+      bottom: 20px;
+      right: 20px; 
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 28px;
+      box-shadow: 2px 2px 5px #999;
+      cursor: pointer;
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: 0.3s;
+    }
+    .ai-float-btn:hover {
+      transform: scale(1.1);
     }
   </style>
 </head>
@@ -275,10 +281,6 @@
         <p>इतिहास, भूगोल और कठिन स्तर के महत्वपूर्ण प्रश्न।</p>
         <button onclick="startQuiz('upsc')">टेस्ट शुरू करें</button>
       </div>
-
-      <div class="ai-btn-container">
-        <button class="ai-btn" onclick="toggleAIChat()">🤖 सोनू का एआई (AI) से पूछें</button>
-      </div>
     </div>
 
     <div id="quiz-screen" class="screen">
@@ -313,8 +315,9 @@
     <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="whatsapp-icon">
   </a>
 
+  <button class="ai-float-btn" onclick="toggleAIChat()">🤖</button>
+
   <script>
-    // क्विज़ के प्रश्न बैंक
     var quizData = {
       gk: [
         { q: "भारत का सबसे बड़ा राज्य (क्षेत्रफल के आधार पर) कौन सा है?", o: ["उत्तर प्रदेश", "राजस्थान", "बिहार", "मध्य प्रदेश"], a: 1 },
@@ -332,7 +335,6 @@
     var currentQuestionIndex = 0;
     var score = 0;
 
-    // क्विज़ शुरू करने का फंक्शन
     function startQuiz(category) {
       currentCategory = category;
       currentQuestionIndex = 0;
@@ -341,7 +343,6 @@
       loadQuestion();
     }
 
-    // प्रश्न स्क्रीन पर लोड करना
     function loadQuestion() {
       document.getElementById("next-btn").style.display = "none";
       var qBox = document.getElementById("question-box");
@@ -360,12 +361,10 @@
       });
     }
 
-    // सही या गलत उत्तर की जांच
     function checkAnswer(selectedIndex, clickedBtn) {
       var qInfo = quizData[currentCategory][currentQuestionIndex];
       var allButtons = document.querySelectorAll(".option-btn");
       
-      // सभी बटन को बंद करें ताकि दोबारा क्लिक न हो
       allButtons.forEach(function(btn) { btn.disabled = true; });
 
       if (selectedIndex === qInfo.a) {
@@ -373,13 +372,12 @@
         score++;
       } else {
         clickedBtn.classList.add("wrong");
-        allButtons[qInfo.a].classList.add("correct"); // सही जवाब दिखाएँ
+        allButtons[qInfo.a].classList.add("correct"); 
       }
       
       document.getElementById("next-btn").style.display = "block";
     }
 
-    // अगले प्रश्न पर जाना
     function nextQuestion() {
       currentQuestionIndex++;
       if (currentQuestionIndex < quizData[currentCategory].length) {
@@ -390,7 +388,6 @@
       }
     }
 
-    // स्क्रीन बदलने का फंक्शन
     function showScreen(screenId) {
       document.querySelectorAll(".screen").forEach(function(s) { s.classList.remove("active-screen"); });
       document.getElementById(screenId).classList.add("active-screen");
@@ -398,7 +395,6 @@
 
     function goHome() { showScreen("home-screen"); }
 
-    // क्लास 9वीं और 10वीं के बटन के काम
     function openClass9() {
       alert("कक्षा 9वीं के पीडीएफ नोट्स जल्द ही यहाँ उपलब्ध होंगे, काम चल रहा है!");
     }
@@ -407,7 +403,6 @@
       alert("हमारी ऑफलाइन क्लासेस चालू हैं। विशेष जानकारी के लिए नीचे दिए गए व्हाट्सएप बटन पर क्लिक करें!");
     }
 
-    // एआई चैटबॉक्स खोलने/बंद करने का फंक्शन
     function toggleAIChat() {
       var modal = document.getElementById("aiChatModal");
       if (modal.style.display === "flex") {
@@ -421,7 +416,6 @@
       if (event.key === "Enter") { sendMessage(); }
     }
 
-    // एआई को मैसेज भेजने का असली फंक्शन
     async function sendMessage() {
       var input = document.getElementById("userInput");
       var text = input.value.trim();
@@ -429,7 +423,6 @@
 
       var box = document.getElementById("chatBox");
 
-      // यूज़र का मैसेज जोड़ें
       var uDiv = document.createElement("div");
       uDiv.className = "message user-message";
       uDiv.innerText = text;
@@ -437,15 +430,14 @@
       input.value = "";
       box.scrollTop = box.scrollHeight;
 
-      // 'सोच रहा हूँ...' मैसेज दिखाएँ
       var tDiv = document.createElement("div");
       tDiv.className = "message ai-message";
       tDiv.innerText = "सोच रहा हूँ...";
       box.appendChild(tDiv);
       box.scrollTop = box.scrollHeight;
 
-      // यहाँ अपनी असली Gemini API Key डालें
-      var API_KEY = "AIzaSyCoJ7cow4HqarIhAlaLIVNE042kAJqFEQI"; 
+      // आपकी असली Gemini API Key यहाँ सेट कर दी गई है
+      var API_KEY = "AIzaSyBSebMG_eu3pU5pR-vUZo1eHmnPTXdmVCQ"; 
 
       try {
         var res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
@@ -457,9 +449,9 @@
         });
         var data = await res.json();
         var aiText = data.candidates[0].content.parts[0].text;
-        tDiv.innerText = aiText; // जवाब से बदलें
+        tDiv.innerText = aiText; 
       } catch (err) {
-        tDiv.innerText = "माफ़ कीजिएगा, अभी मैं काम नहीं कर रहा हूँ। आपने असली API Key नहीं डाली है।";
+        tDiv.innerText = "माफ़ कीजिएगा, अभी मैं काम नहीं कर रहा हूँ। नेटवर्क या API में कोई समस्या है।";
       }
       box.scrollTop = box.scrollHeight;
     }
