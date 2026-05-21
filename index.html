@@ -146,7 +146,7 @@
     .chat-modal {
       display: none;
       position: fixed;
-      bottom: 85px; /* बटन के ऊपर खुलेगा */
+      bottom: 85px; 
       right: 20px;
       width: 320px;
       height: 420px;
@@ -189,13 +189,19 @@
       max-width: 85%;
       font-size: 14px;
       line-height: 1.4;
+      position: relative;
     }
-    .ai-message { background: #e9ecef; color: #333; align-self: flex-start; border-bottom-left-radius: 0; }
+    .ai-message { background: #e9ecef; color: #333; align-self: flex-start; border-bottom-left-radius: 0; display: flex; flex-direction: column; gap: 5px; }
     .user-message { background: #764ba2; color: white; align-self: flex-end; border-bottom-right-radius: 0; }
     
-    .chat-input-area { display: flex; padding: 8px; background: white; border-top: 1px solid #ddd; }
+    .chat-input-area { display: flex; padding: 8px; background: white; border-top: 1px solid #ddd; align-items: center; }
     .chat-input-area input { flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 5px; outline: none; }
-    .chat-input-area button { background: #764ba2; color: white; border: none; padding: 0 12px; margin-left: 5px; border-radius: 5px; cursor: pointer; }
+    .chat-input-area button { background: #764ba2; color: white; border: none; padding: 8px 12px; margin-left: 5px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+    
+    /* माइक बटन की स्टाइल */
+    .mic-btn { background: #ff4b2b !important; color: white; border: none; padding: 8px 10px; margin-left: 5px; border-radius: 5px; cursor: pointer; font-size: 14px; }
+    /* स्पीकर बटन की स्टाइल */
+    .speak-btn { background: none; border: none; color: #764ba2; cursor: pointer; font-size: 16px; align-self: flex-end; padding: 0; margin-top: 2px; }
 
     /* तैरता हुआ व्हाट्सएप बटन (बायीं तरफ) */
     .whatsapp-float {
@@ -213,10 +219,7 @@
       justify-content: center;
       align-items: center;
     }
-    .whatsapp-icon {
-      width: 35px;
-      height: 35px;
-    }
+    .whatsapp-icon { width: 35px; height: 35px; }
 
     /* तैरता हुआ AI बटन (दायीं तरफ) */
     .ai-float-btn {
@@ -238,9 +241,7 @@
       align-items: center;
       transition: 0.3s;
     }
-    .ai-float-btn:hover {
-      transform: scale(1.1);
-    }
+    .ai-float-btn:hover { transform: scale(1.1); }
   </style>
 </head>
 <body>
@@ -302,11 +303,13 @@
     </div>
     <div class="chat-box" id="chatBox">
       <div class="message ai-message">
-        नमस्ते! मैं सोनू का एआई हूँ। आप मुझसे पढ़ाई से जुड़ा कोई भी सवाल पूछ सकते हैं।
+        <div>नमस्ते! मैं सोनू का एआई हूँ। आप मुझसे पढ़ाई से जुड़ा कोई भी सवाल पूछ सकते हैं या माइक बटन दबाकर बोल सकते हैं।</div>
+        <button class="speak-btn" onclick="speakText('नमस्ते! मैं सोनू का एआई हूँ। आप मुझसे पढ़ाई से जुड़ा कोई भी सवाल पूछ सकते हैं या माइक बटन दबाकर बोल सकते हैं।')">🔊 सुने</button>
       </div>
     </div>
     <div class="chat-input-area">
       <input type="text" id="userInput" placeholder="यहाँ अपना सवाल लिखें..." onkeypress="checkEnter(event)">
+      <button class="mic-btn" onclick="startVoiceInput()">🎤</button>
       <button onclick="sendMessage()">पूछें</button>
     </div>
   </div>
@@ -334,6 +337,11 @@
     var currentCategory = "";
     var currentQuestionIndex = 0;
     var score = 0;
+    var currentUtterance = null; // एआई की आवाज को बिना रुके पूरा चलाने के लिए
+
+    // क्लास 9 और 10 के बटन को नए पेजों पर भेजने का फिक्स कोड
+    function openClass9() { window.location.href = "class9.html"; }
+    function openClass10() { window.location.href = "class10.html"; }
 
     function startQuiz(category) {
       currentCategory = category;
@@ -395,18 +403,11 @@
 
     function goHome() { showScreen("home-screen"); }
 
-    function openClass9() {
-      alert("कक्षा 9वीं के पीडीएफ नोट्स जल्द ही यहाँ उपलब्ध होंगे, काम चल रहा है!");
-    }
-
-    function openClass10() {
-      alert("हमारी ऑफलाइन क्लासेस चालू हैं। विशेष जानकारी के लिए नीचे दिए गए व्हाट्सएप बटन पर क्लिक करें!");
-    }
-
     function toggleAIChat() {
       var modal = document.getElementById("aiChatModal");
       if (modal.style.display === "flex") {
         modal.style.display = "none";
+        if(window.speechSynthesis) window.speechSynthesis.cancel(); // चैट बंद होने पर आवाज़ बंद करें
       } else {
         modal.style.display = "flex";
       }
@@ -416,6 +417,58 @@
       if (event.key === "Enter") { sendMessage(); }
     }
 
+    // माइक (Voice Input) का जादुई कोड
+    function startVoiceInput() {
+      var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert("माफ़ कीजिये, आपका फोन वॉइस टाइपिंग सपोर्ट नहीं करता। गूगल क्रोम का उपयोग करें।");
+        return;
+      }
+      var recognition = new SpeechRecognition();
+      recognition.lang = "hi-IN"; // हिंदी भाषा सेट की
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      var micBtn = document.querySelector(".mic-btn");
+      micBtn.innerText = "🛑"; // रिकॉर्डिंग चालू होने का संकेत
+
+      recognition.start();
+
+      recognition.onresult = function(event) {
+        var speechResult = event.results[0][0].transcript;
+        document.getElementById("userInput").value = speechResult;
+        micBtn.innerText = "🎤";
+      };
+
+      recognition.onspeechend = function() {
+        recognition.stop();
+        micBtn.innerText = "🎤";
+      };
+
+      recognition.onerror = function() {
+        micBtn.innerText = "🎤";
+        alert("आवाज़ पहचानने में समस्या हुई, कृपया दोबारा कोशिश करें।");
+      };
+    }
+
+    // स्पीकर (Text to Speech) का बिना रुकने वाला कोड
+    function speakText(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel(); // पुराना भाषण बंद करें
+        
+        // क्लीन टेक्स्ट ताकि कोई कोड न पढ़े
+        var cleanText = text.replace(/[#*`_]/g, ""); 
+        
+        currentUtterance = new SpeechSynthesisUtterance(cleanText);
+        currentUtterance.lang = 'hi-IN'; // शुद्ध हिंदी आवाज
+        currentUtterance.rate = 1.0;     // सामान्य स्पीड
+        
+        window.speechSynthesis.speak(currentUtterance);
+      } else {
+        alert("आपका फोन बोलकर सुनाने की सुविधा को सपोर्ट नहीं करता है।");
+      }
+    }
+
     async function sendMessage() {
       var input = document.getElementById("userInput");
       var text = input.value.trim();
@@ -423,6 +476,7 @@
 
       var box = document.getElementById("chatBox");
 
+      // यूजर का मैसेज
       var uDiv = document.createElement("div");
       uDiv.className = "message user-message";
       uDiv.innerText = text;
@@ -430,13 +484,13 @@
       input.value = "";
       box.scrollTop = box.scrollHeight;
 
+      // लोडिंग मैसेज
       var tDiv = document.createElement("div");
       tDiv.className = "message ai-message";
-      tDiv.innerText = "सोच रहा हूँ...";
+      tDiv.innerHTML = "<div>सोच रहा हूँ...</div>";
       box.appendChild(tDiv);
       box.scrollTop = box.scrollHeight;
 
-      // आपकी असली Gemini API Key यहाँ सेट कर दी गई है
       var API_KEY = "AIzaSyBSebMG_eu3pU5pR-vUZo1eHmnPTXdmVCQ"; 
 
       try {
@@ -449,9 +503,11 @@
         });
         var data = await res.json();
         var aiText = data.candidates[0].content.parts[0].text;
-        tDiv.innerText = aiText; 
+        
+        // एआई का जवाब स्पीकर बटन के साथ सेट करना
+        tDiv.innerHTML = `<div>${aiText}</div><button class="speak-btn" onclick="speakText(\`${aiText.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">🔊 सुने</button>`;
       } catch (err) {
-        tDiv.innerText = "माफ़ कीजिएगा, अभी मैं काम नहीं कर रहा हूँ। नेटवर्क या API में कोई समस्या है।";
+        tDiv.innerHTML = "<div>माफ़ कीजिएगा, नेटवर्क या API में कोई समस्या है।</div>";
       }
       box.scrollTop = box.scrollHeight;
     }
