@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Sonu Classes</title>
+  <style>
+    body { font-family: 'Arial', sans-serif; background: #e9ecef; padding: 20px; }
+    .admin-box { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 400px; margin: auto; border-top: 5px solid #ff4b2b; }
+    h2 { text-align: center; color: #333; margin-top: 0; }
+    label { font-weight: bold; font-size: 14px; color: #555; }
+    input, select, button { width: 100%; padding: 12px; margin: 8px 0 15px 0; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; font-size: 14px; }
+    button { background: #28a745; color: white; font-weight: bold; border: none; cursor: pointer; font-size: 16px; transition: 0.3s; }
+    button:hover { background: #218838; }
+  </style>
+</head>
+<body>
+
+  <div class="admin-box">
+    <h2>सोनू क्लासेज 🚀<br><small>एडमिन पैनल (सिर्फ आपके लिए)</small></h2>
+    
+    <label>किस केटेगरी का सवाल है?</label>
+    <select id="category">
+      <option value="gk">GK (सामान्य ज्ञान)</option>
+      <option value="upsc">UPSC स्पेशल</option>
+      <option value="ipl">IPL चैलेंज</option>
+    </select>
+
+    <label>सवाल लिखें:</label>
+    <input type="text" id="question" placeholder="जैसे: भारत की राजधानी क्या है?">
+
+    <label>चार ऑप्शन लिखें:</label>
+    <input type="text" id="opt1" placeholder="ऑप्शन 1">
+    <input type="text" id="opt2" placeholder="ऑप्शन 2">
+    <input type="text" id="opt3" placeholder="ऑप्शन 3">
+    <input type="text" id="opt4" placeholder="ऑप्शन 4">
+
+    <label>सही जवाब कौन सा है? (नंबर डालें)</label>
+    <input type="number" id="ans" placeholder="जैसे: 1, 2, 3 या 4">
+
+    <button onclick="alert('डेटाबेस का कोड अभी जोड़ना बाकी है!')">💾 सवाल डेटाबेस में सेव करें</button>
+  </div>
+
+</body>
+</html>
