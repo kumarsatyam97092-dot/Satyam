@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>कक्षा 9वीं - सोनू क्लासेस</title>
+  <style>
+    body { font-family: 'Arial', sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; }
+    .header { background: linear-gradient(135deg, #17a2b8, #117a8b); color: white; text-align: center; padding: 15px; font-size: 20px; font-weight: bold; }
+    .container { padding: 15px; max-width: 500px; margin: 0 auto; padding-bottom: 50px; }
+    .back-btn { background: #6c757d; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; width: 100%; margin-bottom: 15px; font-weight: bold; font-size: 15px; }
+    
+    /* मुख्य विषय कार्ड */
+    .subject-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; border-left: 5px solid #17a2b8; cursor: pointer; }
+    .subject-name { font-size: 16px; font-weight: bold; color: #333; }
+    
+    /* क्लिक करने पर खुलने वाला डिब्बा (Accordion) */
+    .chapter-container { display: none; background: white; padding: 15px; border-radius: 8px; margin-top: -8px; margin-bottom: 15px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #ddd; }
+    
+    /* विषय की हेडिंग (जैसे: भौतिकी) */
+    .subject-heading { color: #ff4b2b; font-size: 15px; font-weight: bold; margin-top: 15px; margin-bottom: 8px; border-bottom: 2px solid #eee; padding-bottom: 5px; }
+    .subject-heading:first-child { margin-top: 0; }
+
+    /* चैप्टर की लिस्ट और बटन */
+    .chapter-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed #eee; font-size: 14px; color: #444; }
+    .chapter-item:last-child { border-bottom: none; }
+    .download-btn { background-color: #28a745; color: white; text-decoration: none; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <div class="header">कक्षा 9वीं - सभी विषय सूची 📁</div>
+
+  <div class="container">
+    <button class="back-btn" onclick="window.location.href='index.html'">⬅ मुख्य मेन्यू में वापस जाएँ</button>
+
+    <div class="subject-card">
+      <div class="subject-name">गणित (Mathematics)</div>
+      <a href="#" class="download-btn">⬇ पूरा PDF</a>
+    </div>
+
+    <div class="subject-card" onclick="toggleSection('science-chapters')">
+      <div class="subject-name">विज्ञान (Science) 🔽</div>
+    </div>
+    
+    <div id="science-chapters" class="chapter-container">
+      
+      <div class="subject-heading">भौतिकी (Physics)</div>
+      <div class="chapter-item">
+        <span>पाठ 1: विज्ञान और मापन</span>
+        <a href="#" class="download-btn">⬇ PDF</a>
+      </div>
+      <div class="chapter-item">
+        <span>पाठ 2: गति (Motion)</span>
+        <a href="#" class="download-btn">⬇ PDF</a>
+      </div>
+      <div class="chapter-item">
+        <span>पाठ 3: बल तथा गति के नियम</span>
+        <a href="#" class="download-btn">⬇ PDF</a>
+      </div>
+
+      <div class="subject-heading">रसायन शास्त्र (Chemistry)</div>
+      <div class="chapter-item">
+        <span>पाठ 1: हमारे आस-पास के पदार्थ</span>
+        <a href="#" class="download-btn">⬇ PDF</a>
+      </div>
+      <div class="chapter-item">
+        <span>पाठ 2: क्या हमारे आस-पास के पदार्थ शुद्ध हैं?</span>
+        <a href="#" class="download-btn">⬇ PDF</a>
+      </div>
+
+      <div class="subject-heading">जीव विज्ञान (Biology)</div>
+      <div class="chapter-item">
+        <span>पाठ 1: जीवन की मौलिक इकाई (कोशिका)</span>
+        <a href="#" class="download-btn">⬇ PDF</a>
+      </div>
+      <div class="chapter-item">
+        <span>पाठ 2: ऊतक (Tissues)</span>
+        <a href="#" class="download-btn">⬇ PDF</a>
+      </div>
+      
+    </div> <div class="subject-card" onclick="toggleSection('sst-chapters')">
+      <div class="subject-name">सामाजिक विज्ञान (SST) 🔽</div>
+    </div>
+    
+    <div id="sst-chapters" class="chapter-container">
+      <div class="subject-heading">इतिहास (History)</div>
+      <div class="chapter-item"><span>पाठ 1: फ्रांसीसी क्रांति</span> <a href="#" class="download-btn">⬇ PDF</a></div>
+      
+      <div class="subject-heading">भूगोल (Geography)</div>
+      <div class="chapter-item"><span>पाठ 1: भारत - आकार और स्थिति</span> <a href="#" class="download-btn">⬇ PDF</a></div>
+    </div>
+
+    <div class="subject-card">
+      <div class="subject-name">हिंदी (Hindi)</div>
+      <a href="#" class="download-btn">⬇ पूरा PDF</a>
+    </div>
+
+  </div>
+
+  <script>
+    function toggleSection(id) {
+      var section = document.getElementById(id);
+      if (section.style.display === "block") {
+        section.style.display = "none";
+      } else {
+        section.style.display = "block";
+      }
+    }
+  </script>
+
+</body>
+</html>
