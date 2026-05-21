@@ -79,17 +79,20 @@
     }
 
     /* अलग-अलग सेक्शन के रंगों के बॉर्डर */
-    .ipl-card { border-left-color: #ffc107; }
-    .ipl-card button { background-color: #ffc107; color: #222; }
-    
-    .upsc-card { border-left-color: #6f42c1; }
-    .upsc-card button { background-color: #6f42c1; }
-
     .class9-card { border-left-color: #17a2b8; }
     .class9-card button { background-color: #17a2b8; }
 
     .class10-card { border-left-color: #007bff; }
     .class10-card button { background-color: #007bff; }
+
+    .gk-card { border-left-color: #28a745; }
+    .gk-card button { background-color: #28a745; }
+
+    .ipl-card { border-left-color: #ffc107; }
+    .ipl-card button { background-color: #ffc107; color: #222; }
+    
+    .upsc-card { border-left-color: #6f42c1; }
+    .upsc-card button { background-color: #6f42c1; }
 
     /* सोनू का एआई बटन की डिज़ाइन */
     .ai-btn-container {
@@ -243,6 +246,18 @@
     <div id="home-screen" class="screen active-screen">
       <div class="welcome-text">नमस्ते, अपनी कैटेगरी चुनें:</div>
 
+      <div class="card class9-card">
+        <h3>कक्षा 9वीं (PDF नोट्स) 📁</h3>
+        <p>सभी विषयों के परीक्षा उपयोगी और सटीक PDF नोट्स।</p>
+        <button onclick="openClass9()">नोट्स देखें</button>
+      </div>
+
+      <div class="card class10-card">
+        <h3>कक्षा 10वीं (ऑफलाइन क्लास) 🏫</h3>
+        <p>बोर्ड परीक्षा की तैयारी के लिए ऑफलाइन स्पेशल बैच।</p>
+        <button onclick="openClass10()">जानकारी देखें</button>
+      </div>
+
       <div class="card gk-card">
         <h3>रोज़ाना सामान्य ज्ञान (Daily GK) 📝</h3>
         <p>करंट अफेयर्स और बेसिक सामान्य ज्ञान के सवाल।</p>
@@ -259,18 +274,6 @@
         <h3>UPSC (IAS) स्पेशल टेस्ट 🏆</h3>
         <p>इतिहास, भूगोल और कठिन स्तर के महत्वपूर्ण प्रश्न।</p>
         <button onclick="startQuiz('upsc')">टेस्ट शुरू करें</button>
-      </div>
-
-      <div class="card class9-card">
-        <h3>कक्षा 9वीं (PDF नोट्स) 📁</h3>
-        <p>सभी विषयों के परीक्षा उपयोगी और सटीक PDF नोट्स।</p>
-        <button onclick="openClass9()">नोट्स देखें</button>
-      </div>
-
-      <div class="card class10-card">
-        <h3>कक्षा 10वीं (ऑफलाइन क्लास) 🏫</h3>
-        <p>मैट्रिक बोर्ड परीक्षा 2027 की तैयारी के लिए ऑफलाइन स्पेशल बैच।</p>
-        <button onclick="openClass10()">जानकारी देखें</button>
       </div>
 
       <div class="ai-btn-container">
@@ -306,7 +309,7 @@
     </div>
   </div>
 
-  <a href="https://wa.me/918521057039text=नमस्ते सोनू सर, मुझे आपके सोनू क्लासेस ऐप से मदद चाहिए!" class="whatsapp-float" target="_blank">
+  <a href="whatsapp://send?phone=918521057039&text=नमस्ते सोनू सर, मुझे आपके सोनू क्लासेस ऐप से मदद चाहिए!" class="whatsapp-float">
     <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="whatsapp-icon">
   </a>
 
@@ -401,7 +404,7 @@
     }
 
     function openClass10() {
-      alert("हमारी ऑफलाइन क्लासेस महेशखूंट में चालू हैं। विशेष जानकारी के लिए नीचे दिए गए व्हाट्सएप बटन पर क्लिक करें!");
+      alert("हमारी ऑफलाइन क्लासेस चालू हैं। विशेष जानकारी के लिए नीचे दिए गए व्हाट्सएप बटन पर क्लिक करें!");
     }
 
     // एआई चैटबॉक्स खोलने/बंद करने का फंक्शन
@@ -456,7 +459,7 @@
         var aiText = data.candidates[0].content.parts[0].text;
         tDiv.innerText = aiText; // जवाब से बदलें
       } catch (err) {
-        tDiv.innerText = "माफ़ कीजिएगा, अभी सर्वर डाउन है। कृपया थोड़ी देर बाद प्रयास करें।";
+        tDiv.innerText = "माफ़ कीजिएगा, अभी मैं काम नहीं कर रहा हूँ। आपने असली API Key नहीं डाली है।";
       }
       box.scrollTop = box.scrollHeight;
     }
