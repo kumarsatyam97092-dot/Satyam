@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sonu Classes</title>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <style>
     /* मुख्य डिज़ाइन */
     body { margin: 0; padding: 0; font-family: 'Arial', sans-serif; background-color: #f4f6f9; color: #333; }
@@ -14,13 +17,17 @@
     /* 📢 जादुई रनिंग नोटिस बोर्ड */
     .notice-board { background: #dcd3ff; color: #764ba2; padding: 8px; font-weight: bold; font-size: 14px; border-bottom: 2px solid #764ba2; }
 
-    /* मास्टर लॉगिन गेट */
-    #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; color: white; text-align: center; padding: 20px; box-sizing: border-box; }
-    .google-btn { background-color: #fff; color: #444; border: none; padding: 14px 28px; border-radius: 30px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: inline-flex; align-items: center; justify-content: center; width: 85%; max-width: 320px; }
+    /* 🔒 नया सुरक्षित ईमेल लॉगिन स्क्रीन */
+    #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; color: white; text-align: center; padding: 20px; box-sizing: border-box; overflow-y: auto; }
+    .login-box { background: white; padding: 25px; border-radius: 15px; width: 100%; max-width: 340px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); color: #333; }
+    .login-input { width: 100%; padding: 12px; margin: 8px 0; border: 2px solid #e9ecef; border-radius: 8px; box-sizing: border-box; font-size: 15px; outline: none; }
+    .login-input:focus { border-color: #764ba2; }
+    .auth-btn { background: #764ba2; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+    .switch-auth-link { color: #764ba2; font-size: 13px; margin-top: 15px; display: inline-block; cursor: pointer; font-weight: bold; text-decoration: underline; }
 
     /* प्रोफाइल पट्टी */
     .profile-bar { background: white; border-radius: 15px; padding: 12px 15px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: space-between; border: 1px solid #e9ecef; }
-    .user-pic { width: 45px; height: 45px; border-radius: 50%; border: 2px solid #28a745; object-fit: cover; }
+    .user-pic { width: 45px; height: 45px; border-radius: 50%; border: 2px solid #28a745; display: flex; align-items: center; justify-content: center; background: #e83e8c; color: white; font-weight: bold; font-size: 20px; }
     .logout-btn { background-color: #ff4b2b; color: white; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold; }
 
     /* कार्ड्स */
@@ -45,7 +52,7 @@
     .wrong { background-color: #f8d7da !important; border-color: #f5c6cb !important; color: #721c24; }
     .nav-btn { background-color: #ff4b2b; color: white; border: none; padding: 12px; width: 100%; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; }
 
-    /* नोट्स स्क्रीन डिज़ाइन */
+    /* नोट्स स्क्रीन */
     .sub-btn { background: #fff; border: 2px solid #17a2b8; color: #17a2b8; padding: 10px; margin-bottom: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-size: 15px; }
     .sub-btn:hover { background: #17a2b8; color: #fff; }
     .pdf-item { background: #fff; padding: 12px; border-radius: 8px; margin-bottom: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #28a745; font-weight: bold; cursor: pointer; }
@@ -65,7 +72,6 @@
     .chat-input-area button { background: #764ba2; color: white; border: none; padding: 8px; margin-left: 5px; border-radius: 5px; cursor: pointer; }
 
     .ai-float-btn { position: fixed; width: 55px; height: 55px; bottom: 20px; right: 20px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 50px; font-size: 28px; box-shadow: 2px 2px 5px #999; cursor: pointer; z-index: 100; display: flex; justify-content: center; align-items: center; }
-    
     .whatsapp-float { position: fixed; width: 55px; height: 55px; bottom: 20px; left: 20px; background-color: #25d366; border-radius: 50px; text-align: center; box-shadow: 2px 2px 5px #999; z-index: 100; display: flex; justify-content: center; align-items: center; }
     .whatsapp-icon { width: 35px; height: 35px; }
   </style>
@@ -73,12 +79,21 @@
 <body>
 
   <div id="login-screen">
-    <h1 style="font-size:35px; margin-bottom:5px;">Sonu Classes</h1>
-    <p style="margin-bottom:30px; opacity:0.9;">बिहार का अपना डिजिटल स्कूल 🎒</p>
-    <button class="google-btn" onclick="window.signInWithGoogle()">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="G" style="width: 20px; margin-right: 12px;">
-      Google से लॉगिन करें
-    </button>
+    <h1 style="font-size:32px; margin-top:0; margin-bottom:5px;">Sonu Classes</h1>
+    <p style="margin-bottom:20px; opacity:0.9; font-size:14px;">बिहार का अपना डिजिटल स्कूल 🎒</p>
+    
+    <div class="login-box">
+      <h3 id="auth-title" style="margin-top:0; margin-bottom:15px; color:#333;">लॉगइन करें</h3>
+      
+      <input type="text" id="auth-name" class="login-input" placeholder="अपना पूरा नाम लिखें" style="display:none;">
+      <input type="email" id="auth-email" class="login-input" placeholder="ईमेल आईडी (Email)">
+      <input type="password" id="auth-password" class="login-input" placeholder="पासवर्ड (Password)">
+      
+      <button id="auth-main-btn" class="auth-btn" onclick="window.handleAuth()">लॉगइन करें 🚀</button>
+      <div style="text-align:center;">
+        <span id="auth-switch-link" class="switch-auth-link" onclick="window.toggleAuthMode()">नया अकाउंट बनाएं (Sign Up)</span>
+      </div>
+    </div>
   </div>
 
   <div class="header">Sonu Classes</div>
@@ -92,8 +107,11 @@
     <div id="home-screen" class="screen active-screen">
       <div class="profile-bar">
         <div style="display:flex; align-items:center; gap:10px;">
-          <img id="user-pic" src="" alt="Profile" class="user-pic">
-          <div><div id="user-name" style="font-weight:bold; font-size:15px;"></div><div style="font-size:11px; color:#28a745; font-weight:bold;">Verified Student ✅</div></div>
+          <div id="user-pic-letter" class="user-pic">S</div>
+          <div>
+            <div id="user-name" style="font-weight:bold; font-size:15px;"></div>
+            <div style="font-size:11px; color:#28a745; font-weight:bold;">Verified Student ✅</div>
+          </div>
         </div>
         <button class="logout-btn" onclick="window.logOut()">लॉगआउट</button>
       </div>
@@ -136,7 +154,6 @@
     <div id="notes-screen" class="screen">
       <div class="quiz-box">
         <h2 id="notes-screen-title" style="text-align:center; color:#17a2b8; margin-top:0;">कक्षा नोट्स</h2>
-        
         <div id="subject-selection-box">
           <p style="text-align:center; font-weight:bold;">कृपया अपना विषय चुनें:</p>
           <button class="sub-btn" onclick="window.fetchPDFs('math')">🧮 गणित (Mathematics)</button>
@@ -145,13 +162,11 @@
           <button class="sub-btn" onclick="window.fetchPDFs('hindi')">✍️ हिंदी (Hindi)</button>
           <button class="sub-btn" onclick="window.fetchPDFs('sanskrit')">🕉️ संस्कृत (Sanskrit)</button>
         </div>
-
         <div id="pdf-list-section" style="display:none;">
           <button onclick="window.backToSubjects()" style="background:#6c757d; color:#fff; padding:6px 12px; border:none; border-radius:5px; margin-bottom:15px; cursor:pointer; font-weight:bold;">← विषय बदलें</button>
           <div id="pdf-loading-text" style="text-align:center;">पीडीएफ आ रहे हैं... ⏳</div>
           <div id="pdf-container-list"></div>
         </div>
-
         <button class="nav-btn" onclick="window.goHome()" style="background-color:#6c757d; margin-top:20px;">मुख्य मेन्यू में जाएँ</button>
       </div>
     </div>
@@ -167,11 +182,8 @@
     <div class="chat-input-area"><input type="text" id="userInput" placeholder="यहाँ पूछें..."><button onclick="window.sendMessage()">पूछें</button></div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, getDocs, query, where, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    import { getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
+  <script>
+    // पुराना तरीका हटाकर कम्पेक्ट फायरबेस इनिशियलाइज़ेशन
     const firebaseConfig = {
       apiKey: "AIzaSyDxHLilPMimcKi8hM6JqjCBpxcpknTtO4w",
       authDomain: "sonu-classes.firebaseapp.com",
@@ -180,12 +192,11 @@
       messagingSenderId: "231395441052",
       appId: "1:231395441052:web:02ede1d22ae4c361d83059"
     };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
-
+    window.isSignUpMode = false;
     window.currentUser = null;
     window.dynamicQuizData = [];
     window.currentQuestionIndex = 0;
@@ -193,28 +204,70 @@
     window.currentCategory = "";
     window.selectedNotesClass = "";
 
-    // लॉगिन फंक्शन (Redirect फिक्स के साथ)
-    window.signInWithGoogle = function() {
-      signInWithRedirect(auth, provider);
+    // लॉगिन / रजिस्ट्रेशन मोड बदलना
+    window.toggleAuthMode = function() {
+      window.isSignUpMode = !window.isSignUpMode;
+      if(window.isSignUpMode) {
+        document.getElementById("auth-title").innerText = "नया अकाउंट बनाएँ";
+        document.getElementById("auth-name").style.display = "block";
+        document.getElementById("auth-main-btn").innerText = "अकाउंट बनाएँ 🎉";
+        document.getElementById("auth-switch-link").innerText = "पहले से अकाउंट है? लॉगइन करें";
+      } else {
+        document.getElementById("auth-title").innerText = "लॉगइन करें";
+        document.getElementById("auth-name").style.display = "none";
+        document.getElementById("auth-main-btn").innerText = "लॉगइन करें 🚀";
+        document.getElementById("auth-switch-link").innerText = "नया अकाउंट बनाएं (Sign Up)";
+      }
     };
 
-    window.logOut = function() { signOut(auth); };
+    // 🔐 नया मजबूत ईमेल-पासवर्ड ऑथेंटिकेशन लॉजिक
+    window.handleAuth = function() {
+      var email = document.getElementById("auth-email").value.trim();
+      var password = document.getElementById("auth-password").value.trim();
+      var name = document.getElementById("auth-name").value.trim();
+      var btn = document.getElementById("auth-main-btn");
 
-    // लॉगिन चेक और नोटिस लोड
-    onAuthStateChanged(auth, async (user) => {
+      if(!email || !password) return alert("कृपया ईमेल और पासवर्ड दोनों भरें!");
+      if(password.length < 6) return alert("पासवर्ड कम से कम 6 अक्षरों का होना चाहिए!");
+
+      btn.innerText = "प्रक्रिया चालू है... ⏳";
+      btn.disabled = true;
+
+      if(window.isSignUpMode) {
+        if(!name) { btn.innerText = "अकाउंट बनाएँ 🎉"; btn.disabled = false; return alert("कृपया अपना नाम लिखें!"); }
+        auth.createUserWithEmailAndPassword(email, password).then((userCredential) => {
+          userCredential.user.updateProfile({ displayName: name }).then(() => {
+            alert("🎉 आपका अकाउंट सफलतापूर्वक बन गया है!");
+            location.reload();
+          });
+        }).catch((e) => { alert("त्रुटि: " + e.message); btn.innerText = "अकाउंट बनाएँ 🎉"; btn.disabled = false; });
+      } else {
+        auth.signInWithEmailAndPassword(email, password).catch((e) => {
+          alert("लॉगइन फेल: ईमेल या पासवर्ड गलत है!");
+          btn.innerText = "लॉगइन करें 🚀"; btn.disabled = false;
+        });
+      }
+    };
+
+    window.logOut = function() { auth.signOut().then(() => location.reload()); };
+
+    // ऐप के अंदर ऑथेंटिकेशन स्टेट चेंज मॉनिटर
+    auth.onAuthStateChanged(async (user) => {
       if (user) {
         window.currentUser = user;
         document.getElementById("login-screen").style.setProperty("display", "none", "important");
-        document.getElementById("user-name").innerText = user.displayName;
-        document.getElementById("user-pic").src = user.photoURL;
+        var finalName = user.displayName || user.email.split('@')[0];
+        document.getElementById("user-name").innerText = finalName;
+        document.getElementById("user-pic-letter").innerText = finalName.charAt(0).toUpperCase();
         
         try {
-          const snap = await getDocs(collection(db, "announcements"));
-          let notices = []; snap.forEach(d => notices.push(d.data()));
-          if(notices.length > 0) {
-            notices.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-            document.getElementById("notice-text").innerText = notices[0].text;
-          }
+          db.collection("announcements").get().then((snap) => {
+            let notices = []; snap.forEach(d => notices.push(d.data()));
+            if(notices.length > 0) {
+              notices.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+              document.getElementById("notice-text").innerText = notices[0].text;
+            }
+          });
         } catch(e) { console.log(e); }
       } else {
         window.currentUser = null;
@@ -228,14 +281,11 @@
     };
     window.goHome = function() { window.showScreen("home-screen"); };
 
-    // पीडीएफ नोट्स लॉजिक
     window.openNotesScreen = function(classVal) {
       window.selectedNotesClass = classVal;
       document.getElementById("notes-screen-title").innerText = `कक्षा ${classVal}वीं नोट्स 📁`;
-      window.backToSubjects();
-      window.showScreen("notes-screen");
+      window.backToSubjects(); window.showScreen("notes-screen");
     };
-
     window.backToSubjects = function() {
       document.getElementById("subject-selection-box").style.display = "block";
       document.getElementById("pdf-list-section").style.display = "none";
@@ -247,46 +297,37 @@
       var container = document.getElementById("pdf-container-list");
       var loader = document.getElementById("pdf-loading-text");
       container.innerHTML = ""; loader.style.display = "block";
-
       try {
-        const snap = await getDocs(collection(db, "pdf_notes"));
-        let pdfs = [];
-        snap.forEach(d => {
-          let data = d.data();
-          if(data.class === window.selectedNotesClass && data.subject === subjectVal) {
-            pdfs.push(data);
-          }
+        db.collection("pdf_notes").get().then((snap) => {
+          let pdfs = [];
+          snap.forEach(d => {
+            let data = d.data();
+            if(data.class === window.selectedNotesClass && data.subject === subjectVal) pdfs.push(data);
+          });
+          loader.style.display = "none";
+          if(pdfs.length === 0) { container.innerHTML = "<p style='text-align:center; color:#666;'>सोनू सर इस विषय का नोट्स जल्द ही अपलोड करेंगे! ❤️</p>"; return; }
+          pdfs.forEach(pdf => {
+            var div = document.createElement("div"); div.className = "pdf-item";
+            div.innerHTML = `<span>📄 ${pdf.chapter}</span><span style='color:#17a2b8; font-size:12px;'>डाउनलोड 📥</span>`;
+            div.onclick = function() { window.open(pdf.url, '_blank'); };
+            container.appendChild(div);
+          });
         });
-
-        loader.style.display = "none";
-        if(pdfs.length === 0) {
-          container.innerHTML = "<p style='text-align:center; color:#666;'>सोनू सर इस विषय का नोट्स जल्द ही अपलोड करेंगे! ❤️</p>";
-          return;
-        }
-
-        pdfs.forEach(pdf => {
-          var div = document.createElement("div"); div.className = "pdf-item";
-          div.innerHTML = `<span>📄 ${pdf.chapter}</span><span style='color:#17a2b8; font-size:12px;'>डाउनलोड 📥</span>`;
-          div.onclick = function() { window.open(pdf.url, '_blank'); };
-          container.appendChild(div);
-        });
-
-      } catch(e) { loader.innerText = "लोड करने में समस्या हुई।"; }
+      } catch(e) { loader.innerText = "लोड एरर।"; }
     };
 
-    // क्विज़ लॉजिक
     window.startQuiz = async function(cat) {
       if (!window.currentUser) return;
       window.currentCategory = cat; window.currentQuestionIndex = 0; window.score = 0; window.dynamicQuizData = [];
       window.showScreen("quiz-screen");
       document.getElementById("question-box").innerText = "डेटाबेस से सवाल आ रहे हैं... ⏳";
       document.getElementById("options-box").innerHTML = "";
-
       try {
-        const snap = await getDocs(collection(db, "quizzes"));
-        snap.forEach((doc) => { let data = doc.data(); if(data.category === cat) window.dynamicQuizData.push(data); });
-        if(window.dynamicQuizData.length === 0) { document.getElementById("question-box").innerText = "सवाल नहीं मिले!"; return; }
-        window.loadQuestion();
+        db.collection("quizzes").get().then((snap) => {
+          snap.forEach((doc) => { let data = doc.data(); if(data.category === cat) window.dynamicQuizData.push(data); });
+          if(window.dynamicQuizData.length === 0) { document.getElementById("question-box").innerText = "सवाल नहीं मिले!"; return; }
+          window.loadQuestion();
+        });
       } catch (e) { document.getElementById("question-box").innerText = "समस्या!"; }
     };
 
@@ -318,9 +359,11 @@
 
     window.submitScore = async function() {
       var btn = document.getElementById("save-score-btn"); btn.innerText = "सेव हो रहा है... ⏳"; btn.disabled = true;
+      var finalName = window.currentUser.displayName || window.currentUser.email.split('@')[0];
       try {
-        await addDoc(collection(db, "leaderboard"), { name: window.currentUser.displayName, photo: window.currentUser.photoURL, score: window.score, total: window.dynamicQuizData.length, category: window.currentCategory, timestamp: serverTimestamp() });
-        alert("स्कोर सेव हो गया!"); document.getElementById("lb-category").value = window.currentCategory; window.openLeaderboard();
+        db.collection("leaderboard").add({ name: finalName, photo: "", score: window.score, total: window.dynamicQuizData.length, category: window.currentCategory, timestamp: firebase.firestore.FieldValue.serverTimestamp() }).then(() => {
+          alert("स्कोर सेव हो गया!"); document.getElementById("lb-category").value = window.currentCategory; window.openLeaderboard();
+        });
       } catch (e) { alert(e.message); }
       btn.innerText = "🏆 स्कोर लीडरबोर्ड में भेजें"; btn.disabled = false;
     };
@@ -331,21 +374,20 @@
       var list = document.getElementById("rank-list"); var loader = document.getElementById("lb-loading");
       list.innerHTML = ""; loader.style.display = "block";
       try {
-        const snap = await getDocs(collection(db, "leaderboard"));
-        let scores = []; snap.forEach((doc) => { let d = doc.data(); if(d.category === cat) scores.push(d); });
-        scores.sort((a, b) => b.score - a.score); let top10 = scores.slice(0, 10);
-        loader.style.display = "none";
-        if(top10.length === 0) { list.innerHTML = "<li>कोई रिकॉर्ड नहीं है!</li>"; return; }
-        top10.forEach((item, index) => {
-          let rc = index === 0 ? "rank-1" : "";
-          let m = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : `🏅 #${index+1}`;
-          let img = item.photo ? `<img src="${item.photo}" style="width:28px; height:28px; border-radius:50%; margin-right:10px;">` : '';
-          list.innerHTML += `<li class="rank-item ${rc}"><div style="display:flex; align-items:center;"><span style="margin-right:8px;">${m}</span>${img}<span>${item.name}</span></div><span>${item.score}/${item.total}</span></li>`;
+        db.collection("leaderboard").get().then((snap) => {
+          let scores = []; snap.forEach((doc) => { let d = doc.data(); if(d.category === cat) scores.push(d); });
+          scores.sort((a, b) => b.score - a.score); let top10 = scores.slice(0, 10);
+          loader.style.display = "none";
+          if(top10.length === 0) { list.innerHTML = "<li>कोई रिकॉर्ड नहीं है!</li>"; return; }
+          top10.forEach((item, index) => {
+            let rc = index === 0 ? "rank-1" : "";
+            let m = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : `🏅 #${index+1}`;
+            list.innerHTML += `<li class="rank-item ${rc}"><div style="display:flex; align-items:center;"><span style="margin-right:8px;">${m}</span><span>${item.name}</span></div><span>${item.score}/${item.total}</span></li>`;
+          });
         });
       } catch(e) { loader.innerText = "समस्या आई।"; }
     };
 
-    // AI चैटबॉक्‍स
     window.toggleAIChat = function() { var m = document.getElementById("aiChatModal"); m.style.display = (m.style.display === "flex") ? "none" : "flex"; };
     window.sendMessage = async function() {
       var input = document.getElementById("userInput"); var text = input.value.trim(); if (!text) return;
