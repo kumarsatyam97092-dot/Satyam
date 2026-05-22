@@ -5,57 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Master Admin Panel - Sonu Classes</title>
   <style>
-    body { 
-      font-family: 'Arial', sans-serif; 
-      background: #e9ecef; 
-      margin: 0; 
-      padding: 20px; 
-    }
+    body { font-family: 'Arial', sans-serif; background: #e9ecef; margin: 0; padding: 20px; }
     
-    /* लॉक स्क्रीन डिज़ाइन */
-    .lock-container { 
-      max-width: 400px; 
-      margin: 50px auto; 
-      background: white; 
-      padding: 30px; 
-      border-radius: 15px; 
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
-      text-align: center; 
-    }
+    .lock-container { max-width: 400px; margin: 50px auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; }
     .lock-icon { font-size: 60px; margin-bottom: 15px; }
     .lock-title { color: #c0392b; font-size: 24px; font-weight: bold; margin-bottom: 15px; }
     
-    /* मुख्य एडमिन डैशबोर्ड डिज़ाइन */
-    .admin-box { 
-      display: none; 
-      background: white; 
-      padding: 20px; 
-      border-radius: 12px; 
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
-      max-width: 450px; 
-      margin: auto; 
-      border-top: 5px solid #ff4b2b; 
-    }
+    .admin-box { display: none; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 450px; margin: auto; border-top: 5px solid #ff4b2b; }
     h2 { text-align: center; color: #333; margin-top: 0; }
     label { font-weight: bold; font-size: 14px; color: #555; display: block; margin-top: 12px; }
-    input, select, button { 
-      width: 100%; 
-      padding: 12px; 
-      margin: 6px 0 12px 0; 
-      border-radius: 8px; 
-      border: 1px solid #ccc; 
-      box-sizing: border-box; 
-      font-size: 14px; 
-    }
+    input, select, button { width: 100%; padding: 12px; margin: 6px 0 12px 0; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; font-size: 14px; }
     
     .form-section { display: none; background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; margin-top: 10px; }
     .active-form { display: block; }
 
     button { background: #28a745; color: white; font-weight: bold; border: none; cursor: pointer; font-size: 16px; transition: 0.3s; }
     button:hover { background: #218838; }
+    button:disabled { background: #6c757d; cursor: not-allowed; }
     .unlock-btn { background: #007bff; }
     .toggle-select { background: #fff; border: 2px solid #ff4b2b; font-weight: bold; color: #ff4b2b; }
-    
     .chapter-section { background: #fff; padding: 10px; border-radius: 8px; margin-top: 10px; border: 1px solid #ddd; }
   </style>
 </head>
@@ -66,14 +34,14 @@
     <div class="lock-title">खूफिया कंट्रोल रूम</div>
     <p style="color: #666; font-size: 14px; margin-bottom: 20px;">कृपया सोनू सर का सीक्रेट पासवर्ड डालें</p>
     <input type="password" id="passInput" placeholder="पासवर्ड यहाँ डालें..." style="text-align: center;">
-    <button class="unlock-btn" onclick="checkPassword()">अनलॉक करें 🚀</button>
+    <button class="unlock-btn" onclick="window.checkPassword()">अनलॉक करें 🚀</button>
   </div>
 
   <div id="adminForm" class="admin-box">
     <h2>सोनू क्लासेज 🚀<br><small style="color: #666; font-size: 13px;">मास्टर एडमिन पैनल</small></h2>
     
     <label style="color: #ff4b2b; font-size: 15px;">आप अभी क्या अपलोड करना चाहते हैं?</label>
-    <select id="formType" class="toggle-select" onchange="switchFormType()">
+    <select id="formType" class="toggle-select" onchange="window.switchFormType()">
       <option value="quiz">📝 टेस्ट क्विज़ का नया सवाल जोड़ें</option>
       <option value="notes">📁 कक्षा 9वीं / 10वीं के पीडीएफ नोट्स जोड़ें</option>
     </select>
@@ -99,20 +67,20 @@
       <label>सही जवाब कौन सा है? (नंबर डालें)</label>
       <input type="number" id="ans" placeholder="जैसे: 1, 2, 3 या 4">
 
-      <button onclick="saveQuestion()">💾 सवाल क्विज़ में सेव करें</button>
+      <button id="saveQuizBtn" onclick="window.saveQuestion()">💾 सवाल डेटाबेस में सेव करें</button>
     </div>
 
     <div id="notesFormSection" class="form-section">
       <h3 style="margin-top:0; color:#333;">PDF नोट्स मैनेजर फॉर्म</h3>
       
       <label>कक्षा चुनें (Class):</label>
-      <select id="notesClass" onchange="updateChaptersDropdown()">
+      <select id="notesClass" onchange="window.updateChaptersDropdown()">
         <option value="9">कक्षा 9वीं (Class 9)</option>
         <option value="10">कक्षा 10वीं (Class 10)</option>
       </select>
 
       <label>विषय चुनें (Subject):</label>
-      <select id="notesSubject" onchange="updateChaptersDropdown()">
+      <select id="notesSubject" onchange="window.updateChaptersDropdown()">
         <option value="math">गणित (Mathematics)</option>
         <option value="science">विज्ञान (Science)</option>
         <option value="sst">सामाजिक विज्ञान / इतिहास (SST)</option>
@@ -122,178 +90,171 @@
 
       <div id="chapterSection" class="chapter-section">
         <label style="color:#17a2b8;" id="chapterLabel">चैप्टर की सूची (Select Chapter):</label>
-        <select id="notesChapter">
-          </select>
+        <select id="notesChapter"></select>
       </div>
 
       <label style="margin-top:12px;">गूगल ड्राइव PDF लिंक पेस्ट करें (URL):</label>
       <input type="url" id="pdfUrl" placeholder="https://drive.google.com/file/d/.../view">
 
-      <button onclick="saveNotesLink()" style="background-color:#17a2b8; margin-top:10px;">💾 पीडीएफ नोट्स डेटाबेस में भेजें</button>
+      <button id="saveNotesBtn" onclick="window.saveNotesLink()" style="background-color:#17a2b8; margin-top:10px;">💾 पीडीएफ नोट्स डेटाबेस में भेजें</button>
     </div>
 
   </div>
 
-  <script>
+  <script type="module">
+    // Firebase इंपोर्ट करें
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // आपका असली Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDxHLilPMimcKi8hM6JqjCBpxcpknTtO4w",
+      authDomain: "sonu-classes.firebaseapp.com",
+      projectId: "sonu-classes",
+      storageBucket: "sonu-classes.firebasestorage.app",
+      messagingSenderId: "231395441052",
+      appId: "1:231395441052:web:02ede1d22ae4c361d83059"
+    };
+
+    // Firebase चालू करें
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
     const CONFIG_PASSWORD = "1234";
 
-    // सभी कक्षाओं और विषयों के चैप्टर का मास्टर डेटाबेस (बिहार बोर्ड / NCERT आधारित)
     const masterSyllabus = {
       "9": {
-        "math": [
-          "पाठ 1: संख्या पद्धति",
-          "पाठ 2: बहुपद",
-          "पाठ 3: निर्देशांक ज्यामिति",
-          "पाठ 4: दो चरों वाले रैखिक समीकरण",
-          "पाठ 5: यूक्लिड की ज्यामिति का परिचय",
-          "पाठ 6: रेखाएँ और कोण",
-          "पाठ 7: त्रिभुज"
-        ],
-        "science": [
-          "🔬 भौतिकी - पाठ 1: विज्ञान और मापन",
-          "🔬 भौतिकी - पाठ 2: गति (Motion)",
-          "🔬 भौतिकी - पाठ 3: बल तथा गति के नियम",
-          "🔬 भौतिकी - पाठ 4: गुरुत्वाकर्षण",
-          "🧪 रसायन - पाठ 1: हमारे आस-पास के पदार्थ",
-          "🧪 रसायन - पाठ 2: क्या हमारे आस-पास के पदार्थ शुद्ध हैं?",
-          "🧬 जीव विज्ञान - पाठ 1: जीवन की मौलिक इकाई (कोशिका)",
-          "🧬 जीव विज्ञान - पाठ 2: ऊतक (Tissues)"
-        ],
-        "sst": [
-          "📖 इतिहास - पाठ 1: भौगोलिक खोजें",
-          "📖 इतिहास - पाठ 2: अमेरिकी स्वतंत्रता संग्राम",
-          "📖 इतिहास - पाठ 3: फ्रांसीसी क्रांति",
-          "🌍 भूगोल - पाठ 1: स्थिति और विस्तार",
-          "🌍 भूगोल - पाठ 2: भारत का भौतिक स्वरूप",
-          "💼 अर्थशास्त्र - पाठ 1: बिहार के एक गाँव की कहानी",
-          "⚖️ नागरिक शास्त्र - पाठ 1: लोकतंत्र का क्रमिक विकास"
-        ],
-        "hindi": [
-          "गद्य - पाठ 1: कहानी का प्लॉट (शिवपूजन सहाय)",
-          "गद्य - पाठ 2: भारत का पुरातन विद्यापीठ: नालंदा",
-          "गद्य - पाठ 3: ग्राम-गीत का मर्म",
-          "पद्य - पाठ 1: पद (रैदास)",
-          "पद्य - पाठ 2: कड़बक (मंझन)"
-        ],
-        "sanskrit": [
-          "पाठ 1: ईशस्तुतिः",
-          "पाठ 2: संस्कृतस्य महत्त्वम्",
-          "पाठ 3: यक्ष-युधिष्ठिर-संवादः",
-          "पाठ 4: चत्वारो वेदाः"
-        ]
+        "math": ["पाठ 1: संख्या पद्धति", "पाठ 2: बहुपद", "पाठ 3: निर्देशांक ज्यामिति", "पाठ 4: दो चरों वाले रैखिक समीकरण", "पाठ 5: यूक्लिड की ज्यामिति का परिचय", "पाठ 6: रेखाएँ और कोण", "पाठ 7: त्रिभुज"],
+        "science": ["🔬 भौतिकी - पाठ 1: विज्ञान और मापन", "🔬 भौतिकी - पाठ 2: गति (Motion)", "🔬 भौतिकी - पाठ 3: बल तथा गति के नियम", "🔬 भौतिकी - पाठ 4: गुरुत्वाकर्षण", "🧪 रसायन - पाठ 1: हमारे आस-पास के पदार्थ", "🧪 रसायन - पाठ 2: क्या हमारे आस-पास के पदार्थ शुद्ध हैं?", "🧬 जीव विज्ञान - पाठ 1: जीवन की मौलिक इकाई (कोशिका)", "🧬 जीव विज्ञान - पाठ 2: ऊतक (Tissues)"],
+        "sst": ["📖 इतिहास - पाठ 1: भौगोलिक खोजें", "📖 इतिहास - पाठ 2: अमेरिकी स्वतंत्रता संग्राम", "📖 इतिहास - पाठ 3: फ्रांसीसी क्रांति", "🌍 भूगोल - पाठ 1: स्थिति और विस्तार", "🌍 भूगोल - पाठ 2: भारत का भौतिक स्वरूप", "💼 अर्थशास्त्र - पाठ 1: बिहार के एक गाँव की कहानी", "⚖️ नागरिक शास्त्र - पाठ 1: लोकतंत्र का क्रमिक विकास"],
+        "hindi": ["गद्य - पाठ 1: कहानी का प्लॉट", "गद्य - पाठ 2: भारत का पुरातन विद्यापीठ: नालंदा", "गद्य - पाठ 3: ग्राम-गीत का मर्म", "पद्य - पाठ 1: पद (रैदास)", "पद्य - पाठ 2: कड़बक (मंझन)"],
+        "sanskrit": ["पाठ 1: ईशस्तुतिः", "पाठ 2: संस्कृतस्य महत्त्वम्", "पाठ 3: यक्ष-युधिष्ठिर-संवादः", "पाठ 4: चत्वारो वेदाः"]
       },
       "10": {
-        "math": [
-          "पाठ 1: वास्तविक संख्याएँ",
-          "पाठ 2: बहुपद",
-          "पाठ 3: दो चरों वाले रैखिक समीकरण युग्म",
-          "पाठ 4: द्विघात समीकरण",
-          "पाठ 5: समांतर श्रेढ़ियाँ",
-          "पाठ 6: त्रिभुज",
-          "पाठ 7: त्रिकोणमिति का परिचय",
-          "पाठ 8: त्रिकोणमिति के कुछ अनुप्रयोग"
-        ],
-        "science": [
-          "🔬 भौतिकी - पाठ 1: प्रकाश का परावर्तन",
-          "🔬 भौतिकी - पाठ 2: प्रकाश का अपवर्तन",
-          "🔬 भौतिकी - पाठ 3: मानव नेत्र तथा रंगबिरंगा संसार",
-          "🔬 भौतिकी - पाठ 4: विद्युत धारा",
-          "🔬 भौतिकी - पाठ 5: विद्युत धारा के चुंबकीय प्रभाव",
-          "🔬 भौतिकी - पाठ 6: ऊर्जा के स्रोत",
-          "🧪 रसायन - पाठ 1: रासायनिक अभिक्रियाएं एवं समीकरण",
-          "🧪 रसायन - पाठ 2: अम्ल, क्षारक एवं लवण",
-          "🧪 रसायन - पाठ 3: धातु एवं अधातू",
-          "🧬 जीव विज्ञान - पाठ 1: जैव प्रक्रम (Life Processes)",
-          "🧬 जीव विज्ञान - पाठ 2: नियंत्रण एवं समन्वय",
-          "🧬 जीव विज्ञान - पाठ 3: जीव जनन कैसे करते हैं"
-        ],
-        "sst": [
-          "📖 इतिहास - पाठ 1: यूरोप में राष्ट्रवाद",
-          "📖 इतिहास - पाठ 2: समाजवाद एवं साम्यवाद",
-          "📖 इतिहास - पाठ 3: हिन्द-चीन में राष्ट्रवादी आंदोलन",
-          "🌍 भूगोल - पाठ 1: भारत : संसाधन एवं उपयोग",
-          "🌍 भूगोल - पाठ 2: कृषि",
-          "💼 अर्थशास्त्र - पाठ 1: अर्थव्यवस्था एवं इसके विकास का इतिहास",
-          "⚖️ नागरिक शास्त्र - पाठ 1: लोकतंत्र में सत्ता की साझेदारी"
-        ],
-        "hindi": [
-          "गद्य - पाठ 1: श्रम विभाजन और जाति प्रथा",
-          "गद्य - पाठ 2: विष के दाँत",
-          "गद्य - पाठ 3: भारत से हम क्या सीखें",
-          "पद्य - पाठ 1: राम बिनु बिरथे जगि जनमा",
-          "पद्य - पाठ 2: प्रेम अयनि श्री राधिका"
-        ],
-        "sanskrit": [
-          "पाठ 1: मंगलम्",
-          "पाठ 2: पाटलिपुत्रवैभवम्",
-          "पाठ 3: अलसकथा",
-          "पाठ 4: संस्कृतसाहित्ये लेखिकाः",
-          "पाठ 5: भारतमहिमा"
-        ]
+        "math": ["पाठ 1: वास्तविक संख्याएँ", "पाठ 2: बहुपद", "पाठ 3: दो चरों वाले रैखिक समीकरण युग्म", "पाठ 4: द्विघात समीकरण", "पाठ 5: समांतर श्रेढ़ियाँ", "पाठ 6: त्रिभुज", "पाठ 7: त्रिकोणमिति का परिचय", "पाठ 8: त्रिकोणमिति के कुछ अनुप्रयोग"],
+        "science": ["🔬 भौतिकी - पाठ 1: प्रकाश का परावर्तन", "🔬 भौतिकी - पाठ 2: प्रकाश का अपवर्तन", "🔬 भौतिकी - पाठ 3: मानव नेत्र तथा रंगबिरंगा संसार", "🔬 भौतिकी - पाठ 4: विद्युत धारा", "🔬 भौतिकी - पाठ 5: विद्युत धारा के चुंबकीय प्रभाव", "🔬 भौतिकी - पाठ 6: ऊर्जा के स्रोत", "🧪 रसायन - पाठ 1: रासायनिक अभिक्रियाएं एवं समीकरण", "🧪 रसायन - पाठ 2: अम्ल, क्षारक एवं लवण", "🧪 रसायन - पाठ 3: धातु एवं अधातू", "🧬 जीव विज्ञान - पाठ 1: जैव प्रक्रम", "🧬 जीव विज्ञान - पाठ 2: नियंत्रण एवं समन्वय", "🧬 जीव विज्ञान - पाठ 3: जीव जनन कैसे करते हैं"],
+        "sst": ["📖 इतिहास - पाठ 1: यूरोप में राष्ट्रवाद", "📖 इतिहास - पाठ 2: समाजवाद एवं साम्यवाद", "📖 इतिहास - पाठ 3: हिन्द-चीन में राष्ट्रवादी आंदोलन", "🌍 भूगोल - पाठ 1: भारत : संसाधन एवं उपयोग", "🌍 भूगोल - पाठ 2: कृषि", "💼 अर्थशास्त्र - पाठ 1: अर्थव्यवस्था एवं इसके विकास का इतिहास", "⚖️ नागरिक शास्त्र - पाठ 1: लोकतंत्र में सत्ता की साझेदारी"],
+        "hindi": ["गद्य - पाठ 1: श्रम विभाजन और जाति प्रथा", "गद्य - पाठ 2: विष के दाँत", "गद्य - पाठ 3: भारत से हम क्या सीखें", "पद्य - पाठ 1: राम बिनु बिरथे जगि जनमा", "पद्य - पाठ 2: प्रेम अयनि श्री राधिका"],
+        "sanskrit": ["पाठ 1: मंगलम्", "पाठ 2: पाटलिपुत्रवैभवम्", "पाठ 3: अलसकथा", "पाठ 4: संस्कृतसाहित्ये लेखिकाः", "पाठ 5: भारतमहिमा"]
       }
     };
 
-    function checkPassword() {
+    window.checkPassword = function() {
       var userInput = document.getElementById("passInput").value.trim();
       if (userInput === CONFIG_PASSWORD) {
         document.getElementById("lockScreen").style.display = "none";
         document.getElementById("adminForm").style.display = "block";
-        updateChaptersDropdown(); // लॉगिन होते ही पहला ड्रॉपडाउन लोड करें
+        window.updateChaptersDropdown();
       } else {
         alert("गलत पासवर्ड! कृपया सही पासवर्ड डालें सोनू सर।");
       }
-    }
+    };
 
-    function switchFormType() {
+    window.switchFormType = function() {
       var type = document.getElementById("formType").value;
       document.getElementById("quizFormSection").classList.remove("active-form");
       document.getElementById("notesFormSection").classList.remove("active-form");
-      
       if (type === "quiz") {
         document.getElementById("quizFormSection").classList.add("active-form");
       } else {
         document.getElementById("notesFormSection").classList.add("active-form");
       }
-    }
+    };
 
-    // सोनू सर का बिल्कुल नया ऑल-इन-वन डायनेमिक फंक्शन
-    function updateChaptersDropdown() {
+    window.updateChaptersDropdown = function() {
       var classVal = document.getElementById("notesClass").value;
       var subjectVal = document.getElementById("notesSubject").value;
       var chapterSelect = document.getElementById("notesChapter");
-
-      // चुनी हुई क्लास और विषय के चैप्टर ढूंढें
       var chapters = masterSyllabus[classVal][subjectVal];
-
-      // पुराने चैप्टर साफ करें
+      
       chapterSelect.innerHTML = "";
-
-      // नए चैप्टर लिस्ट में डालें
       chapters.forEach(function(chapName) {
         var option = document.createElement("option");
         option.value = chapName;
         option.innerText = chapName;
         chapterSelect.appendChild(option);
       });
-    }
+    };
 
-    function saveQuestion() {
-      alert("क्विज़ का सवाल तैयार है सोनू सर! जल्द ही इसे डेटाबेस से लाइव करेंगे।");
-    }
+    // असली डेटाबेस में क्विज़ सवाल सेव करने का कोड
+    window.saveQuestion = async function() {
+      var btn = document.getElementById("saveQuizBtn");
+      var category = document.getElementById("category").value;
+      var qText = document.getElementById("question").value.trim();
+      var opt1 = document.getElementById("opt1").value.trim();
+      var opt2 = document.getElementById("opt2").value.trim();
+      var opt3 = document.getElementById("opt3").value.trim();
+      var opt4 = document.getElementById("opt4").value.trim();
+      var ans = document.getElementById("ans").value.trim();
 
-    function saveNotesLink() {
-      var classVal = document.getElementById("notesClass").value;
-      var subjectVal = document.getElementById("notesSubject").value;
-      var pdfUrl = document.getElementById("pdfUrl").value;
-      var selectedChapter = document.getElementById("notesChapter").value;
-
-      if(pdfUrl.trim() === "") {
-        alert("कृपया पहले गूगल ड्राइव का पीडीएफ लिंक पेस्ट करें!");
+      if (!qText || !opt1 || !opt2 || !opt3 || !opt4 || !ans) {
+        alert("कृपया सवाल और सारे ऑप्शन भरें!");
         return;
       }
 
-      alert("सफलतापूर्वक लिंक सिलेक्ट हुआ!\nकक्षा: " + classVal + "वीं\nविषय: " + subjectVal + "\nचैप्टर: " + selectedChapter);
-    }
+      btn.innerText = "डेटाबेस में सेव हो रहा है... ⏳";
+      btn.disabled = true;
+
+      try {
+        await addDoc(collection(db, "quizzes"), {
+          category: category,
+          question: qText,
+          options: [opt1, opt2, opt3, opt4],
+          answer: parseInt(ans),
+          createdAt: serverTimestamp()
+        });
+        
+        alert("🎉 बधाई हो! सवाल डेटाबेस में सफलतापूर्वक सेव हो गया!");
+        
+        // फॉर्म को दोबारा खाली कर दें
+        document.getElementById("question").value = "";
+        document.getElementById("opt1").value = "";
+        document.getElementById("opt2").value = "";
+        document.getElementById("opt3").value = "";
+        document.getElementById("opt4").value = "";
+        document.getElementById("ans").value = "";
+      } catch (error) {
+        alert("एरर आ गया: " + error.message);
+      }
+      
+      btn.innerText = "💾 सवाल डेटाबेस में सेव करें";
+      btn.disabled = false;
+    };
+
+    // असली डेटाबेस में पीडीएफ लिंक सेव करने का कोड
+    window.saveNotesLink = async function() {
+      var btn = document.getElementById("saveNotesBtn");
+      var classVal = document.getElementById("notesClass").value;
+      var subjectVal = document.getElementById("notesSubject").value;
+      var chapterVal = document.getElementById("notesChapter").value;
+      var pdfUrl = document.getElementById("pdfUrl").value.trim();
+
+      if (!pdfUrl) {
+        alert("कृपया गूगल ड्राइव का लिंक डालें!");
+        return;
+      }
+
+      btn.innerText = "डेटाबेस में सेव हो रहा है... ⏳";
+      btn.disabled = true;
+
+      try {
+        await addDoc(collection(db, "pdf_notes"), {
+          class: classVal,
+          subject: subjectVal,
+          chapter: chapterVal,
+          url: pdfUrl,
+          createdAt: serverTimestamp()
+        });
+        
+        alert("🎉 पीडीएफ लिंक डेटाबेस में सफलतापूर्वक सेव हो गया!");
+        document.getElementById("pdfUrl").value = "";
+      } catch (error) {
+        alert("एरर आ गया: " + error.message);
+      }
+      
+      btn.innerText = "💾 पीडीएफ नोट्स डेटाबेस में भेजें";
+      btn.disabled = false;
+    };
   </script>
 
 </body>
