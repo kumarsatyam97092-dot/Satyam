@@ -16,23 +16,21 @@
     /* नोटिस बोर्ड */
     .notice-board { background: #dcd3ff; color: #764ba2; padding: 8px; font-weight: bold; font-size: 14px; border-bottom: 2px solid #764ba2; }
 
-    /* 🔒 OTP लॉगिन स्क्रीन */
-    #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; color: white; text-align: center; padding: 20px; box-sizing: border-box; }
+    /* 🔒 नया स्मार्ट लॉगिन स्क्रीन */
+    #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; color: white; text-align: center; padding: 20px; box-sizing: border-box; overflow-y: auto; }
     .login-box { background: white; padding: 25px; border-radius: 15px; width: 100%; max-width: 340px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); color: #333; }
-    .login-input { width: 100%; padding: 12px; margin: 8px 0; border: 2px solid #e9ecef; border-radius: 8px; box-sizing: border-box; font-size: 15px; outline: none; }
-    .auth-btn { background: #28a745; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-    
-    /* प्रोफाइल पट्टी */
+    .login-input { width: 100%; padding: 12px; margin: 8px 0; border: 2px solid #e9ecef; border-radius: 8px; box-sizing: border-box; font-size: 14px; outline: none; }
+    .login-input:focus { border-color: #764ba2; }
+    .auth-btn { background: #764ba2; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+    .switch-auth-link { color: #764ba2; font-size: 13px; margin-top: 15px; display: inline-block; cursor: pointer; font-weight: bold; text-decoration: underline; }
+
+    /* प्रोफाइल व कार्ड्स */
     .profile-bar { background: white; border-radius: 15px; padding: 12px 15px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: space-between; border: 1px solid #e9ecef; }
     .user-pic { width: 45px; height: 45px; border-radius: 50%; border: 2px solid #28a745; display: flex; align-items: center; justify-content: center; background: #e83e8c; color: white; font-weight: bold; font-size: 20px; }
     .logout-btn { background-color: #ff4b2b; color: white; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold; }
-
-    /* कार्ड्स व स्क्रीन्स */
     .card { background: white; border-radius: 15px; padding: 18px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-left: 6px solid #28a745; }
     .card h3 { margin: 0 0 8px 0; font-size: 18px; color: #222; }
-    .card p { margin: 0 0 12px 0; font-size: 14px; color: #666; }
     .card button { color: white; border: none; padding: 8px 16px; font-size: 14px; font-weight: bold; border-radius: 8px; cursor: pointer; width: 100%; }
-    
     .class9-card { border-left-color: #17a2b8; } .class9-card button { background-color: #17a2b8; }
     .class10-card { border-left-color: #007bff; } .class10-card button { background-color: #007bff; }
     .gk-card { border-left-color: #28a745; } .gk-card button { background-color: #28a745; }
@@ -40,6 +38,7 @@
     .upsc-card { border-left-color: #6f42c1; } .upsc-card button { background-color: #6f42c1; }
     .leaderboard-card { border-left-color: #e83e8c; background-color: #fff0f6; } .leaderboard-card button { background-color: #e83e8c; }
 
+    /* स्क्रीन्स */
     .screen { display: none; } .active-screen { display: block; }
     .quiz-box { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
     .option-btn { display: block; width: 100%; background-color: #f8f9fa; border: 2px solid #e9ecef; padding: 12px; margin-bottom: 10px; border-radius: 10px; text-align: left; font-size: 15px; cursor: pointer; font-weight: bold; }
@@ -50,14 +49,12 @@
     .sub-btn { background: #fff; border: 2px solid #17a2b8; color: #17a2b8; padding: 10px; margin-bottom: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-size: 15px; }
     .sub-btn:hover { background: #17a2b8; color: #fff; }
     .pdf-item { background: #fff; padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #28a745; font-weight: bold; cursor: pointer; }
-
     .rank-item { background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; border-left: 4px solid #e83e8c; }
     .rank-1 { background: #fff3cd; border-color: #ffc107; }
 
     /* फ्लोटिंग आइकन्स */
     .whatsapp-float { position: fixed; width: 55px; height: 55px; bottom: 20px; left: 20px; background-color: #25d366; border-radius: 50px; text-align: center; box-shadow: 2px 2px 5px #999; z-index: 100; display: flex; justify-content: center; align-items: center; }
     .whatsapp-icon { width: 35px; height: 35px; }
-    .ai-float-btn { position: fixed; width: 55px; height: 55px; bottom: 20px; right: 20px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 50px; font-size: 28px; box-shadow: 2px 2px 5px #999; cursor: pointer; z-index: 100; display: flex; justify-content: center; align-items: center; }
   </style>
 </head>
 <body>
@@ -67,23 +64,20 @@
     <p style="margin-bottom:20px; opacity:0.9; font-size:14px;">बिहार का अपना डिजिटल स्कूल 🎒</p>
     
     <div class="login-box">
-      <h3 style="margin-top:0; margin-bottom:15px; color:#333;">लॉगइन करें</h3>
+      <h3 id="auth-title" style="margin-top:0; margin-bottom:15px; color:#333;">लॉगइन करें</h3>
       
-      <div id="phone-section">
-        <div style="display:flex; margin-bottom:10px;">
-          <span style="padding:12px; background:#e9ecef; border:2px solid #e9ecef; border-right:none; border-radius:8px 0 0 8px; font-weight:bold;">+91</span>
-          <input type="number" id="auth-phone" class="login-input" style="border-radius:0 8px 8px 0; margin:0;" placeholder="10 अंकों का नंबर डालें">
-        </div>
-        <button id="send-otp-btn" class="auth-btn" onclick="window.sendOTP()">OTP भेजें 🚀</button>
+      <div id="signup-fields" style="display:none;">
+        <input type="text" id="auth-name" class="login-input" placeholder="अपना पूरा नाम (Full Name)">
+        <input type="number" id="auth-phone" class="login-input" placeholder="अपना WhatsApp नंबर">
       </div>
-
-      <div id="otp-section" style="display:none;">
-        <p style="font-size:13px; color:#28a745; font-weight:bold;">OTP आपके नंबर पर भेज दिया गया है!</p>
-        <input type="number" id="auth-otp" class="login-input" placeholder="6 अंकों का OTP डालें">
-        <button id="verify-otp-btn" class="auth-btn" onclick="window.verifyOTP()">लॉगइन करें ✅</button>
+      
+      <input type="email" id="auth-email" class="login-input" placeholder="ईमेल आईडी (Email)">
+      <input type="password" id="auth-password" class="login-input" placeholder="पासवर्ड (कम से कम 6 अंक)">
+      
+      <button id="auth-main-btn" class="auth-btn" onclick="window.handleAuth()">लॉगइन करें 🚀</button>
+      <div style="text-align:center;">
+        <span id="auth-switch-link" class="switch-auth-link" onclick="window.toggleAuthMode()">नया अकाउंट बनाएं (Sign Up)</span>
       </div>
-
-      <div id="recaptcha-container" style="margin-top:10px;"></div>
     </div>
   </div>
 
@@ -135,52 +129,62 @@
     const db = firebase.firestore();
     const auth = firebase.auth();
 
+    window.isSignUpMode = false;
     window.currentUser = null;
     window.dynamicQuizData = []; window.currentQuestionIndex = 0; window.score = 0; window.currentCategory = ""; window.selectedNotesClass = "";
 
-    // 📱 OTP भेजने का लॉजिक
-    window.sendOTP = function() {
-      var phone = document.getElementById("auth-phone").value.trim();
-      if(phone.length !== 10) return alert("कृपया सही 10 अंकों का मोबाइल नंबर डालें!");
-      var phoneNumber = "+91" + phone;
-      var btn = document.getElementById("send-otp-btn");
-      btn.innerText = "OTP भेजा जा रहा है... ⏳"; btn.disabled = true;
-
-      window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { 'size': 'invisible' });
-
-      auth.signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier).then((confirmationResult) => {
-        window.confirmationResult = confirmationResult;
-        document.getElementById("phone-section").style.display = "none";
-        document.getElementById("otp-section").style.display = "block";
-      }).catch((error) => {
-        alert("एरर: " + error.message);
-        btn.innerText = "OTP भेजें 🚀"; btn.disabled = false;
-        if(window.recaptchaVerifier) window.recaptchaVerifier.clear();
-      });
+    // 🔄 फॉर्म मोड बदलना (लॉगिन <-> साइन अप)
+    window.toggleAuthMode = function() {
+      window.isSignUpMode = !window.isSignUpMode;
+      if(window.isSignUpMode) {
+        document.getElementById("auth-title").innerText = "नया अकाउंट बनाएँ";
+        document.getElementById("signup-fields").style.display = "block";
+        document.getElementById("auth-main-btn").innerText = "अकाउंट बनाएँ 🎉";
+        document.getElementById("auth-switch-link").innerText = "पहले से अकाउंट है? लॉगइन करें";
+      } else {
+        document.getElementById("auth-title").innerText = "लॉगइन करें";
+        document.getElementById("signup-fields").style.display = "none";
+        document.getElementById("auth-main-btn").innerText = "लॉगइन करें 🚀";
+        document.getElementById("auth-switch-link").innerText = "नया अकाउंट बनाएं (Sign Up)";
+      }
     };
 
-    // 📱 OTP चेक करने और नंबर डेटाबेस में सेव करने का लॉजिक
-    window.verifyOTP = function() {
-      var otp = document.getElementById("auth-otp").value.trim();
-      if(otp.length !== 6) return alert("कृपया 6 अंकों का सही OTP डालें!");
-      var btn = document.getElementById("verify-otp-btn");
-      btn.innerText = "चेक किया जा रहा है... ⏳"; btn.disabled = true;
+    // 🔐 स्मार्ट ऑथेंटिकेशन और डेटाबेस सेविंग
+    window.handleAuth = function() {
+      var email = document.getElementById("auth-email").value.trim();
+      var password = document.getElementById("auth-password").value.trim();
+      var name = document.getElementById("auth-name").value.trim();
+      var phone = document.getElementById("auth-phone").value.trim();
+      var btn = document.getElementById("auth-main-btn");
 
-      window.confirmationResult.confirm(otp).then((result) => {
-        var user = result.user;
-        
-        // 🚨 सोनू सर, यहाँ से बच्चों का नंबर आपके डेटाबेस (registered_students) में सेव होगा 🚨
-        db.collection("registered_students").doc(user.uid).set({
-          phone: user.phoneNumber,
-          joinedAt: firebase.firestore.FieldValue.serverTimestamp()
-        }, { merge: true }).then(() => {
-          alert("🎉 लॉगइन सफल!"); location.reload();
+      if(!email || !password) return alert("कृपया ईमेल और पासवर्ड भरें!");
+      if(password.length < 6) return alert("पासवर्ड कम से कम 6 अक्षरों का होना चाहिए!");
+
+      btn.innerText = "प्रक्रिया चालू है... ⏳"; btn.disabled = true;
+
+      if(window.isSignUpMode) {
+        if(!name || !phone) { btn.innerText = "अकाउंट बनाएँ 🎉"; btn.disabled = false; return alert("कृपया अपना नाम और व्हाट्सएप नंबर भरें!"); }
+        if(phone.length !== 10) { btn.innerText = "अकाउंट बनाएँ 🎉"; btn.disabled = false; return alert("कृपया 10 अंकों का सही नंबर भरें!"); }
+
+        auth.createUserWithEmailAndPassword(email, password).then((userCredential) => {
+          var user = userCredential.user;
+          user.updateProfile({ displayName: name }).then(() => {
+            // 🚨 बच्चे का नाम, ईमेल और व्हाट्सएप नंबर डेटाबेस में सुरक्षित हो रहा है 🚨
+            db.collection("registered_students").doc(user.uid).set({
+              name: name,
+              email: email,
+              phone: phone,
+              joinedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+              alert("🎉 आपका अकाउंट सफलतापूर्वक बन गया है!"); location.reload();
+            });
+          });
+        }).catch((e) => { alert("त्रुटि: " + e.message); btn.innerText = "अकाउंट बनाएँ 🎉"; btn.disabled = false; });
+      } else {
+        auth.signInWithEmailAndPassword(email, password).catch((e) => {
+          alert("लॉगइन फेल: ईमेल या पासवर्ड गलत है!"); btn.innerText = "लॉगइन करें 🚀"; btn.disabled = false;
         });
-
-      }).catch((error) => {
-        alert("गलत OTP! कृपया दोबारा कोशिश करें।");
-        btn.innerText = "लॉगइन करें ✅"; btn.disabled = false;
-      });
+      }
     };
 
     window.logOut = function() { auth.signOut().then(() => location.reload()); };
@@ -189,7 +193,9 @@
       if (user) {
         window.currentUser = user;
         document.getElementById("login-screen").style.setProperty("display", "none", "important");
-        document.getElementById("user-name").innerText = user.phoneNumber || "Student";
+        var finalName = user.displayName || user.email.split('@')[0];
+        document.getElementById("user-name").innerText = finalName;
+        document.getElementById("user-pic-letter").innerText = finalName.charAt(0).toUpperCase();
         
         try {
           db.collection("announcements").get().then((snap) => {
@@ -253,7 +259,8 @@
     };
     window.submitScore = async function() {
       var btn = document.getElementById("save-score-btn"); btn.innerText = "सेव हो रहा है... ⏳"; btn.disabled = true;
-      db.collection("leaderboard").add({ name: window.currentUser.phoneNumber || "Student", score: window.score, total: window.dynamicQuizData.length, category: window.currentCategory, timestamp: firebase.firestore.FieldValue.serverTimestamp() }).then(() => {
+      var finalName = window.currentUser.displayName || window.currentUser.email.split('@')[0];
+      db.collection("leaderboard").add({ name: finalName, score: window.score, total: window.dynamicQuizData.length, category: window.currentCategory, timestamp: firebase.firestore.FieldValue.serverTimestamp() }).then(() => {
         alert("स्कोर सेव हो गया!"); document.getElementById("lb-category").value = window.currentCategory; window.openLeaderboard();
       });
     };
