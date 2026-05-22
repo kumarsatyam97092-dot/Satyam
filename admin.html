@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel - Sonu Classes</title>
+  <title>Master Admin Panel - Sonu Classes</title>
   <style>
     body { 
       font-family: 'Arial', sans-serif; 
@@ -12,7 +12,7 @@
       padding: 20px; 
     }
     
-    /* 1. लॉक स्क्रीन की डिज़ाइन */
+    /* लॉक स्क्रीन डिज़ाइन */
     .lock-container { 
       max-width: 400px; 
       margin: 50px auto; 
@@ -25,7 +25,7 @@
     .lock-icon { font-size: 60px; margin-bottom: 15px; }
     .lock-title { color: #c0392b; font-size: 24px; font-weight: bold; margin-bottom: 15px; }
     
-    /* 2. मुख्य एडमिन डैशबोर्ड डिज़ाइन */
+    /* मुख्य एडमिन डैशबोर्ड डिज़ाइन */
     .admin-box { 
       display: none; 
       background: white; 
@@ -48,7 +48,6 @@
       font-size: 14px; 
     }
     
-    /* अलग-अलग फॉर्म सेक्शन्स */
     .form-section { display: none; background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; margin-top: 10px; }
     .active-form { display: block; }
 
@@ -56,6 +55,8 @@
     button:hover { background: #218838; }
     .unlock-btn { background: #007bff; }
     .toggle-select { background: #fff; border: 2px solid #ff4b2b; font-weight: bold; color: #ff4b2b; }
+    
+    .chapter-section { background: #fff; padding: 10px; border-radius: 8px; margin-top: 10px; border: 1px solid #ddd; }
   </style>
 </head>
 <body>
@@ -114,12 +115,13 @@
       <select id="notesSubject" onchange="updateChaptersDropdown()">
         <option value="math">गणित (Mathematics)</option>
         <option value="science">विज्ञान (Science)</option>
-        <option value="sst">सामाजिक विज्ञान (SST)</option>
+        <option value="sst">सामाजिक विज्ञान / इतिहास (SST)</option>
         <option value="hindi">हिंदी (Hindi)</option>
+        <option value="sanskrit">संस्कृत (Sanskrit)</option>
       </select>
 
-      <div id="scienceChapterSection" style="display:none; background:#fff; padding:10px; border-radius:8px; margin-top:10px; border:1px solid #ddd;">
-        <label style="color:#17a2b8;">विज्ञान का चैप्टर चुनें (Select Chapter):</label>
+      <div id="chapterSection" class="chapter-section">
+        <label style="color:#17a2b8;" id="chapterLabel">चैप्टर की सूची (Select Chapter):</label>
         <select id="notesChapter">
           </select>
       </div>
@@ -135,18 +137,113 @@
   <script>
     const CONFIG_PASSWORD = "1234";
 
+    // सभी कक्षाओं और विषयों के चैप्टर का मास्टर डेटाबेस (बिहार बोर्ड / NCERT आधारित)
+    const masterSyllabus = {
+      "9": {
+        "math": [
+          "पाठ 1: संख्या पद्धति",
+          "पाठ 2: बहुपद",
+          "पाठ 3: निर्देशांक ज्यामिति",
+          "पाठ 4: दो चरों वाले रैखिक समीकरण",
+          "पाठ 5: यूक्लिड की ज्यामिति का परिचय",
+          "पाठ 6: रेखाएँ और कोण",
+          "पाठ 7: त्रिभुज"
+        ],
+        "science": [
+          "🔬 भौतिकी - पाठ 1: विज्ञान और मापन",
+          "🔬 भौतिकी - पाठ 2: गति (Motion)",
+          "🔬 भौतिकी - पाठ 3: बल तथा गति के नियम",
+          "🔬 भौतिकी - पाठ 4: गुरुत्वाकर्षण",
+          "🧪 रसायन - पाठ 1: हमारे आस-पास के पदार्थ",
+          "🧪 रसायन - पाठ 2: क्या हमारे आस-पास के पदार्थ शुद्ध हैं?",
+          "🧬 जीव विज्ञान - पाठ 1: जीवन की मौलिक इकाई (कोशिका)",
+          "🧬 जीव विज्ञान - पाठ 2: ऊतक (Tissues)"
+        ],
+        "sst": [
+          "📖 इतिहास - पाठ 1: भौगोलिक खोजें",
+          "📖 इतिहास - पाठ 2: अमेरिकी स्वतंत्रता संग्राम",
+          "📖 इतिहास - पाठ 3: फ्रांसीसी क्रांति",
+          "🌍 भूगोल - पाठ 1: स्थिति और विस्तार",
+          "🌍 भूगोल - पाठ 2: भारत का भौतिक स्वरूप",
+          "💼 अर्थशास्त्र - पाठ 1: बिहार के एक गाँव की कहानी",
+          "⚖️ नागरिक शास्त्र - पाठ 1: लोकतंत्र का क्रमिक विकास"
+        ],
+        "hindi": [
+          "गद्य - पाठ 1: कहानी का प्लॉट (शिवपूजन सहाय)",
+          "गद्य - पाठ 2: भारत का पुरातन विद्यापीठ: नालंदा",
+          "गद्य - पाठ 3: ग्राम-गीत का मर्म",
+          "पद्य - पाठ 1: पद (रैदास)",
+          "पद्य - पाठ 2: कड़बक (मंझन)"
+        ],
+        "sanskrit": [
+          "पाठ 1: ईशस्तुतिः",
+          "पाठ 2: संस्कृतस्य महत्त्वम्",
+          "पाठ 3: यक्ष-युधिष्ठिर-संवादः",
+          "पाठ 4: चत्वारो वेदाः"
+        ]
+      },
+      "10": {
+        "math": [
+          "पाठ 1: वास्तविक संख्याएँ",
+          "पाठ 2: बहुपद",
+          "पाठ 3: दो चरों वाले रैखिक समीकरण युग्म",
+          "पाठ 4: द्विघात समीकरण",
+          "पाठ 5: समांतर श्रेढ़ियाँ",
+          "पाठ 6: त्रिभुज",
+          "पाठ 7: त्रिकोणमिति का परिचय",
+          "पाठ 8: त्रिकोणमिति के कुछ अनुप्रयोग"
+        ],
+        "science": [
+          "🔬 भौतिकी - पाठ 1: प्रकाश का परावर्तन",
+          "🔬 भौतिकी - पाठ 2: प्रकाश का अपवर्तन",
+          "🔬 भौतिकी - पाठ 3: मानव नेत्र तथा रंगबिरंगा संसार",
+          "🔬 भौतिकी - पाठ 4: विद्युत धारा",
+          "🔬 भौतिकी - पाठ 5: विद्युत धारा के चुंबकीय प्रभाव",
+          "🔬 भौतिकी - पाठ 6: ऊर्जा के स्रोत",
+          "🧪 रसायन - पाठ 1: रासायनिक अभिक्रियाएं एवं समीकरण",
+          "🧪 रसायन - पाठ 2: अम्ल, क्षारक एवं लवण",
+          "🧪 रसायन - पाठ 3: धातु एवं अधातू",
+          "🧬 जीव विज्ञान - पाठ 1: जैव प्रक्रम (Life Processes)",
+          "🧬 जीव विज्ञान - पाठ 2: नियंत्रण एवं समन्वय",
+          "🧬 जीव विज्ञान - पाठ 3: जीव जनन कैसे करते हैं"
+        ],
+        "sst": [
+          "📖 इतिहास - पाठ 1: यूरोप में राष्ट्रवाद",
+          "📖 इतिहास - पाठ 2: समाजवाद एवं साम्यवाद",
+          "📖 इतिहास - पाठ 3: हिन्द-चीन में राष्ट्रवादी आंदोलन",
+          "🌍 भूगोल - पाठ 1: भारत : संसाधन एवं उपयोग",
+          "🌍 भूगोल - पाठ 2: कृषि",
+          "💼 अर्थशास्त्र - पाठ 1: अर्थव्यवस्था एवं इसके विकास का इतिहास",
+          "⚖️ नागरिक शास्त्र - पाठ 1: लोकतंत्र में सत्ता की साझेदारी"
+        ],
+        "hindi": [
+          "गद्य - पाठ 1: श्रम विभाजन और जाति प्रथा",
+          "गद्य - पाठ 2: विष के दाँत",
+          "गद्य - पाठ 3: भारत से हम क्या सीखें",
+          "पद्य - पाठ 1: राम बिनु बिरथे जगि जनमा",
+          "पद्य - पाठ 2: प्रेम अयनि श्री राधिका"
+        ],
+        "sanskrit": [
+          "पाठ 1: मंगलम्",
+          "पाठ 2: पाटलिपुत्रवैभवम्",
+          "पाठ 3: अलसकथा",
+          "पाठ 4: संस्कृतसाहित्ये लेखिकाः",
+          "पाठ 5: भारतमहिमा"
+        ]
+      }
+    };
+
     function checkPassword() {
       var userInput = document.getElementById("passInput").value.trim();
       if (userInput === CONFIG_PASSWORD) {
         document.getElementById("lockScreen").style.display = "none";
         document.getElementById("adminForm").style.display = "block";
-        updateChaptersDropdown(); // शुरुआत में ड्रॉपडाउन सेट करने के लिए
+        updateChaptersDropdown(); // लॉगिन होते ही पहला ड्रॉपडाउन लोड करें
       } else {
         alert("गलत पासवर्ड! कृपया सही पासवर्ड डालें सोनू सर।");
       }
     }
 
-    // क्विज़ और नोट्स फॉर्म के बीच स्विच करने का फंक्शन
     function switchFormType() {
       var type = document.getElementById("formType").value;
       document.getElementById("quizFormSection").classList.remove("active-form");
@@ -159,77 +256,43 @@
       }
     }
 
-    // सोनू सर का खास जादुई फंक्शन: क्लास और साइंस के अनुसार चैप्टर लोड करना
+    // सोनू सर का बिल्कुल नया ऑल-इन-वन डायनेमिक फंक्शन
     function updateChaptersDropdown() {
       var classVal = document.getElementById("notesClass").value;
       var subjectVal = document.getElementById("notesSubject").value;
-      var chapterSection = document.getElementById("scienceChapterSection");
       var chapterSelect = document.getElementById("notesChapter");
 
-      // अगर विषय 'विज्ञान' (Science) चुना गया है, तभी चैप्टर लिस्ट दिखाएं
-      if (subjectVal === "science") {
-        chapterSection.style.display = "block";
-        chapterSelect.innerHTML = ""; // पुराना डेटा साफ़ करें
-        
-        var chapters = [];
+      // चुनी हुई क्लास और विषय के चैप्टर ढूंढें
+      var chapters = masterSyllabus[classVal][subjectVal];
 
-        if (classVal === "9") {
-          // कक्षा 9वीं विज्ञान के सभी चैप्टर
-          chapters = [
-            { text: "🔬 भौतिकी - पाठ 1: विज्ञान और मापन" },
-            { text: "🔬 भौतिकी - पाठ 2: गति" },
-            { text: "🔬 भौतिकी - पाठ 3: बल तथा गति के नियम" },
-            { text: "🧪 रसायन - पाठ 1: हमारे आस-पास के पदार्थ" },
-            { text: "🧪 रसायन - पाठ 2: क्या हमारे आस-पास के पदार्थ शुद्ध हैं?" },
-            { text: "🧬 जीव विज्ञान - पाठ 1: कोशिका (जीवन की मौलिक इकाई)" },
-            { text: "🧬 जीव विज्ञान - पाठ 2: ऊतक (Tissues)" }
-          ];
-        } else {
-          // कक्षा 10वीं विज्ञान के सभी चैप्टर
-          chapters = [
-            { text: "🔬 भौतिकी - पाठ 1: प्रकाश का परावर्तन" },
-            { text: "🔬 भौतिकी - पाठ 2: प्रकाश का अपवर्तन" },
-            { text: "🔬 भौतिकी - पाठ 3: मानव नेत्र तथा रंगबिरंगा संसार" },
-            { text: "🔬 भौतिकी - पाठ 4: विद्युत धारा" },
-            { text: "🔬 भौतिकी - पाठ 5: विद्युत धारा के चुंबकीय प्रभाव" },
-            { text: "🔬 भौतिकी - पाठ 6: ऊर्जा के स्रोत" },
-            { text: "🧪 रसायन - पाठ 1: रासायनिक अभिक्रियाएं एवं समीकरण" },
-            { text: "🧪 रसायन - पाठ 2: अम्ल, क्षारक एवं लवण" },
-            { text: "🧬 जीव विज्ञान - पाठ 1: जैव प्रक्रम" },
-            { text: "🧬 जीव विज्ञान - पाठ 2: नियंत्रण एवं समन्वय" }
-          ];
-        }
+      // पुराने चैप्टर साफ करें
+      chapterSelect.innerHTML = "";
 
-        // ड्रॉपडाउन बॉक्स में सारे चैप्टर जोड़ना
-        chapters.forEach(function(chap) {
-          var option = document.createElement("option");
-          option.value = chap.text;
-          option.innerText = chap.text;
-          chapterSelect.appendChild(option);
-        });
-
-      } else {
-        // अगर विज्ञान के अलावा कोई और विषय है, तो चैप्टर बॉक्स छुपा दें
-        chapterSection.style.display = "none";
-      }
+      // नए चैप्टर लिस्ट में डालें
+      chapters.forEach(function(chapName) {
+        var option = document.createElement("option");
+        option.value = chapName;
+        option.innerText = chapName;
+        chapterSelect.appendChild(option);
+      });
     }
 
     function saveQuestion() {
-      alert("बहुत बढ़िया सोनू सर! क्विज़ का सवाल तैयार है। अगले कदम में हम इसे सीधे आपके Firebase डेटाबेस से जोड़ेंगे!");
+      alert("क्विज़ का सवाल तैयार है सोनू सर! जल्द ही इसे डेटाबेस से लाइव करेंगे।");
     }
 
     function saveNotesLink() {
       var classVal = document.getElementById("notesClass").value;
       var subjectVal = document.getElementById("notesSubject").value;
       var pdfUrl = document.getElementById("pdfUrl").value;
-      var selectedChapter = (subjectVal === "science") ? document.getElementById("notesChapter").value : "पूरा विषय सूची";
+      var selectedChapter = document.getElementById("notesChapter").value;
 
       if(pdfUrl.trim() === "") {
         alert("कृपया पहले गूगल ड्राइव का पीडीएफ लिंक पेस्ट करें!");
         return;
       }
 
-      alert("सफलतापूर्वक लिंक सेट हुआ!\nकक्षा: " + classVal + "वीं\nविषय: " + subjectVal + "\nचैप्टर: " + selectedChapter + "\n\nडेटाबेस का कोड जुड़ते ही यह सीधे आपके ऐप पर लाइव चलना शुरू हो जाएगा!");
+      alert("सफलतापूर्वक लिंक सिलेक्ट हुआ!\nकक्षा: " + classVal + "वीं\nविषय: " + subjectVal + "\nचैप्टर: " + selectedChapter);
     }
   </script>
 
