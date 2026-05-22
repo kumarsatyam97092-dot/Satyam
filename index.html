@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sonu Classes</title>
   <style>
+    /* मुख्य डिज़ाइन */
     body { margin: 0; padding: 0; font-family: 'Arial', sans-serif; background-color: #f4f6f9; color: #333; }
     .header { background: linear-gradient(135deg, #ff416c, #ff4b2b); color: white; text-align: center; padding: 15px; font-size: 22px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 99; }
     .container { padding: 15px; max-width: 500px; margin: 0 auto; padding-bottom: 100px; }
@@ -64,6 +65,9 @@
     .chat-input-area button { background: #764ba2; color: white; border: none; padding: 8px; margin-left: 5px; border-radius: 5px; cursor: pointer; }
 
     .ai-float-btn { position: fixed; width: 55px; height: 55px; bottom: 20px; right: 20px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 50px; font-size: 28px; box-shadow: 2px 2px 5px #999; cursor: pointer; z-index: 100; display: flex; justify-content: center; align-items: center; }
+    
+    .whatsapp-float { position: fixed; width: 55px; height: 55px; bottom: 20px; left: 20px; background-color: #25d366; border-radius: 50px; text-align: center; box-shadow: 2px 2px 5px #999; z-index: 100; display: flex; justify-content: center; align-items: center; }
+    .whatsapp-icon { width: 35px; height: 35px; }
   </style>
 </head>
 <body>
@@ -137,7 +141,7 @@
           <p style="text-align:center; font-weight:bold;">कृपया अपना विषय चुनें:</p>
           <button class="sub-btn" onclick="window.fetchPDFs('math')">🧮 गणित (Mathematics)</button>
           <button class="sub-btn" onclick="window.fetchPDFs('science')">🧪 विज्ञान (Science)</button>
-          <button class="sub-btn" onclick="window.fetchPDFs('sst')">📖 सामाजिक विज्ञान / इतिहास (SST)</button>
+          <button class="sub-btn" onclick="window.fetchPDFs('sst')">📖 सामाजिक विज्ञान (SST)</button>
           <button class="sub-btn" onclick="window.fetchPDFs('hindi')">✍️ हिंदी (Hindi)</button>
           <button class="sub-btn" onclick="window.fetchPDFs('sanskrit')">🕉️ संस्कृत (Sanskrit)</button>
         </div>
@@ -154,17 +158,19 @@
 
   </div>
 
+  <a href="whatsapp://send?phone=918521057039&text=नमस्ते सोनू सर!" class="whatsapp-float"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="whatsapp-icon"></a>
+  <button class="ai-float-btn" onclick="window.toggleAIChat()">🤖</button>
+
   <div id="aiChatModal" class="chat-modal">
     <div class="chat-header"><span>🤖 सोनू का एआई असिस्टेंट</span><button onclick="window.toggleAIChat()" style="background:none; border:none; color:#fff; font-size:22px; cursor:pointer;">×</button></div>
     <div class="chat-box" id="chatBox"><div class="message ai-message">नमस्ते! मैं सोनू का एआई हूँ। पूछिए क्या पूछना है।</div></div>
     <div class="chat-input-area"><input type="text" id="userInput" placeholder="यहाँ पूछें..."><button onclick="window.sendMessage()">पूछें</button></div>
   </div>
-  <button class="ai-float-btn" onclick="window.toggleAIChat()">🤖</button>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, collection, getDocs, query, where, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getAuth, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDxHLilPMimcKi8hM6JqjCBpxcpknTtO4w",
@@ -187,7 +193,14 @@
     window.currentCategory = "";
     window.selectedNotesClass = "";
 
-    // लॉगिन गेटकीपर और 📢 ऑटोमैटिक नोटिस बोर्ड लोड
+    // लॉगिन फंक्शन (Redirect फिक्स के साथ)
+    window.signInWithGoogle = function() {
+      signInWithRedirect(auth, provider);
+    };
+
+    window.logOut = function() { signOut(auth); };
+
+    // लॉगिन चेक और नोटिस लोड
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         window.currentUser = user;
@@ -195,7 +208,6 @@
         document.getElementById("user-name").innerText = user.displayName;
         document.getElementById("user-pic").src = user.photoURL;
         
-        // डेटाबेस से चलता हुआ नया नोटिस लोड करें (नो इंडेक्स क्रैश लॉजिक)
         try {
           const snap = await getDocs(collection(db, "announcements"));
           let notices = []; snap.forEach(d => notices.push(d.data()));
@@ -204,15 +216,11 @@
             document.getElementById("notice-text").innerText = notices[0].text;
           }
         } catch(e) { console.log(e); }
-
       } else {
         window.currentUser = null;
         document.getElementById("login-screen").style.setProperty("display", "flex", "important");
       }
     });
-
-    window.signInWithGoogle = function() { signInWithPopup(auth, provider).catch((e) => alert(e.message)); };
-    window.logOut = function() { signOut(auth); };
 
     window.showScreen = function(id) {
       document.querySelectorAll(".screen").forEach(s => s.classList.remove("active-screen"));
@@ -220,7 +228,7 @@
     };
     window.goHome = function() { window.showScreen("home-screen"); };
 
-    // 📁 डायनेमिक पीडीएफ नोट्स लॉजिक (नो इंडेक्स एरर)
+    // पीडीएफ नोट्स लॉजिक
     window.openNotesScreen = function(classVal) {
       window.selectedNotesClass = classVal;
       document.getElementById("notes-screen-title").innerText = `कक्षा ${classVal}वीं नोट्स 📁`;
@@ -252,7 +260,7 @@
 
         loader.style.display = "none";
         if(pdfs.length === 0) {
-          container.innerHTML = "<p style='text-align:center; color:#666;'>सोनू सर इस चैप्टर का नोट्स जल्द ही अपलोड करेंगे! ❤️</p>";
+          container.innerHTML = "<p style='text-align:center; color:#666;'>सोनू सर इस विषय का नोट्स जल्द ही अपलोड करेंगे! ❤️</p>";
           return;
         }
 
