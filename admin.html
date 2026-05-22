@@ -7,11 +7,12 @@
   <style>
     body { font-family: 'Arial', sans-serif; background: #e9ecef; margin: 0; padding: 20px; }
     
-    /* नई गूगल एडमिन लॉक स्क्रीन */
+    /* लॉक स्क्रीन */
     .lock-container { max-width: 400px; margin: 50px auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; }
     .lock-icon { font-size: 60px; margin-bottom: 15px; }
     .lock-title { color: #c0392b; font-size: 24px; font-weight: bold; margin-bottom: 15px; }
     
+    /* मुख्य डैशबोर्ड */
     .admin-box { display: none; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 450px; margin: auto; border-top: 5px solid #ff4b2b; }
     h2 { text-align: center; color: #333; margin-top: 0; }
     label { font-weight: bold; font-size: 14px; color: #555; display: block; margin-top: 12px; }
@@ -51,6 +52,7 @@
     <select id="formType" class="toggle-select" onchange="window.switchFormType()">
       <option value="quiz">📝 एक-एक करके क्विज़ सवाल जोड़ें</option>
       <option value="bulkQuiz">🚀 एक साथ कई सवाल डालें (Bulk Upload)</option>
+      <option value="delete">🗑️ पुराने सवाल मिटाएं (Clear All)</option>
       <option value="notes">📁 कक्षा 9वीं / 10वीं के पीडीएफ नोट्स जोड़ें</option>
       <option value="notice">📢 ऐप का नोटिस बोर्ड अपडेट करें</option>
     </select>
@@ -84,6 +86,18 @@
       <button id="saveBulkBtn" onclick="window.saveBulkQuestions()">⚡ एक साथ सारे सवाल सेव करें</button>
     </div>
 
+    <div id="deleteFormSection" class="form-section">
+      <h3 style="color: #dc3545;">🗑️ पुराने सवाल डिलीट करें</h3>
+      <p style="font-size: 13px; color: #666;">लीडरबोर्ड को निष्पक्ष रखने के लिए, नए सवाल डालने से पहले पुराने सवाल यहाँ से एक क्लिक में मिटाएँ।</p>
+      <label>किस केटेगरी के सवाल मिटाने हैं?</label>
+      <select id="deleteCategory">
+        <option value="gk">GK (सामान्य ज्ञान)</option>
+        <option value="upsc">UPSC स्पेशल</option>
+        <option value="ipl">IPL चैलेंज</option>
+      </select>
+      <button id="clearBtn" onclick="window.clearQuestions()" style="background: #dc3545; margin-top: 15px;">🚨 सारे पुराने सवाल डिलीट करें</button>
+    </div>
+
     <div id="notesFormSection" class="form-section">
       <h3>PDF नोट्स मैनेजर फॉर्म</h3>
       <label>कक्षा चुनें:</label>
@@ -100,7 +114,7 @@
 
     <div id="noticeFormSection" class="form-section">
       <h3>📢 ऐप का नोटिस बोर्ड बदलें</h3>
-      <label>नया नोटिस संदेश लिखें (यह सभी बच्चों को दिखेगा):</label>
+      <label>नया नोटिस संदेश लिखें:</label>
       <textarea id="noticeText" rows="4" placeholder="जैसे: आज शाम 7 बजे टेस्ट लाइव होगा सोनू सर की तरफ से!"></textarea>
       <button id="saveNoticeBtn" onclick="window.saveNotice()">📢 नोटिस बोर्ड लाइव करें</button>
     </div>
@@ -108,8 +122,9 @@
   </div>
 
   <script type="module">
+    // Firebase में Delete करने का कोड इम्पोर्ट किया गया है
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, where, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -126,37 +141,21 @@
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
 
-    // 🔒 सुरक्षा: सिर्फ आपकी ईमेल आईडी को परमिशन मिलेगी
     const ALLOWED_ADMIN_EMAIL = "kumarsatyam97092@gmail.com"; 
 
     const masterSyllabus = {
-      "9": {
-        "math": ["पाठ 1: संख्या पद्धति", "पाठ 2: बहुपद", "पाठ 3: निर्देशांक ज्यामिति", "पाठ 4: दो चरों वाले रैखिक समीकरण", "पाठ 5: यूक्लिड की ज्यामिति का परिचय"],
-        "science": ["🔬 भौतिकी - पाठ 1: विज्ञान और मापन", "🔬 भौतिकी - पाठ 2: गति", "🧪 रसायन - पाठ 1: हमारे आस-पास के पदार्थ", "🧬 जीव विज्ञान - पाठ 1: कोशिका"],
-        "sst": ["📖 इतिहास - पाठ 1: भौगोलिक खोजें", "🌍 भूगोल - पाठ 1: स्थिति और विस्तार", "💼 अर्थशास्त्र - पाठ 1: बिहार के एक गाँव की कहानी"],
-        "hindi": ["गद्य - पाठ 1: कहानी का प्लॉट", "गद्य - पाठ 2: नालंदा"],
-        "sanskrit": ["पाठ 1: ईशस्तुतिः", "पाठ 2: संस्कृतस्य महत्त्वम्"]
-      },
-      "10": {
-        "math": ["पाठ 1: वास्तविक संख्याएँ", "पाठ 2: बहुपद", "पाठ 3: दो चरों वाले रैखिक समीकरण युग्म", "पाठ 4: द्विघात समीकरण"],
-        "science": ["🔬 भौतिकी - पाठ 1: प्रकाश का परावर्तन", "🔬 भौतिकी - पाठ 2: प्रकाश का अपवर्तन", "🧪 रसायन - पाठ 1: रासायनिक अभिक्रियाएं", "🧬 जीव विज्ञान - पाठ 1: जैव प्रक्रम"],
-        "sst": ["📖 इतिहास - पाठ 1: यूरोप में राष्ट्रवाद", "🌍 भूगोल - पाठ 1: भारत : संसाधन एवं उपयोग"],
-        "hindi": ["गद्य - पाठ 1: श्रम विभाजन और जाति प्रथा"],
-        "sanskrit": ["पाठ 1: मंगलम्", "पाठ 2: पाटलिपुत्रवैभवम्"]
-      }
+      "9": { "math": ["पाठ 1", "पाठ 2", "पाठ 3"], "science": ["भौतिकी - पाठ 1", "रसायन - पाठ 1", "जीव - पाठ 1"], "sst": ["इतिहास - पाठ 1", "भूगोल - पाठ 1"], "hindi": ["पाठ 1", "पाठ 2"], "sanskrit": ["पाठ 1"] },
+      "10": { "math": ["पाठ 1", "पाठ 2", "पाठ 3"], "science": ["भौतिकी - पाठ 1", "रसायन - पाठ 1", "जीव - पाठ 1"], "sst": ["इतिहास - पाठ 1", "भूगोल - पाठ 1"], "hindi": ["पाठ 1"], "sanskrit": ["पाठ 1"] }
     };
 
     window.adminLogin = function() {
       signInWithPopup(auth, provider).then((result) => {
-        const user = result.user;
-        if(user.email === ALLOWED_ADMIN_EMAIL) {
+        if(result.user.email === ALLOWED_ADMIN_EMAIL) {
           document.getElementById("lockScreen").style.display = "none";
           document.getElementById("adminForm").style.display = "block";
           document.getElementById("admin-greeting").innerText = "स्वागत है सोनू सर! ❤️";
           window.updateChaptersDropdown();
-        } else {
-          alert("एक्सेस ब्लॉक! आप सोनू सर नहीं हैं।");
-        }
+        } else { alert("एक्सेस ब्लॉक! आप एडमिन नहीं हैं।"); }
       }).catch((e) => alert("त्रुटि: " + e.message));
     };
 
@@ -171,26 +170,25 @@
       var subjectVal = document.getElementById("notesSubject").value;
       var chapterSelect = document.getElementById("notesChapter");
       chapterSelect.innerHTML = "";
-      masterSyllabus[classVal][subjectVal].forEach(function(chapName) {
-        var option = document.createElement("option"); option.value = chapName; option.innerText = chapName;
-        chapterSelect.appendChild(option);
-      });
+      if(masterSyllabus[classVal] && masterSyllabus[classVal][subjectVal]) {
+        masterSyllabus[classVal][subjectVal].forEach(function(chapName) {
+          var option = document.createElement("option"); option.value = chapName; option.innerText = chapName;
+          chapterSelect.appendChild(option);
+        });
+      }
     };
 
     window.saveQuestion = async function() {
       var btn = document.getElementById("saveQuizBtn");
       var qText = document.getElementById("question").value.trim();
-      var opt1 = document.getElementById("opt1").value.trim();
-      var opt2 = document.getElementById("opt2").value.trim();
-      var opt3 = document.getElementById("opt3").value.trim();
-      var opt4 = document.getElementById("opt4").value.trim();
+      var opt1 = document.getElementById("opt1").value.trim(); var opt2 = document.getElementById("opt2").value.trim();
+      var opt3 = document.getElementById("opt3").value.trim(); var opt4 = document.getElementById("opt4").value.trim();
       var ans = document.getElementById("ans").value.trim();
       if (!qText || !opt1 || !opt2 || !opt3 || !opt4 || !ans) return alert("सब भरें!");
       btn.innerText = "सेव हो रहा है... ⏳"; btn.disabled = true;
       try {
         await addDoc(collection(db, "quizzes"), { category: document.getElementById("category").value, question: qText, options: [opt1, opt2, opt3, opt4], answer: parseInt(ans), createdAt: serverTimestamp() });
-        alert("सवाल सेव हो गया!");
-        document.querySelectorAll('#quizFormSection input').forEach(i => i.value = '');
+        alert("सवाल सेव हो गया!"); document.querySelectorAll('#quizFormSection input').forEach(i => i.value = '');
       } catch (e) { alert(e.message); }
       btn.innerText = "💾 सवाल डेटाबेस में सेव करें"; btn.disabled = false;
     };
@@ -224,10 +222,46 @@
       btn.innerText = "⚡ एक साथ सारे सवाल सेव करें"; btn.disabled = false;
     };
 
+    // 🚨 सवालों की सफाई करने वाला नया जादुई कोड 🚨
+    window.clearQuestions = async function() {
+      var cat = document.getElementById("deleteCategory").value;
+      var catName = document.getElementById("deleteCategory").options[document.getElementById("deleteCategory").selectedIndex].text;
+      
+      var confirmDelete = confirm(`क्या आप सच में ${catName} के सारे पुराने सवाल हमेशा के लिए डिलीट करना चाहते हैं?`);
+      if(!confirmDelete) return;
+
+      var btn = document.getElementById("clearBtn");
+      btn.innerText = "डिलीट हो रहा है... ⏳"; btn.disabled = true;
+
+      try {
+        const q = query(collection(db, "quizzes"), where("category", "==", cat));
+        const querySnapshot = await getDocs(q);
+        
+        let count = 0;
+        const deletePromises = [];
+        
+        querySnapshot.forEach((docSnap) => {
+          deletePromises.push(deleteDoc(docSnap.ref));
+          count++;
+        });
+        
+        await Promise.all(deletePromises);
+        
+        if(count === 0) {
+          alert("इस केटेगरी में मिटाने के लिए कोई पुराना सवाल नहीं है!");
+        } else {
+          alert(`✅ सफाई पूरी हुई! ${count} पुराने सवाल डिलीट कर दिए गए। अब आप आज के नए सवाल डाल सकते हैं।`);
+        }
+      } catch(e) {
+        alert("एरर: " + e.message);
+      }
+      btn.innerText = "🚨 सारे पुराने सवाल डिलीट करें"; btn.disabled = false;
+    };
+
     window.saveNotesLink = async function() {
       var btn = document.getElementById("saveNotesBtn");
       var pdfUrl = document.getElementById("pdfUrl").value.trim();
-      if (!pdfUrl) return alert("ड्राइव लिंक डालें!");
+      if (!pdfUrl) return alert("लिंक डालें!");
       btn.innerText = "सेव हो रहा है... ⏳"; btn.disabled = true;
       try {
         await addDoc(collection(db, "pdf_notes"), { class: document.getElementById("notesClass").value, subject: document.getElementById("notesSubject").value, chapter: document.getElementById("notesChapter").value, url: pdfUrl, createdAt: serverTimestamp() });
@@ -236,7 +270,6 @@
       btn.innerText = "💾 पीडीएफ डेटाबेस में भेजें"; btn.disabled = false;
     };
 
-    // 📢 नोटिस बोर्ड सेव करने की कोडिंग
     window.saveNotice = async function() {
       var btn = document.getElementById("saveNoticeBtn");
       var nText = document.getElementById("noticeText").value.trim();
@@ -244,8 +277,7 @@
       btn.innerText = "लाइव हो रहा है... ⏳"; btn.disabled = true;
       try {
         await addDoc(collection(db, "announcements"), { text: nText, createdAt: serverTimestamp() });
-        alert("📢 नोटिस बोर्ड लाइव हो गया सोनू सर!");
-        document.getElementById("noticeText").value = "";
+        alert("📢 नोटिस लाइव हो गया!"); document.getElementById("noticeText").value = "";
       } catch(e) { alert(e.message); }
       btn.innerText = "📢 नोटिस बोर्ड लाइव करें"; btn.disabled = false;
     };
