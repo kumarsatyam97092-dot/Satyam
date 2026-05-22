@@ -11,10 +11,31 @@
     .container { padding: 15px; max-width: 500px; margin: 0 auto; padding-bottom: 100px; }
     .welcome-text { font-size: 18px; font-weight: bold; margin-bottom: 20px; color: #555; text-align: center; }
 
-    /* गूगल प्रोफाइल सेक्शन */
-    .profile-box { background: white; border-radius: 15px; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; border: 2px solid #e9ecef; }
-    .google-btn { background-color: #fff; color: #555; border: 1px solid #ddd; padding: 10px 20px; border-radius: 25px; font-weight: bold; font-size: 16px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: inline-flex; align-items: center; justify-content: center; transition: 0.3s; }
-    .google-btn:hover { background-color: #f8f9fa; }
+    /* 1. बिल्कुल नई स्पेशल लॉगिन स्क्रीन (गेट कीपर) */
+    #login-screen {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      z-index: 9999; color: white; text-align: center; padding: 20px; box-sizing: border-box;
+    }
+    .login-logo { font-size: 70px; margin-bottom: 10px; animation: bounce 2s infinite; }
+    .login-title { font-size: 32px; font-weight: bold; margin-bottom: 5px; }
+    .login-subtitle { font-size: 16px; opacity: 0.9; margin-bottom: 40px; }
+    
+    /* गूगल लॉगिन बटन */
+    .google-btn { 
+      background-color: #fff; color: #444; border: none; padding: 14px 28px; 
+      border-radius: 30px; font-weight: bold; font-size: 16px; cursor: pointer; 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: inline-flex; align-items: center; 
+      justify-content: center; transition: 0.3s; width: 85%; max-width: 320px;
+    }
+    .google-btn:hover { transform: scale(1.05); background-color: #f8f9fa; }
+
+    /* अंदर का प्रोफाइल बार (होम स्क्रीन पर ऊपर दिखेगा) */
+    .profile-bar { background: white; border-radius: 15px; padding: 12px 15px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: space-between; border: 1px solid #e9ecef; }
+    .user-details { display: flex; align-items: center; gap: 10px; }
+    .user-pic { width: 45px; height: 45px; border-radius: 50%; border: 2px solid #28a745; object-fit: cover; }
+    .logout-btn { background-color: #ff4b2b; color: white; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold; }
 
     /* कार्ड्स की डिज़ाइन */
     .card { background: white; border-radius: 15px; padding: 18px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-left: 6px solid #28a745; transition: 0.3s; }
@@ -29,7 +50,7 @@
     .upsc-card { border-left-color: #6f42c1; } .upsc-card button { background-color: #6f42c1; }
     .leaderboard-card { border-left-color: #e83e8c; background-color: #fff0f6; } .leaderboard-card button { background-color: #e83e8c; }
 
-    /* स्क्रीन्स और क्विज़ */
+    /* ऐप की स्क्रीन्स */
     .screen { display: none; }
     .active-screen { display: block; }
     .quiz-box { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
@@ -40,34 +61,45 @@
     .wrong { background-color: #f8d7da !important; border-color: #f5c6cb !important; color: #721c24; }
     .nav-btn { background-color: #ff4b2b; color: white; border: none; padding: 12px; width: 100%; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; }
 
-    /* रिजल्ट और लीडरबोर्ड की डिज़ाइन */
+    /* लीडरबोर्ड */
     .result-text { font-size: 24px; font-weight: bold; text-align: center; color: #28a745; margin-bottom: 15px; }
     .rank-list { list-style: none; padding: 0; margin-top: 15px; }
     .rank-item { background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; border-left: 4px solid #e83e8c; }
-    .rank-1 { background: #fff3cd; border-color: #ffc107; } 
-    .rank-2 { background: #e2e3e5; border-color: #6c757d; } 
-    .rank-3 { background: #f8d7da; border-color: #dc3545; } 
+    .rank-1 { background: #fff3cd; border-color: #ffc107; } .rank-2 { background: #e2e3e5; border-color: #6c757d; } .rank-3 { background: #f8d7da; border-color: #dc3545; } 
 
-    /* एआई चैटबॉक्स और फ्लोटिंग बटन */
+    /* एआई चैटबॉक्स और फ्लोटिंग बटन्स */
     .chat-modal { display: none; position: fixed; bottom: 85px; right: 20px; width: 320px; height: 420px; background: white; border-radius: 15px; box-shadow: 0 5px 25px rgba(0,0,0,0.2); z-index: 1000; flex-direction: column; overflow: hidden; border: 1px solid #ddd; }
     .chat-header { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 12px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
     .close-btn { background: none; border: none; color: white; font-size: 22px; cursor: pointer; }
     .chat-box { flex: 1; padding: 12px; overflow-y: auto; background: #f7f7f7; display: flex; flex-direction: column; gap: 10px; }
     .message { padding: 8px 12px; border-radius: 10px; max-width: 85%; font-size: 14px; line-height: 1.4; position: relative; }
-    .ai-message { background: #e9ecef; color: #333; align-self: flex-start; border-bottom-left-radius: 0; display: flex; flex-direction: column; gap: 5px; }
-    .user-message { background: #764ba2; color: white; align-self: flex-end; border-bottom-right-radius: 0; }
+    .ai-message { background: #e9ecef; color: #333; align-self: flex-start; display: flex; flex-direction: column; gap: 5px; }
+    .user-message { background: #764ba2; color: white; align-self: flex-end; }
     .chat-input-area { display: flex; padding: 8px; background: white; border-top: 1px solid #ddd; align-items: center; }
     .chat-input-area input { flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 5px; outline: none; }
     .chat-input-area button { background: #764ba2; color: white; border: none; padding: 8px 12px; margin-left: 5px; border-radius: 5px; cursor: pointer; font-weight: bold; }
     .mic-btn { background: #ff4b2b !important; color: white; border: none; padding: 8px 10px; margin-left: 5px; border-radius: 5px; cursor: pointer; font-size: 14px; }
-    .speak-btn { background: none; border: none; color: #764ba2; cursor: pointer; font-size: 16px; align-self: flex-end; padding: 0; margin-top: 2px; }
+    .speak-btn { background: none; border: none; color: #764ba2; cursor: pointer; font-size: 16px; align-self: flex-end; }
 
     .whatsapp-float { position: fixed; width: 55px; height: 55px; bottom: 20px; left: 20px; background-color: #25d366; border-radius: 50px; text-align: center; box-shadow: 2px 2px 5px #999; z-index: 100; display: flex; justify-content: center; align-items: center; }
     .whatsapp-icon { width: 35px; height: 35px; }
-    .ai-float-btn { position: fixed; width: 55px; height: 55px; bottom: 20px; right: 20px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 50px; font-size: 28px; box-shadow: 2px 2px 5px #999; cursor: pointer; z-index: 100; display: flex; justify-content: center; align-items: center; transition: 0.3s; }
+    .ai-float-btn { position: fixed; width: 55px; height: 55px; bottom: 20px; right: 20px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 50px; font-size: 28px; box-shadow: 2px 2px 5px #999; cursor: pointer; z-index: 100; display: flex; justify-content: center; align-items: center; }
+    
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
   </style>
 </head>
 <body>
+
+  <div id="login-screen">
+    <div class="login-logo">🚀</div>
+    <div class="login-title">Sonu Classes</div>
+    <div class="login-subtitle">भविष्य की पढ़ाई, डिजिटल तरीके से</div>
+    
+    <button class="google-btn" onclick="window.signInWithGoogle()">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="G" style="width: 20px; margin-right: 12px;">
+      Google से लॉगिन करें
+    </button>
+  </div>
 
   <div class="header">Sonu Classes</div>
 
@@ -75,20 +107,15 @@
     
     <div id="home-screen" class="screen active-screen">
       
-      <div class="profile-box">
-        <button id="login-btn" class="google-btn" onclick="window.signInWithGoogle()">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="G" style="width: 20px; margin-right: 10px;">
-          Google से लॉगिन करें
-        </button>
-        
-        <div id="user-info" style="display: none; align-items: center; justify-content: center; gap: 12px;">
-          <img id="user-pic" src="" alt="Profile" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid #28a745; object-fit: cover;">
-          <div style="text-align: left;">
-            <div id="user-name" style="font-weight: bold; font-size: 16px; color: #333;"></div>
-            <div style="font-size: 12px; color: #28a745;">✅ Verified Student</div>
+      <div class="profile-bar">
+        <div class="user-details">
+          <img id="user-pic" src="" alt="Profile" class="user-pic">
+          <div>
+            <div id="user-name" style="font-weight: bold; font-size: 15px; color: #333;"></div>
+            <div style="font-size: 11px; color: #28a745; font-weight: bold;">Verified Student ✅</div>
           </div>
-          <button onclick="window.logOut()" style="background-color: #ff4b2b; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; margin-left: 10px; font-weight: bold;">लॉगआउट</button>
         </div>
+        <button class="logout-btn" onclick="window.logOut()">लॉगआउट</button>
       </div>
 
       <div class="welcome-text">अपनी पढ़ाई की कैटेगरी चुनें:</div>
@@ -98,13 +125,12 @@
         <p>देखें किस छात्र ने क्विज़ में सबसे ज़्यादा अंक लाए हैं!</p>
         <button onclick="window.openLeaderboard()">लीडरबोर्ड देखें</button>
       </div>
-
       <div class="card class9-card">
         <h3>कक्षा 9वीं (PDF नोट्स) 📁</h3>
         <button onclick="window.openClass9()">नोट्स देखें</button>
       </div>
       <div class="card class10-card">
-        <h3>कक्षा 10वीं (ऑफलाइन क्लास) 🏫</h3>
+        <h3>कक्षा 10वीं (ऑफलाइन class) 🏫</h3>
         <button onclick="window.openClass10()">जानकारी देखें</button>
       </div>
       <div class="card gk-card">
@@ -134,7 +160,7 @@
       <div class="quiz-box" style="text-align: center;">
         <h2>क्विज़ समाप्त! 🎉</h2>
         <div id="final-score-text" class="result-text">आपका स्कोर: 0</div>
-        <p style="color: #555; font-size: 14px; margin-bottom: 20px;">आपका स्कोर आपके Google अकाउंट के नाम से सेव किया जाएगा।</p>
+        <p style="color: #666; font-size: 13px; margin-bottom: 20px;">आपका स्कोर ऑटोमैटिक आपके नाम से सेव हो रहा है।</p>
         <button id="save-score-btn" class="nav-btn" onclick="window.submitScore()">🏆 अपना स्कोर लीडरबोर्ड में भेजें</button>
         <button class="nav-btn" onclick="window.goHome()" style="background-color:#6c757d; margin-top:10px;">होम पर लौटें</button>
       </div>
@@ -148,7 +174,6 @@
           <option value="upsc">UPSC स्पेशल</option>
           <option value="ipl">IPL चैलेंज</option>
         </select>
-        
         <div id="lb-loading" style="text-align:center; margin-top:15px; color: #666;">डेटाबेस से रैंक आ रही है... ⏳</div>
         <ul id="rank-list" class="rank-list"></ul>
         <button class="nav-btn" onclick="window.goHome()" style="margin-top:20px;">मुख्य मेन्यू में जाएँ</button>
@@ -163,9 +188,7 @@
       <button class="close-btn" onclick="window.toggleAIChat()">×</button>
     </div>
     <div class="chat-box" id="chatBox">
-      <div class="message ai-message">
-        <div>नमस्ते! मैं सोनू का एआई हूँ। आप मुझसे पढ़ाई से जुड़ा कोई भी सवाल पूछ सकते हैं।</div>
-      </div>
+      <div class="message ai-message"><div>नमस्ते! मैं सोनू का एआई हूँ। आप मुझसे पढ़ाई से जुड़ा कोई भी सवाल पूछ सकते हैं।</div></div>
     </div>
     <div class="chat-input-area">
       <input type="text" id="userInput" placeholder="यहाँ अपना सवाल लिखें..." onkeypress="window.checkEnter(event)">
@@ -202,30 +225,27 @@
     window.score = 0;
     window.currentCategory = "";
 
-    // लॉगिन सिस्टम चेक
+    // 🔒 मास्टर ऑथेंटिकेशन गेटकीपर लॉजिक
     onAuthStateChanged(auth, (user) => {
       if (user) {
         window.currentUser = user;
-        document.getElementById("login-btn").style.display = "none";
-        document.getElementById("user-info").style.display = "flex";
+        // अगर यूजर लॉगिन है, तो लॉगिन गेट छुपा दें और अंदर का कंटेंट दिखाएं
+        document.getElementById("login-screen").style.style.setProperty("display", "none", "important");
         document.getElementById("user-name").innerText = user.displayName;
         document.getElementById("user-pic").src = user.photoURL;
       } else {
         window.currentUser = null;
-        document.getElementById("login-btn").style.display = "inline-flex";
-        document.getElementById("user-info").style.display = "none";
+        // अगर लॉगआउट है, तो ज़बरदस्ती लॉगिन स्क्रीन को सामने लाएं
+        document.getElementById("login-screen").style.style.setProperty("display", "flex", "important");
       }
     });
 
     window.signInWithGoogle = function() {
-      signInWithPopup(auth, provider).catch((error) => {
-        alert("लॉगिन में समस्या आई: " + error.message);
-      });
+      signInWithPopup(auth, provider).catch((error) => { alert("लॉगिन रद्द या समस्या: " + error.message); });
     };
 
     window.logOut = function() { signOut(auth); };
 
-    // नेविगेशन
     window.openClass9 = function() { window.location.href = "class9.html"; }
     window.openClass10 = function() { window.location.href = "class10.html"; }
     window.showScreen = function(screenId) {
@@ -234,31 +254,18 @@
     }
     window.goHome = function() { window.showScreen("home-screen"); }
 
-    // क्विज़ शुरू करना
     window.startQuiz = async function(category) {
-      if (!window.currentUser) {
-        alert("क्विज़ खेलने के लिए पहले ऊपर Google से लॉगिन करें!");
-        return;
-      }
-      window.currentCategory = category;
-      window.currentQuestionIndex = 0;
-      window.score = 0;
-      window.dynamicQuizData = [];
-      
+      if (!window.currentUser) return;
+      window.currentCategory = category; window.currentQuestionIndex = 0; window.score = 0; window.dynamicQuizData = [];
       window.showScreen("quiz-screen");
       document.getElementById("question-box").innerText = "डेटाबेस से सवाल आ रहे हैं... ⏳";
       document.getElementById("options-box").innerHTML = "";
-      document.getElementById("next-btn").style.display = "none";
 
       try {
         const q = query(collection(db, "quizzes"), where("category", "==", category));
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => { window.dynamicQuizData.push(doc.data()); });
-
-        if(window.dynamicQuizData.length === 0) {
-          document.getElementById("question-box").innerText = "अभी इस केटेगरी में कोई सवाल नहीं है!";
-          return;
-        }
+        if(window.dynamicQuizData.length === 0) { document.getElementById("question-box").innerText = "अभी कोई सवाल नहीं है!"; return; }
         window.loadQuestion();
       } catch (error) { document.getElementById("question-box").innerText = "इन्टरनेट समस्या!"; }
     }
@@ -267,20 +274,17 @@
       document.getElementById("next-btn").style.display = "none";
       var qInfo = window.dynamicQuizData[window.currentQuestionIndex];
       document.getElementById("question-box").innerText = qInfo.question;
-      var oBox = document.getElementById("options-box");
-      oBox.innerHTML = "";
+      var oBox = document.getElementById("options-box"); oBox.innerHTML = "";
       var correctIndex = parseInt(qInfo.answer) - 1; 
       qInfo.options.forEach(function(option, index) {
-        var btn = document.createElement("button");
-        btn.className = "option-btn"; btn.innerText = option;
+        var btn = document.createElement("button"); btn.className = "option-btn"; btn.innerText = option;
         btn.onclick = function() { window.checkAnswer(index, correctIndex, btn); };
         oBox.appendChild(btn);
       });
     }
 
     window.checkAnswer = function(selectedIndex, correctIndex, clickedBtn) {
-      var allButtons = document.querySelectorAll(".option-btn");
-      allButtons.forEach(btn => btn.disabled = true);
+      var allButtons = document.querySelectorAll(".option-btn"); allButtons.forEach(btn => btn.disabled = true);
       if (selectedIndex === correctIndex) { clickedBtn.classList.add("correct"); window.score++; } 
       else { clickedBtn.classList.add("wrong"); if(allButtons[correctIndex]) allButtons[correctIndex].classList.add("correct"); }
       document.getElementById("next-btn").style.display = "block";
@@ -295,86 +299,47 @@
       }
     }
 
-    // ऑटोमैटिक नाम के साथ स्कोर सेव करना
     window.submitScore = async function() {
-      if (!window.currentUser) {
-        alert("स्कोर सेव करने के लिए लॉगिन होना ज़रूरी है!");
-        return;
-      }
-      var btn = document.getElementById("save-score-btn");
-      btn.innerText = "सेव हो रहा है... ⏳";
-      btn.disabled = true;
-
+      if (!window.currentUser) return;
+      var btn = document.getElementById("save-score-btn"); btn.innerText = "सेव हो रहा है... ⏳"; btn.disabled = true;
       try {
         await addDoc(collection(db, "leaderboard"), {
-          name: window.currentUser.displayName,       // गूगल से नाम लिया
-          photo: window.currentUser.photoURL,         // गूगल से फोटो ली
-          score: window.score,
-          total: window.dynamicQuizData.length,
-          category: window.currentCategory,
-          timestamp: serverTimestamp(),
-          uid: window.currentUser.uid                 // यूजर की यूनिक आईडी
+          name: window.currentUser.displayName, photo: window.currentUser.photoURL,
+          score: window.score, total: window.dynamicQuizData.length, category: window.currentCategory,
+          timestamp: serverTimestamp(), uid: window.currentUser.uid
         });
-        alert("🎉 आपका स्कोर लीडरबोर्ड में सेव हो गया!");
-        document.getElementById("lb-category").value = window.currentCategory;
-        window.openLeaderboard();
+        alert("🎉 स्कोर सेव हो गया!"); window.openLeaderboard();
       } catch (error) { alert("एरर: " + error.message); }
-      btn.innerText = "🏆 अपना स्कोर लीडरबोर्ड में भेजें";
-      btn.disabled = false;
+      btn.innerText = "🏆 अपना स्कोर लीडरबोर्ड में भेजें"; btn.disabled = false;
     }
 
-    // लीडरबोर्ड खोलना (फोटो के साथ)
-    window.openLeaderboard = function() {
-      window.showScreen("leaderboard-screen");
-      window.fetchLeaderboard();
-    }
-
+    window.openLeaderboard = function() { window.showScreen("leaderboard-screen"); window.fetchLeaderboard(); }
     window.fetchLeaderboard = async function() {
       var category = document.getElementById("lb-category").value;
-      var lbList = document.getElementById("rank-list");
-      var lbLoading = document.getElementById("lb-loading");
+      var lbList = document.getElementById("rank-list"); var lbLoading = document.getElementById("lb-loading");
       lbList.innerHTML = ""; lbLoading.style.display = "block";
-
       try {
         const q = query(collection(db, "leaderboard"), where("category", "==", category));
-        const querySnapshot = await getDocs(q);
-        let allScores = [];
+        const querySnapshot = await getDocs(q); let allScores = [];
         querySnapshot.forEach((doc) => { allScores.push(doc.data()); });
-        
-        allScores.sort((a, b) => b.score - a.score);
-        let top10 = allScores.slice(0, 10);
+        allScores.sort((a, b) => b.score - a.score); let top10 = allScores.slice(0, 10);
         lbLoading.style.display = "none";
-
-        if(top10.length === 0) {
-          lbList.innerHTML = "<li style='text-align:center;'>अभी तक किसी ने टेस्ट नहीं दिया है!</li>";
-          return;
-        }
-
+        if(top10.length === 0) { lbList.innerHTML = "<li style='text-align:center;'>अभी कोई रिकॉर्ड नहीं है!</li>"; return; }
         top10.forEach((item, index) => {
           let rankClass = index === 0 ? "rank-1" : index === 1 ? "rank-2" : index === 2 ? "rank-3" : "";
           let medal = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : `🏅 #${index+1}`;
           let imgTag = item.photo ? `<img src="${item.photo}" style="width:28px; height:28px; border-radius:50%; margin-right:10px; border:1px solid #ddd;">` : '';
-
-          lbList.innerHTML += `
-            <li class="rank-item ${rankClass}">
-              <div style="display:flex; align-items:center;">
-                <span style="margin-right:8px; font-size:18px;">${medal}</span>
-                ${imgTag}
-                <span>${item.name}</span>
-              </div>
-              <span style="color:#e83e8c; font-size:16px;">${item.score} / ${item.total}</span>
-            </li>
-          `;
+          lbList.innerHTML += `<li class="rank-item ${rankClass}"><div style="display:flex; align-items:center;"><span style="margin-right:8px; font-size:18px;">${medal}</span>${imgTag}<span>${item.name}</span></div><span style="color:#e83e8c; font-size:16px;">${item.score} / ${item.total}</span></li>`;
         });
-      } catch(error) { lbLoading.innerText = "डेटा लोड करने में समस्या हुई।"; }
+      } catch(error) { lbLoading.innerText = "समस्या आई।"; }
     }
 
-    // एआई चैट
+    // AI असिस्टेंट कोड
     window.toggleAIChat = function() { var modal = document.getElementById("aiChatModal"); modal.style.display = (modal.style.display === "flex") ? "none" : "flex"; if(window.speechSynthesis) window.speechSynthesis.cancel(); }
     window.checkEnter = function(event) { if(event.key === "Enter") window.sendMessage(); }
-    window.startVoiceInput = function() { var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition; if (!SpeechRecognition) return alert("वॉइस टाइपिंग सपोर्ट नहीं करता।"); var recognition = new SpeechRecognition(); recognition.lang = "hi-IN"; var micBtn = document.querySelector(".mic-btn"); micBtn.innerText = "🛑"; recognition.start(); recognition.onresult = function(e) { document.getElementById("userInput").value = e.results[0][0].transcript; micBtn.innerText = "🎤"; }; recognition.onspeechend = function() { recognition.stop(); micBtn.innerText = "🎤"; }; recognition.onerror = function() { micBtn.innerText = "🎤"; }; }
+    window.startVoiceInput = function() { var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition; if (!SpeechRecognition) return; var recognition = new SpeechRecognition(); recognition.lang = "hi-IN"; var micBtn = document.querySelector(".mic-btn"); micBtn.innerText = "🛑"; recognition.start(); recognition.onresult = function(e) { document.getElementById("userInput").value = e.results[0][0].transcript; micBtn.innerText = "🎤"; }; recognition.onspeechend = function() { recognition.stop(); micBtn.innerText = "🎤"; }; }
     window.speakText = function(text) { if ('speechSynthesis' in window) { window.speechSynthesis.cancel(); var cleanText = text.replace(/[#*`_]/g, ""); window.currentUtterance = new SpeechSynthesisUtterance(cleanText); window.currentUtterance.lang = 'hi-IN'; window.speechSynthesis.speak(window.currentUtterance); } }
-    window.sendMessage = async function() { var input = document.getElementById("userInput"); var text = input.value.trim(); if (!text) return; var box = document.getElementById("chatBox"); box.innerHTML += `<div class="message user-message">${text}</div>`; input.value = ""; box.scrollTop = box.scrollHeight; var tDiv = document.createElement("div"); tDiv.className = "message ai-message"; tDiv.innerHTML = "<div>सोच रहा हूँ...</div>"; box.appendChild(tDiv); box.scrollTop = box.scrollHeight; var API_KEY = "AIzaSyBSebMG_eu3pU5pR-vUZo1eHmnPTXdmVCQ"; try { var res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents: [{ parts: [{ text: "You are Sonu's Study AI assistant. Answer this in Hindi: " + text }] }] }) }); var data = await res.json(); var aiText = data.candidates[0].content.parts[0].text; tDiv.innerHTML = `<div>${aiText}</div><button class="speak-btn" onclick="window.speakText(\`${aiText.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">🔊 सुने</button>`; } catch (err) { tDiv.innerHTML = "<div>नेटवर्क समस्या है।</div>"; } box.scrollTop = box.scrollHeight; }
+    window.sendMessage = async function() { var input = document.getElementById("userInput"); var text = input.value.trim(); if (!text) return; var box = document.getElementById("chatBox"); box.innerHTML += `<div class="message user-message">${text}</div>`; input.value = ""; box.scrollTop = box.scrollHeight; var tDiv = document.createElement("div"); tDiv.className = "message ai-message"; tDiv.innerHTML = "<div>सोच रहा हूँ...</div>"; box.appendChild(tDiv); box.scrollTop = box.scrollHeight; var API_KEY = "AIzaSyBSebMG_eu3pU5pR-vUZo1eHmnPTXdmVCQ"; try { var res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents: [{ parts: [{ text: "You are Sonu's Study AI assistant. Answer this in Hindi: " + text }] }] }) }); var data = await res.json(); var aiText = data.candidates[0].content.parts[0].text; tDiv.innerHTML = `<div>${aiText}</div><button class="speak-btn" onclick="window.speakText(\`${aiText.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">🔊 सुने</button>`; } catch (err) { tDiv.innerHTML = "<div>समस्या है।</div>"; } box.scrollTop = box.scrollHeight; }
   </script>
 </body>
 </html>
