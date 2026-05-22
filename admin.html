@@ -7,6 +7,7 @@
   <style>
     body { font-family: 'Arial', sans-serif; background: #e9ecef; margin: 0; padding: 20px; }
     
+    /* नई गूगल एडमिन लॉक स्क्रीन */
     .lock-container { max-width: 400px; margin: 50px auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; }
     .lock-icon { font-size: 60px; margin-bottom: 15px; }
     .lock-title { color: #c0392b; font-size: 24px; font-weight: bold; margin-bottom: 15px; }
@@ -15,7 +16,7 @@
     h2 { text-align: center; color: #333; margin-top: 0; }
     label { font-weight: bold; font-size: 14px; color: #555; display: block; margin-top: 12px; }
     input, select, button, textarea { width: 100%; padding: 12px; margin: 6px 0 12px 0; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; font-size: 14px; }
-    textarea { resize: vertical; font-family: monospace; }
+    textarea { resize: vertical; }
     
     .form-section { display: none; background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; margin-top: 10px; }
     .active-form { display: block; }
@@ -23,7 +24,8 @@
     button { background: #28a745; color: white; font-weight: bold; border: none; cursor: pointer; font-size: 16px; transition: 0.3s; }
     button:hover { background: #218838; }
     button:disabled { background: #6c757d; cursor: not-allowed; }
-    .unlock-btn { background: #007bff; }
+    
+    .google-btn { background-color: #fff; color: #444; border: 1px solid #ddd; padding: 12px; border-radius: 25px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 100%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
     .toggle-select { background: #fff; border: 2px solid #ff4b2b; font-weight: bold; color: #ff4b2b; }
     .chapter-section { background: #fff; padding: 10px; border-radius: 8px; margin-top: 10px; border: 1px solid #ddd; }
     .format-hint { background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; font-size: 12px; margin-bottom: 10px; border: 1px solid #ffeeba; }
@@ -34,94 +36,73 @@
   <div id="lockScreen" class="lock-container">
     <div class="lock-icon">🔒</div>
     <div class="lock-title">खूफिया कंट्रोल रूम</div>
-    <p style="color: #666; font-size: 14px; margin-bottom: 20px;">कृपया सोनू सर का सीक्रेट पासवर्ड डालें</p>
-    <input type="password" id="passInput" placeholder="पासवर्ड यहाँ डालें..." style="text-align: center;">
-    <button class="unlock-btn" onclick="window.checkPassword()">अनलॉक करें 🚀</button>
+    <p style="color: #666; font-size: 14px; margin-bottom: 20px;">यह पैनल सिर्फ सोनू सर के गूगल अकाउंट से खुलेगा</p>
+    <button class="google-btn" onclick="window.adminLogin()">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="G" style="width: 20px; margin-right: 10px;">
+      सोनू सर लॉगिन करें 🚀
+    </button>
   </div>
 
   <div id="adminForm" class="admin-box">
-    <h2>सोनू क्लासेज 🚀<br><small style="color: #666; font-size: 13px;">मास्टर एडमिन पैनल</small></h2>
+    <h2>सोनू क्लासेज कंट्रोल रूम 🚀</h2>
+    <div id="admin-greeting" style="text-align: center; font-weight: bold; color: #28a745; margin-bottom: 15px;"></div>
     
-    <label style="color: #ff4b2b; font-size: 15px;">आप अभी क्या अपलोड करना चाहते हैं?</label>
+    <label style="color: #ff4b2b; font-size: 15px;">आप अभी क्या काम करना चाहते हैं?</label>
     <select id="formType" class="toggle-select" onchange="window.switchFormType()">
       <option value="quiz">📝 एक-एक करके क्विज़ सवाल जोड़ें</option>
       <option value="bulkQuiz">🚀 एक साथ कई सवाल डालें (Bulk Upload)</option>
       <option value="notes">📁 कक्षा 9वीं / 10वीं के पीडीएफ नोट्स जोड़ें</option>
+      <option value="notice">📢 ऐप का नोटिस बोर्ड अपडेट करें</option>
     </select>
 
     <div id="quizFormSection" class="form-section active-form">
-      <h3 style="margin-top:0; color:#333;">सिंगल सवाल फॉर्म</h3>
-      <label>किस टेस्ट केटेगरी का सवाल है?</label>
+      <h3>सिंगल सवाल फॉर्म</h3>
+      <label>टेस्ट केटेगरी:</label>
       <select id="category">
         <option value="gk">GK (सामान्य ज्ञान)</option>
         <option value="upsc">UPSC स्पेशल</option>
         <option value="ipl">IPL चैलेंज</option>
       </select>
-
       <label>सवाल लिखें:</label>
-      <input type="text" id="question" placeholder="जैसे: भारत की राजधानी क्या है?">
+      <input type="text" id="question" placeholder="सवाल लिखें...">
       <label>चार ऑप्शन लिखें:</label>
       <input type="text" id="opt1" placeholder="ऑप्शन 1">
       <input type="text" id="opt2" placeholder="ऑप्शन 2">
       <input type="text" id="opt3" placeholder="ऑप्शन 3">
       <input type="text" id="opt4" placeholder="ऑप्शन 4">
-      <label>सही जवाब कौन सा है? (नंबर डालें)</label>
-      <input type="number" id="ans" placeholder="जैसे: 1, 2, 3 या 4">
-
+      <label>सही जवाब नंबर (1, 2, 3 या 4):</label>
+      <input type="number" id="ans">
       <button id="saveQuizBtn" onclick="window.saveQuestion()">💾 सवाल डेटाबेस में सेव करें</button>
     </div>
 
     <div id="bulkQuizFormSection" class="form-section">
-      <h3 style="margin-top:0; color:#333;">🚀 बल्क अपलोड (जादुई डिब्बा)</h3>
-      <label>टेस्ट केटेगरी चुनें:</label>
-      <select id="bulkCategory">
-        <option value="gk">GK (सामान्य ज्ञान)</option>
-        <option value="upsc">UPSC स्पेशल</option>
-        <option value="ipl">IPL चैलेंज</option>
-      </select>
-
-      <div class="format-hint">
-        <b>लिखने का सही तरीका:</b> (हर सवाल के बाद 3 माइनस --- जरूर लगाएं)<br><br>
-        प्रश्न: भारत की राजधानी क्या है?<br>
-        A: मुंबई<br>
-        B: नई दिल्ली<br>
-        C: कोलकाता<br>
-        D: चेन्नई<br>
-        उत्तर: 2<br>
-        ---
-      </div>
-
-      <textarea id="bulkText" rows="10" placeholder="अपने सारे सवाल यहाँ पेस्ट करें..."></textarea>
+      <h3>🚀 बल्क अपलोड (जादुई डिब्बा)</h3>
+      <label>केटेगरी चुनें:</label>
+      <select id="bulkCategory"><option value="gk">GK</option><option value="upsc">UPSC</option><option value="ipl">IPL</option></select>
+      <div class="format-hint">सवालों के अंत में तीन माइनस (---) जरूर लगाएं।</div>
+      <textarea id="bulkText" rows="8" placeholder="सारे सवाल यहाँ पेस्ट करें..."></textarea>
       <button id="saveBulkBtn" onclick="window.saveBulkQuestions()">⚡ एक साथ सारे सवाल सेव करें</button>
     </div>
 
     <div id="notesFormSection" class="form-section">
-      <h3 style="margin-top:0; color:#333;">PDF नोट्स मैनेजर फॉर्म</h3>
-      
-      <label>कक्षा चुनें (Class):</label>
-      <select id="notesClass" onchange="window.updateChaptersDropdown()">
-        <option value="9">कक्षा 9वीं (Class 9)</option>
-        <option value="10">कक्षा 10वीं (Class 10)</option>
-      </select>
-
-      <label>विषय चुनें (Subject):</label>
+      <h3>PDF नोट्स मैनेजर फॉर्म</h3>
+      <label>कक्षा चुनें:</label>
+      <select id="notesClass" onchange="window.updateChaptersDropdown()"><option value="9">कक्षा 9वीं</option><option value="10">कक्षा 10वीं</option></select>
+      <label>विषय चुनें:</label>
       <select id="notesSubject" onchange="window.updateChaptersDropdown()">
-        <option value="math">गणित (Mathematics)</option>
-        <option value="science">विज्ञान (Science)</option>
-        <option value="sst">सामाजिक विज्ञान / इतिहास (SST)</option>
-        <option value="hindi">हिंदी (Hindi)</option>
-        <option value="sanskrit">संस्कृत (Sanskrit)</option>
+        <option value="math">गणित</option><option value="science">विज्ञान</option><option value="sst">SST</option><option value="hindi">हिंदी</option><option value="sanskrit">संस्कृत</option>
       </select>
+      <div class="chapter-section"><label>चैप्टर चुनें:</label><select id="notesChapter"></select></div>
+      <label style="margin-top:12px;">ड्राइव PDF लिंक:</label>
+      <input type="url" id="pdfUrl" placeholder="https://drive.google.com/file/.../view">
+      <button id="saveNotesBtn" onclick="window.saveNotesLink()">💾 पीडीएफ डेटाबेस में भेजें</button>
+    </div>
 
-      <div id="chapterSection" class="chapter-section">
-        <label style="color:#17a2b8;">चैप्टर की सूची (Select Chapter):</label>
-        <select id="notesChapter"></select>
-      </div>
-
-      <label style="margin-top:12px;">गूगल ड्राइव PDF लिंक पेस्ट करें (URL):</label>
-      <input type="url" id="pdfUrl" placeholder="https://drive.google.com/file/d/.../view">
-
-      <button id="saveNotesBtn" onclick="window.saveNotesLink()" style="background-color:#17a2b8; margin-top:10px;">💾 पीडीएफ नोट्स डेटाबेस में भेजें</button>
+    <div id="noticeFormSection" class="form-section">
+      <h3>📢 ऐप का नोटिस बोर्ड बदलें</h3>
+      <label>नया नोटिस संदेश लिखें (यह सभी बच्चों को दिखेगा):</label>
+      <textarea id="noticeText" rows="4" placeholder="जैसे: आज शाम 7 बजे टेस्ट लाइव होगा सोनू सर की तरफ से!"></textarea>
+      <button id="saveNoticeBtn" onclick="window.saveNotice()">📢 नोटिस बोर्ड लाइव करें</button>
     </div>
 
   </div>
@@ -129,6 +110,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDxHLilPMimcKi8hM6JqjCBpxcpknTtO4w",
@@ -141,33 +123,41 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const CONFIG_PASSWORD = "1234";
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    // 🔒 सुरक्षा: सिर्फ आपकी ईमेल आईडी को परमिशन मिलेगी
+    const ALLOWED_ADMIN_EMAIL = "kumarsatyam97092@gmail.com"; 
 
     const masterSyllabus = {
       "9": {
-        "math": ["पाठ 1: संख्या पद्धति", "पाठ 2: बहुपद", "पाठ 3: निर्देशांक ज्यामिति", "पाठ 4: दो चरों वाले रैखिक समीकरण", "पाठ 5: यूक्लिड की ज्यामिति का परिचय", "पाठ 6: रेखाएँ और कोण", "पाठ 7: त्रिभुज"],
-        "science": ["🔬 भौतिकी - पाठ 1: विज्ञान और मापन", "🔬 भौतिकी - पाठ 2: गति (Motion)", "🔬 भौतिकी - पाठ 3: बल तथा गति के नियम", "🔬 भौतिकी - पाठ 4: गुरुत्वाकर्षण", "🧪 रसायन - पाठ 1: हमारे आस-पास के पदार्थ", "🧪 रसायन - पाठ 2: क्या हमारे आस-पास के पदार्थ शुद्ध हैं?", "🧬 जीव विज्ञान - पाठ 1: जीवन की मौलिक इकाई (कोशिका)", "🧬 जीव विज्ञान - पाठ 2: ऊतक (Tissues)"],
-        "sst": ["📖 इतिहास - पाठ 1: भौगोलिक खोजें", "📖 इतिहास - पाठ 2: अमेरिकी स्वतंत्रता संग्राम", "📖 इतिहास - पाठ 3: फ्रांसीसी क्रांति", "🌍 भूगोल - पाठ 1: स्थिति और विस्तार", "🌍 भूगोल - पाठ 2: भारत का भौतिक स्वरूप", "💼 अर्थशास्त्र - पाठ 1: बिहार के एक गाँव की कहानी", "⚖️ नागरिक शास्त्र - पाठ 1: लोकतंत्र का क्रमिक विकास"],
-        "hindi": ["गद्य - पाठ 1: कहानी का प्लॉट", "गद्य - पाठ 2: भारत का पुरातन विद्यापीठ: नालंदा", "गद्य - पाठ 3: ग्राम-गीत का मर्म", "पद्य - पाठ 1: पद (रैदास)", "पद्य - पाठ 2: कड़बक (मंझन)"],
-        "sanskrit": ["पाठ 1: ईशस्तुतिः", "पाठ 2: संस्कृतस्य महत्त्वम्", "पाठ 3: यक्ष-युधिष्ठिर-संवादः", "पाठ 4: चत्वारो वेदाः"]
+        "math": ["पाठ 1: संख्या पद्धति", "पाठ 2: बहुपद", "पाठ 3: निर्देशांक ज्यामिति", "पाठ 4: दो चरों वाले रैखिक समीकरण", "पाठ 5: यूक्लिड की ज्यामिति का परिचय"],
+        "science": ["🔬 भौतिकी - पाठ 1: विज्ञान और मापन", "🔬 भौतिकी - पाठ 2: गति", "🧪 रसायन - पाठ 1: हमारे आस-पास के पदार्थ", "🧬 जीव विज्ञान - पाठ 1: कोशिका"],
+        "sst": ["📖 इतिहास - पाठ 1: भौगोलिक खोजें", "🌍 भूगोल - पाठ 1: स्थिति और विस्तार", "💼 अर्थशास्त्र - पाठ 1: बिहार के एक गाँव की कहानी"],
+        "hindi": ["गद्य - पाठ 1: कहानी का प्लॉट", "गद्य - पाठ 2: नालंदा"],
+        "sanskrit": ["पाठ 1: ईशस्तुतिः", "पाठ 2: संस्कृतस्य महत्त्वम्"]
       },
       "10": {
-        "math": ["पाठ 1: वास्तविक संख्याएँ", "पाठ 2: बहुपद", "पाठ 3: दो चरों वाले रैखिक समीकरण युग्म", "पाठ 4: द्विघात समीकरण", "पाठ 5: समांतर श्रेढ़ियाँ", "पाठ 6: त्रिभुज", "पाठ 7: त्रिकोणमिति का परिचय", "पाठ 8: त्रिकोणमिति के कुछ अनुप्रयोग"],
-        "science": ["🔬 भौतिकी - पाठ 1: प्रकाश का परावर्तन", "🔬 भौतिकी - पाठ 2: प्रकाश का अपवर्तन", "🔬 भौतिकी - पाठ 3: मानव नेत्र तथा रंगबिरंगा संसार", "🔬 भौतिकी - पाठ 4: विद्युत धारा", "🔬 भौतिकी - पाठ 5: विद्युत धारा के चुंबकीय प्रभाव", "🔬 भौतिकी - पाठ 6: ऊर्जा के स्रोत", "🧪 रसायन - पाठ 1: रासायनिक अभिक्रियाएं एवं समीकरण", "🧪 रसायन - पाठ 2: अम्ल, क्षारक एवं लवण", "🧪 रसायन - पाठ 3: धातु एवं अधातू", "🧬 जीव विज्ञान - पाठ 1: जैव प्रक्रम", "🧬 जीव विज्ञान - पाठ 2: नियंत्रण एवं समन्वय", "🧬 जीव विज्ञान - पाठ 3: जीव जनन कैसे करते हैं"],
-        "sst": ["📖 इतिहास - पाठ 1: यूरोप में राष्ट्रवाद", "📖 इतिहास - पाठ 2: समाजवाद एवं साम्यवाद", "📖 इतिहास - पाठ 3: हिन्द-चीन में राष्ट्रवादी आंदोलन", "🌍 भूगोल - पाठ 1: भारत : संसाधन एवं उपयोग", "🌍 भूगोल - पाठ 2: कृषि", "💼 अर्थशास्त्र - पाठ 1: अर्थव्यवस्था एवं इसके विकास का इतिहास", "⚖️ नागरिक शास्त्र - पाठ 1: लोकतंत्र में सत्ता की साझेदारी"],
-        "hindi": ["गद्य - पाठ 1: श्रम विभाजन और जाति प्रथा", "गद्य - पाठ 2: विष के दाँत", "गद्य - पाठ 3: भारत से हम क्या सीखें", "पद्य - पाठ 1: राम बिनु बिरथे जगि जनमा", "पद्य - पाठ 2: प्रेम अयनि श्री राधिका"],
-        "sanskrit": ["पाठ 1: मंगलम्", "पाठ 2: पाटलिपुत्रवैभवम्", "पाठ 3: अलसकथा", "पाठ 4: संस्कृतसाहित्ये लेखिकाः", "पाठ 5: भारतमहिमा"]
+        "math": ["पाठ 1: वास्तविक संख्याएँ", "पाठ 2: बहुपद", "पाठ 3: दो चरों वाले रैखिक समीकरण युग्म", "पाठ 4: द्विघात समीकरण"],
+        "science": ["🔬 भौतिकी - पाठ 1: प्रकाश का परावर्तन", "🔬 भौतिकी - पाठ 2: प्रकाश का अपवर्तन", "🧪 रसायन - पाठ 1: रासायनिक अभिक्रियाएं", "🧬 जीव विज्ञान - पाठ 1: जैव प्रक्रम"],
+        "sst": ["📖 इतिहास - पाठ 1: यूरोप में राष्ट्रवाद", "🌍 भूगोल - पाठ 1: भारत : संसाधन एवं उपयोग"],
+        "hindi": ["गद्य - पाठ 1: श्रम विभाजन और जाति प्रथा"],
+        "sanskrit": ["पाठ 1: मंगलम्", "पाठ 2: पाटलिपुत्रवैभवम्"]
       }
     };
 
-    window.checkPassword = function() {
-      if (document.getElementById("passInput").value.trim() === CONFIG_PASSWORD) {
-        document.getElementById("lockScreen").style.display = "none";
-        document.getElementById("adminForm").style.display = "block";
-        window.updateChaptersDropdown();
-      } else {
-        alert("गलत पासवर्ड!");
-      }
+    window.adminLogin = function() {
+      signInWithPopup(auth, provider).then((result) => {
+        const user = result.user;
+        if(user.email === ALLOWED_ADMIN_EMAIL) {
+          document.getElementById("lockScreen").style.display = "none";
+          document.getElementById("adminForm").style.display = "block";
+          document.getElementById("admin-greeting").innerText = "स्वागत है सोनू सर! ❤️";
+          window.updateChaptersDropdown();
+        } else {
+          alert("एक्सेस ब्लॉक! आप सोनू सर नहीं हैं।");
+        }
+      }).catch((e) => alert("त्रुटि: " + e.message));
     };
 
     window.switchFormType = function() {
@@ -182,14 +172,11 @@
       var chapterSelect = document.getElementById("notesChapter");
       chapterSelect.innerHTML = "";
       masterSyllabus[classVal][subjectVal].forEach(function(chapName) {
-        var option = document.createElement("option");
-        option.value = chapName;
-        option.innerText = chapName;
+        var option = document.createElement("option"); option.value = chapName; option.innerText = chapName;
         chapterSelect.appendChild(option);
       });
     };
 
-    // 1. सिंगल सवाल अपलोड
     window.saveQuestion = async function() {
       var btn = document.getElementById("saveQuizBtn");
       var qText = document.getElementById("question").value.trim();
@@ -198,50 +185,27 @@
       var opt3 = document.getElementById("opt3").value.trim();
       var opt4 = document.getElementById("opt4").value.trim();
       var ans = document.getElementById("ans").value.trim();
-
-      if (!qText || !opt1 || !opt2 || !opt3 || !opt4 || !ans) return alert("सारे बॉक्स भरें!");
-
-      btn.innerText = "सेव हो रहा है... ⏳";
-      btn.disabled = true;
-
+      if (!qText || !opt1 || !opt2 || !opt3 || !opt4 || !ans) return alert("सब भरें!");
+      btn.innerText = "सेव हो रहा है... ⏳"; btn.disabled = true;
       try {
-        await addDoc(collection(db, "quizzes"), {
-          category: document.getElementById("category").value,
-          question: qText,
-          options: [opt1, opt2, opt3, opt4],
-          answer: parseInt(ans),
-          createdAt: serverTimestamp()
-        });
+        await addDoc(collection(db, "quizzes"), { category: document.getElementById("category").value, question: qText, options: [opt1, opt2, opt3, opt4], answer: parseInt(ans), createdAt: serverTimestamp() });
         alert("सवाल सेव हो गया!");
-        document.querySelectorAll('#quizFormSection input').forEach(input => input.value = '');
-      } catch (error) { alert("एरर: " + error.message); }
-      
-      btn.innerText = "💾 सवाल डेटाबेस में सेव करें";
-      btn.disabled = false;
+        document.querySelectorAll('#quizFormSection input').forEach(i => i.value = '');
+      } catch (e) { alert(e.message); }
+      btn.innerText = "💾 सवाल डेटाबेस में सेव करें"; btn.disabled = false;
     };
 
-    // 2. एक साथ कई सवाल (Bulk Upload) की जादुई कोडिंग
     window.saveBulkQuestions = async function() {
       var btn = document.getElementById("saveBulkBtn");
       var text = document.getElementById("bulkText").value.trim();
-      var category = document.getElementById("bulkCategory").value;
-      
-      if (!text) return alert("कृपया डिब्बे में सवाल पेस्ट करें!");
-
-      btn.innerText = "सारे सवाल सेव हो रहे हैं... ⏳";
-      btn.disabled = true;
-
-      var blocks = text.split("---");
-      var successCount = 0;
-
+      if (!text) return alert("पेस्ट करें!");
+      btn.innerText = "सेव हो रहा है... ⏳"; btn.disabled = true;
+      var blocks = text.split("---"); var successCount = 0;
       try {
         for (let block of blocks) {
-          block = block.trim();
-          if (!block) continue;
-          
-          let lines = block.split('\n').map(l => l.trim()).filter(l => l !== '');
+          block = block.trim(); if (!block) continue;
+          let lines = block.split('\n').map(l => l.trim());
           let q = "", o1 = "", o2 = "", o3 = "", o4 = "", ans = 0;
-
           for (let line of lines) {
             if (line.startsWith("प्रश्न:")) q = line.substring(5).trim();
             else if (line.startsWith("A:")) o1 = line.substring(2).trim();
@@ -250,53 +214,41 @@
             else if (line.startsWith("D:")) o4 = line.substring(2).trim();
             else if (line.startsWith("उत्तर:")) ans = parseInt(line.substring(6).trim());
           }
-
           if (q && o1 && o2 && o3 && o4 && ans) {
-            await addDoc(collection(db, "quizzes"), {
-              category: category,
-              question: q,
-              options: [o1, o2, o3, o4],
-              answer: ans,
-              createdAt: serverTimestamp()
-            });
+            await addDoc(collection(db, "quizzes"), { category: document.getElementById("bulkCategory").value, question: q, options: [o1, o2, o3, o4], answer: ans, createdAt: serverTimestamp() });
             successCount++;
           }
         }
-        alert("🎉 बधाई हो! " + successCount + " सवाल एक साथ डेटाबेस में सेव हो गए!");
-        document.getElementById("bulkText").value = "";
-      } catch (error) {
-        alert("एरर आ गया: " + error.message);
-      }
-
-      btn.innerText = "⚡ एक साथ सारे सवाल सेव करें";
-      btn.disabled = false;
+        alert("🎉 " + successCount + " सवाल सेव हुए!"); document.getElementById("bulkText").value = "";
+      } catch (e) { alert(e.message); }
+      btn.innerText = "⚡ एक साथ सारे सवाल सेव करें"; btn.disabled = false;
     };
 
-    // 3. पीडीएफ लिंक अपलोड
     window.saveNotesLink = async function() {
       var btn = document.getElementById("saveNotesBtn");
       var pdfUrl = document.getElementById("pdfUrl").value.trim();
-      if (!pdfUrl) return alert("गूगल ड्राइव का लिंक डालें!");
-
-      btn.innerText = "सेव हो रहा है... ⏳";
-      btn.disabled = true;
-
+      if (!pdfUrl) return alert("ड्राइव लिंक डालें!");
+      btn.innerText = "सेव हो रहा है... ⏳"; btn.disabled = true;
       try {
-        await addDoc(collection(db, "pdf_notes"), {
-          class: document.getElementById("notesClass").value,
-          subject: document.getElementById("notesSubject").value,
-          chapter: document.getElementById("notesChapter").value,
-          url: pdfUrl,
-          createdAt: serverTimestamp()
-        });
-        alert("पीडीएफ लिंक सेव हो गया!");
-        document.getElementById("pdfUrl").value = "";
-      } catch (error) { alert("एरर: " + error.message); }
-      
-      btn.innerText = "💾 पीडीएफ नोट्स डेटाबेस में भेजें";
-      btn.disabled = false;
+        await addDoc(collection(db, "pdf_notes"), { class: document.getElementById("notesClass").value, subject: document.getElementById("notesSubject").value, chapter: document.getElementById("notesChapter").value, url: pdfUrl, createdAt: serverTimestamp() });
+        alert("पीडीएफ सेव हो गया!"); document.getElementById("pdfUrl").value = "";
+      } catch (e) { alert(e.message); }
+      btn.innerText = "💾 पीडीएफ डेटाबेस में भेजें"; btn.disabled = false;
+    };
+
+    // 📢 नोटिस बोर्ड सेव करने की कोडिंग
+    window.saveNotice = async function() {
+      var btn = document.getElementById("saveNoticeBtn");
+      var nText = document.getElementById("noticeText").value.trim();
+      if(!nText) return alert("नोटिस लिखें!");
+      btn.innerText = "लाइव हो रहा है... ⏳"; btn.disabled = true;
+      try {
+        await addDoc(collection(db, "announcements"), { text: nText, createdAt: serverTimestamp() });
+        alert("📢 नोटिस बोर्ड लाइव हो गया सोनू सर!");
+        document.getElementById("noticeText").value = "";
+      } catch(e) { alert(e.message); }
+      btn.innerText = "📢 नोटिस बोर्ड लाइव करें"; btn.disabled = false;
     };
   </script>
-
 </body>
 </html>
