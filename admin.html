@@ -5,19 +5,98 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Panel - Sonu Classes</title>
   <style>
-    body { font-family: 'Arial', sans-serif; background: #e9ecef; padding: 20px; }
-    .admin-box { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 400px; margin: auto; border-top: 5px solid #ff4b2b; }
-    h2 { text-align: center; color: #333; margin-top: 0; }
-    label { font-weight: bold; font-size: 14px; color: #555; }
-    input, select, button { width: 100%; padding: 12px; margin: 8px 0 15px 0; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; font-size: 14px; }
-    button { background: #28a745; color: white; font-weight: bold; border: none; cursor: pointer; font-size: 16px; transition: 0.3s; }
-    button:hover { background: #218838; }
+    body { 
+      font-family: 'Arial', sans-serif; 
+      background: #e9ecef; 
+      margin: 0; 
+      padding: 20px; 
+    }
+    
+    /* 1. खूफिया लॉक स्क्रीन की डिज़ाइन */
+    .lock-container { 
+      max-width: 400px; 
+      margin: 50px auto; 
+      background: white; 
+      padding: 30px; 
+      border-radius: 15px; 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+      text-align: center; 
+    }
+    .lock-icon { 
+      font-size: 60px; 
+      margin-bottom: 15px; 
+    }
+    .lock-title { 
+      color: #c0392b; 
+      font-size: 24px; 
+      font-weight: bold; 
+      margin-bottom: 15px; 
+    }
+    
+    /* 2. असली एडमिन फॉर्म की डिज़ाइन (शुरू में छुपकर रहेगा) */
+    .admin-box { 
+      display: none; 
+      background: white; 
+      padding: 20px; 
+      border-radius: 12px; 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+      max-width: 420px; 
+      margin: auto; 
+      border-top: 5px solid #ff4b2b; 
+    }
+    h2 { 
+      text-align: center; 
+      color: #333; 
+      margin-top: 0; 
+    }
+    label { 
+      font-weight: bold; 
+      font-size: 14px; 
+      color: #555; 
+      display: block;
+      margin-top: 10px;
+    }
+    input, select, button { 
+      width: 100%; 
+      padding: 12px; 
+      margin: 8px 0 15px 0; 
+      border-radius: 8px; 
+      border: 1px solid #ccc; 
+      box-sizing: border-box; 
+      font-size: 14px; 
+    }
+    button { 
+      background: #28a745; 
+      color: white; 
+      font-weight: bold; 
+      border: none; 
+      cursor: pointer; 
+      font-size: 16px; 
+      transition: 0.3s; 
+    }
+    button:hover { 
+      background: #218838; 
+    }
+    .unlock-btn { 
+      background: #007bff; 
+    }
+    .unlock-btn:hover { 
+      background: #0056b3; 
+    }
   </style>
 </head>
 <body>
 
-  <div class="admin-box">
-    <h2>सोनू क्लासेज 🚀<br><small>एडमिन पैनल (सिर्फ आपके लिए)</small></h2>
+  <div id="lockScreen" class="lock-container">
+    <div class="lock-icon">🔒</div>
+    <div class="lock-title">खूफिया कंट्रोल रूम</div>
+    <p style="color: #666; font-size: 14px; margin-bottom: 20px;">कृपया सोनू सर का सीक्रेट पासवर्ड डालें</p>
+    <input type="password" id="passInput" placeholder="पासवर्ड यहाँ डालें..." style="text-align: center;">
+    <button class="unlock-btn" onclick="checkPassword()">अनलॉक करें 🚀</button>
+  </div>
+
+  <div id="adminForm" class="admin-box">
+    <h2>सोनू क्लासेज 🚀<br><small style="color: #666; font-size: 13px;">एडमिन पैनल (सिर्फ आपके लिए)</small></h2>
     
     <label>किस केटेगरी का सवाल है?</label>
     <select id="category">
@@ -35,11 +114,33 @@
     <input type="text" id="opt3" placeholder="ऑप्शन 3">
     <input type="text" id="opt4" placeholder="ऑप्शन 4">
 
-    <label>सही जवाब कौन सा है? (नंबर डालें)</label>
+    <label>सही जवाब कौन सा है? (ऑप्शन नंबर डालें)</label>
     <input type="number" id="ans" placeholder="जैसे: 1, 2, 3 या 4">
 
-    <button onclick="alert('डेटाबेस का कोड अभी जोड़ना बाकी है!')">💾 सवाल डेटाबेस में सेव करें</button>
+    <button onclick="saveQuestion()">💾 सवाल डेटाबेस में सेव करें</button>
   </div>
+
+  <script>
+    // आपका नया सीक्रेट पासवर्ड यहाँ सेट है
+    const CONFIG_PASSWORD = "1234";
+
+    function checkPassword() {
+      var userInput = document.getElementById("passInput").value.trim();
+      
+      if (userInput === CONFIG_PASSWORD) {
+        // पासवर्ड सही होने पर लॉक स्क्रीन छुपाएं और फॉर्म दिखाएं
+        document.getElementById("lockScreen").style.display = "none";
+        document.getElementById("adminForm").style.display = "block";
+      } else {
+        alert("गलत पासवर्ड! कृपया सही पासवर्ड डालें सोनू सर।");
+      }
+    }
+
+    function saveQuestion() {
+      // यह बटन अभी टेस्ट करने के लिए है, अगले स्टेप में हम इसे सीधे Firebase से जोड़ देंगे
+      alert("बहुत बढ़िया! आपका फॉर्म और पासवर्ड एकदम सही काम कर रहा है। अब अगले स्टेप में हम इसे आपके Firebase ऑनलाइन डेटाबेस से कनेक्ट करेंगे!");
+    }
+  </script>
 
 </body>
 </html>
