@@ -13,7 +13,7 @@
     .lock-title { color: #c0392b; font-size: 24px; font-weight: bold; margin-bottom: 15px; }
     
     /* मुख्य डैशबोर्ड */
-    .admin-box { display: none; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 450px; margin: auto; border-top: 5px solid #ff4b2b; }
+    .admin-box { display: none; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 500px; margin: auto; border-top: 5px solid #ff4b2b; }
     h2 { text-align: center; color: #333; margin-top: 0; }
     label { font-weight: bold; font-size: 14px; color: #555; display: block; margin-top: 12px; }
     input, select, button, textarea { width: 100%; padding: 12px; margin: 6px 0 12px 0; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; font-size: 14px; }
@@ -30,6 +30,8 @@
     .toggle-select { background: #fff; border: 2px solid #ff4b2b; font-weight: bold; color: #ff4b2b; }
     .chapter-section { background: #fff; padding: 10px; border-radius: 8px; margin-top: 10px; border: 1px solid #ddd; }
     .format-hint { background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; font-size: 12px; margin-bottom: 10px; border: 1px solid #ffeeba; }
+    .radio-group { display: flex; gap: 15px; margin-top: 10px; margin-bottom: 10px; background: #fff; padding: 10px; border-radius: 8px; border: 1px solid #ddd; }
+    .radio-group label { margin-top: 0; font-weight: normal; cursor: pointer; display: flex; align-items: center; gap: 5px; }
   </style>
 </head>
 <body>
@@ -50,66 +52,72 @@
     
     <label style="color: #ff4b2b; font-size: 15px;">आप अभी क्या काम करना चाहते हैं?</label>
     <select id="formType" class="toggle-select" onchange="window.switchFormType()">
-      <option value="quiz">📝 एक-एक करके क्विज़ सवाल जोड़ें</option>
-      <option value="bulkQuiz">🚀 एक साथ कई सवाल डालें (Bulk Upload)</option>
+      <option value="notes">📁 कक्षा 9वीं/10वीं के PDF नोट्स जोड़ें</option>
+      <option value="bulkQuiz">🚀 एक साथ 50 क्विज़ सवाल डालें (Bulk Upload)</option>
       <option value="delete">🗑️ पुराने सवाल मिटाएं (Clear All)</option>
-      <option value="notes">📁 कक्षा 9वीं / 10वीं के पीडीएफ नोट्स जोड़ें</option>
       <option value="notice">📢 ऐप का नोटिस बोर्ड अपडेट करें</option>
     </select>
 
-    <div id="quizFormSection" class="form-section active-form">
-      <h3>सिंगल सवाल फॉर्म</h3>
-      <label>टेस्ट केटेगरी:</label>
-      <select id="category">
-        <option value="gk">GK (सामान्य ज्ञान)</option>
-        <option value="upsc">UPSC स्पेशल</option>
-        <option value="ipl">IPL चैलेंज</option>
+    <div id="notesFormSection" class="form-section active-form">
+      <h3>📁 PDF नोट्स मैनेजर</h3>
+      <label>कक्षा चुनें:</label>
+      <select id="notesClass" onchange="window.updateChapters('notes')"><option value="9">कक्षा 9वीं</option><option value="10">कक्षा 10वीं</option></select>
+      <label>विषय चुनें:</label>
+      <select id="notesSubject" onchange="window.updateChapters('notes')">
+        <option value="math">गणित</option><option value="science">विज्ञान</option><option value="sst">सामाजिक विज्ञान</option><option value="hindi">हिंदी</option><option value="sanskrit">संस्कृत</option>
       </select>
-      <label>सवाल लिखें:</label>
-      <input type="text" id="question" placeholder="सवाल लिखें...">
-      <label>चार ऑप्शन लिखें:</label>
-      <input type="text" id="opt1" placeholder="ऑप्शन 1">
-      <input type="text" id="opt2" placeholder="ऑप्शन 2">
-      <input type="text" id="opt3" placeholder="ऑप्शन 3">
-      <input type="text" id="opt4" placeholder="ऑप्शन 4">
-      <label>सही जवाब नंबर (1, 2, 3 या 4):</label>
-      <input type="number" id="ans">
-      <button id="saveQuizBtn" onclick="window.saveQuestion()">💾 सवाल डेटाबेस में सेव करें</button>
+      <div class="chapter-section"><label>चैप्टर चुनें:</label><select id="notesChapter"></select></div>
+      <label style="margin-top:12px;">ड्राइव PDF लिंक:</label>
+      <input type="url" id="pdfUrl" placeholder="https://drive.google.com/file/.../view">
+      <button id="saveNotesBtn" onclick="window.saveNotesLink()">💾 पीडीएफ डेटाबेस में भेजें</button>
     </div>
 
     <div id="bulkQuizFormSection" class="form-section">
-      <h3>🚀 बल्क अपलोड (जादुई डिब्बा)</h3>
-      <label>केटेगरी चुनें:</label>
-      <select id="bulkCategory"><option value="gk">GK</option><option value="upsc">UPSC</option><option value="ipl">IPL</option></select>
-      <div class="format-hint">सवालों के अंत में तीन माइनस (---) जरूर लगाएं।</div>
+      <h3>🚀 बल्क क्विज़ अपलोड (जादुई डिब्बा)</h3>
+      
+      <label>सवाल कहाँ डालने हैं?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="bulkType" value="general" checked onchange="window.toggleBulkType()"> जनरल (GK/UPSC)</label>
+        <label><input type="radio" name="bulkType" value="chapter" onchange="window.toggleBulkType()"> चैप्टर (कक्षा 9/10)</label>
+      </div>
+
+      <div id="bulkGeneralDiv">
+        <label>केटेगरी चुनें:</label>
+        <select id="bulkCategory"><option value="gk">GK</option><option value="upsc">UPSC</option><option value="ipl">IPL</option></select>
+      </div>
+
+      <div id="bulkChapterDiv" style="display:none;" class="chapter-section">
+        <label>कक्षा:</label> <select id="bulkClass" onchange="window.updateChapters('bulk')"><option value="9">कक्षा 9वीं</option><option value="10">कक्षा 10वीं</option></select>
+        <label>विषय:</label> <select id="bulkSubject" onchange="window.updateChapters('bulk')"><option value="math">गणित</option><option value="science">विज्ञान</option><option value="sst">सामाजिक विज्ञान</option><option value="hindi">हिंदी</option><option value="sanskrit">संस्कृत</option></select>
+        <label>चैप्टर:</label> <select id="bulkChapter"></select>
+      </div>
+
+      <div class="format-hint" style="margin-top:15px;">सवालों के अंत में तीन माइनस (---) जरूर लगाएं।</div>
       <textarea id="bulkText" rows="8" placeholder="सारे सवाल यहाँ पेस्ट करें..."></textarea>
       <button id="saveBulkBtn" onclick="window.saveBulkQuestions()">⚡ एक साथ सारे सवाल सेव करें</button>
     </div>
 
     <div id="deleteFormSection" class="form-section">
       <h3 style="color: #dc3545;">🗑️ पुराने सवाल डिलीट करें</h3>
-      <p style="font-size: 13px; color: #666;">लीडरबोर्ड को निष्पक्ष रखने के लिए, नए सवाल डालने से पहले पुराने सवाल यहाँ से एक क्लिक में मिटाएँ।</p>
-      <label>किस केटेगरी के सवाल मिटाने हैं?</label>
-      <select id="deleteCategory">
-        <option value="gk">GK (सामान्य ज्ञान)</option>
-        <option value="upsc">UPSC स्पेशल</option>
-        <option value="ipl">IPL चैलेंज</option>
-      </select>
-      <button id="clearBtn" onclick="window.clearQuestions()" style="background: #dc3545; margin-top: 15px;">🚨 सारे पुराने सवाल डिलीट करें</button>
-    </div>
+      
+      <label>कहाँ से सवाल मिटाने हैं?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="delType" value="general" checked onchange="window.toggleDelType()"> जनरल (GK/UPSC)</label>
+        <label><input type="radio" name="delType" value="chapter" onchange="window.toggleDelType()"> चैप्टर (कक्षा 9/10)</label>
+      </div>
 
-    <div id="notesFormSection" class="form-section">
-      <h3>PDF नोट्स मैनेजर फॉर्म</h3>
-      <label>कक्षा चुनें:</label>
-      <select id="notesClass" onchange="window.updateChaptersDropdown()"><option value="9">कक्षा 9वीं</option><option value="10">कक्षा 10वीं</option></select>
-      <label>विषय चुनें:</label>
-      <select id="notesSubject" onchange="window.updateChaptersDropdown()">
-        <option value="math">गणित</option><option value="science">विज्ञान</option><option value="sst">SST</option><option value="hindi">हिंदी</option><option value="sanskrit">संस्कृत</option>
-      </select>
-      <div class="chapter-section"><label>चैप्टर चुनें:</label><select id="notesChapter"></select></div>
-      <label style="margin-top:12px;">ड्राइव PDF लिंक:</label>
-      <input type="url" id="pdfUrl" placeholder="https://drive.google.com/file/.../view">
-      <button id="saveNotesBtn" onclick="window.saveNotesLink()">💾 पीडीएफ डेटाबेस में भेजें</button>
+      <div id="delGeneralDiv">
+        <label>केटेगरी चुनें:</label>
+        <select id="delCategory"><option value="gk">GK</option><option value="upsc">UPSC</option><option value="ipl">IPL</option></select>
+      </div>
+
+      <div id="delChapterDiv" style="display:none;" class="chapter-section">
+        <label>कक्षा:</label> <select id="delClass" onchange="window.updateChapters('del')"><option value="9">कक्षा 9वीं</option><option value="10">कक्षा 10वीं</option></select>
+        <label>विषय:</label> <select id="delSubject" onchange="window.updateChapters('del')"><option value="math">गणित</option><option value="science">विज्ञान</option><option value="sst">सामाजिक विज्ञान</option><option value="hindi">हिंदी</option><option value="sanskrit">संस्कृत</option></select>
+        <label>चैप्टर:</label> <select id="delChapter"></select>
+      </div>
+
+      <button id="clearBtn" onclick="window.clearQuestions()" style="background: #dc3545; margin-top: 15px;">🚨 सारे पुराने सवाल डिलीट करें</button>
     </div>
 
     <div id="noticeFormSection" class="form-section">
@@ -122,7 +130,6 @@
   </div>
 
   <script type="module">
-    // Firebase में Delete करने का कोड इम्पोर्ट किया गया है
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, where, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -143,9 +150,22 @@
 
     const ALLOWED_ADMIN_EMAIL = "kumarsatyam97092@gmail.com"; 
 
-    const masterSyllabus = {
-      "9": { "math": ["पाठ 1", "पाठ 2", "पाठ 3"], "science": ["भौतिकी - पाठ 1", "रसायन - पाठ 1", "जीव - पाठ 1"], "sst": ["इतिहास - पाठ 1", "भूगोल - पाठ 1"], "hindi": ["पाठ 1", "पाठ 2"], "sanskrit": ["पाठ 1"] },
-      "10": { "math": ["पाठ 1", "पाठ 2", "पाठ 3"], "science": ["भौतिकी - पाठ 1", "रसायन - पाठ 1", "जीव - पाठ 1"], "sst": ["इतिहास - पाठ 1", "भूगोल - पाठ 1"], "hindi": ["पाठ 1"], "sanskrit": ["पाठ 1"] }
+    // 📚 पूरा सिलेबस डेटाबेस
+    const syllabusData = {
+      "10": {
+        "science": ["पाठ 1: रासायनिक अभिक्रियाएँ", "पाठ 2: अम्ल, क्षारक एवं लवण", "पाठ 3: धातु एवं अधातु", "पाठ 4: कार्बन एवं उसके यौगिक", "पाठ 5: तत्वों का आवर्त वर्गीकरण", "पाठ 6: जैव प्रक्रम", "पाठ 7: नियंत्रण एवं समन्वय", "पाठ 8: जीव जनन कैसे करते हैं", "पाठ 9: आनुवंशिकता एवं जैव विकास", "पाठ 10: प्रकाश - परावर्तन तथा अपवर्तन", "पाठ 11: मानव नेत्र", "पाठ 12: विद्युत", "पाठ 13: विद्युत धारा के चुंबकीय प्रभाव", "पाठ 14: ऊर्जा के स्रोत", "पाठ 15: हमारा पर्यावरण", "पाठ 16: प्राकृतिक संसाधनों का प्रबंधन"],
+        "math": ["पाठ 1: वास्तविक संख्याएँ", "पाठ 2: बहुपद", "पाठ 3: दो चर वाले रैखिक समीकरण", "पाठ 4: द्विघात समीकरण", "पाठ 5: समांतर श्रेढ़ियाँ", "पाठ 6: त्रिभुज", "पाठ 7: निर्देशांक ज्यामिति", "पाठ 8: त्रिकोणमिति का परिचय", "पाठ 9: त्रिकोणमिति के कुछ अनुप्रयोग", "पाठ 10: वृत्त", "पाठ 11: रचनाएँ", "पाठ 12: वृत्तों से संबंधित क्षेत्रफल", "पाठ 13: पृष्ठीय क्षेत्रफल और आयतन", "पाठ 14: सांख्यिकी", "पाठ 15: प्रायिकता"],
+        "sst": ["इतिहास 1: यूरोप में राष्ट्रवाद", "इतिहास 2: समाजवाद एवं साम्यवाद", "इतिहास 3: हिंद-चीन में राष्ट्रवादी आंदोलन", "इतिहास 4: भारत में राष्ट्रवाद", "इतिहास 5: अर्थव्यवस्था और आजीविका", "इतिहास 6: शहरीकरण एवं शहरी जीवन", "इतिहास 7: व्यापार और भूमंडलीकरण", "इतिहास 8: प्रेस संस्कृति एवं राष्ट्रवाद", "भूगोल 1: भारत: संसाधन एवं उपयोग", "भूगोल 2: कृषि", "भूगोल 3: निर्माण उद्योग", "भूगोल 4: परिवहन संचार एवं व्यापार", "भूगोल 5: बिहार: कृषि एवं वन संसाधन", "भूगोल 6: मानचित्र अध्ययन", "अर्थशास्त्र 1: अर्थव्यवस्था एवं इसके विकास का इतिहास", "अर्थशास्त्र 2: राज्य एवं राष्ट्र की आय", "अर्थशास्त्र 3: मुद्रा बचत एवं साख", "अर्थशास्त्र 4: हमारी वित्तीय संस्थाएँ", "अर्थशास्त्र 5: रोजगार एवं सेवाएँ", "अर्थशास्त्र 6: वैश्वीकरण", "अर्थशास्त्र 7: उपभोक्ता जागरण एवं संरक्षण", "नागरिक 1: लोकतंत्र में सत्ता की साझेदारी", "नागरिक 2: सत्ता में साझेदारी की कार्यप्रणाली", "नागरिक 3: लोकतंत्र में प्रतिस्पर्धा एवं संघर्ष", "नागरिक 4: लोकतंत्र की उपलब्धियाँ", "नागरिक 5: लोकतंत्र की चुनौतियाँ"],
+        "hindi": ["गद्य 1: श्रम विभाजन और जाति प्रथा", "गद्य 2: विष के दाँत", "गद्य 3: भारत से हम क्या सीखें", "गद्य 4: नाखून क्यों बढ़ते हैं", "गद्य 5: नागरी लिपि", "गद्य 6: बहादुर", "गद्य 7: परंपरा का मूल्यांकन", "गद्य 8: जित-जित मैं निरखत हूँ", "गद्य 9: आविन्यो", "गद्य 10: मछली", "गद्य 11: नौबतखाने में इबादत", "गद्य 12: शिक्षा और संस्कृति", "काव्य 1: राम बिनु बिरथे जगि जनमा", "काव्य 2: प्रेम अयनि श्री राधिका", "काव्य 3: अति सूधो सनेह को मारग है", "काव्य 4: स्वदेशी", "काव्य 5: भारतमाता", "काव्य 6: जनतंत्र का जन्म", "काव्य 7: हिरोशिमा", "काव्य 8: एक वृक्ष की हत्या", "काव्य 9: हमारी नींद", "काव्य 10: अक्षर ज्ञान", "काव्य 11: लौटकर आऊँगा फिर", "काव्य 12: मेरे बिना तुम प्रभु", "वर्णिका 1: दही वाली मंगम्मा", "वर्णिका 2: ढहते विश्वास", "वर्णिका 3: माँ", "वर्णिका 4: नगर", "वर्णिका 5: धरती कब तक घूमेगी"],
+        "sanskrit": ["पाठ 1: मंगलम्", "पाठ 2: पाटलिपुत्रवैभवम्", "पाठ 3: अलसकथा", "पाठ 4: संस्कृतसाहित्ये लेखिकाः", "पाठ 5: भारतमहिमा", "पाठ 6: भारतीयसंस्काराः", "पाठ 7: नीतिश्लोकाः", "पाठ 8: कर्मवीरकथा", "पाठ 9: स्वामी दयानन्दः", "पाठ 10: मन्दाकिनीवर्णनम्", "पाठ 11: व्याघ्रपथिककथा", "पाठ 12: कर्णस्य दानवीरता", "पाठ 13: विश्वशान्तिः", "पाठ 14: शास्त्रकाराः"]
+      },
+      "9": {
+        "science": ["पाठ 1: हमारे आस-पास के पदार्थ", "पाठ 2: क्या हमारे आस-पास के पदार्थ शुद्ध हैं", "पाठ 3: परमाणु एवं अणु", "पाठ 4: परमाणु की संरचना", "पाठ 5: जीवन की मौलिक इकाई", "पाठ 6: ऊतक", "पाठ 7: जीवों में विविधता", "पाठ 8: गति", "पाठ 9: बल तथा गति के नियम", "पाठ 10: गुरुत्वाकर्षण", "पाठ 11: कार्य तथा ऊर्जा", "पाठ 12: ध्वनि", "पाठ 13: हम बीमार क्यों होते हैं", "पाठ 14: प्राकृतिक संपदा", "पाठ 15: खाद्य संसाधनों में सुधार"],
+        "math": ["पाठ 1: संख्या पद्धति", "पाठ 2: बहुपद", "पाठ 3: निर्देशांक ज्यामिति", "पाठ 4: दो चरों वाले रैखिक समीकरण", "पाठ 5: यूक्लिड की ज्यामिति", "पाठ 6: रेखाएँ और कोण", "पाठ 7: त्रिभुज", "पाठ 8: चतुर्भुज", "पाठ 9: क्षेत्रफल", "पाठ 10: वृत्त", "पाठ 11: रचनाएँ", "पाठ 12: हीरोन का सूत्र", "पाठ 13: पृष्ठीय क्षेत्रफल और आयतन", "पाठ 14: सांख्यिकी", "पाठ 15: प्रायिकता"],
+        "sst": ["इतिहास 1: भौगोलिक खोजें", "इतिहास 2: अमेरिकी स्वतंत्रता संग्राम", "इतिहास 3: फ्रांस की क्रांति", "इतिहास 4: विश्वयुद्धों का इतिहास", "इतिहास 5: नाजीवाद", "इतिहास 6: वन्य समाज", "इतिहास 7: शांति के प्रयास", "इतिहास 8: कृषि और खेतिहर समाज", "भूगोल 1: स्थिति और विस्तार", "भूगोल 2: भौतिक स्वरूप", "भूगोल 3: अपवाह स्वरूप", "भूगोल 4: जलवायु", "भूगोल 5: प्राकृतिक वनस्पति", "भूगोल 6: जनसंख्या", "अर्थशास्त्र 1: बिहार के एक गाँव की कहानी", "अर्थशास्त्र 2: मानव एक संसाधन", "अर्थशास्त्र 3: गरीबी", "अर्थशास्त्र 4: बेकारी", "नागरिक 1: लोकतंत्र का क्रमिक विकास", "नागरिक 2: लोकतंत्र क्या और क्यों", "नागरिक 3: संविधान निर्माण", "नागरिक 4: चुनावी राजनीति", "नागरिक 5: संसदीय लोकतंत्र की संस्थाएँ", "नागरिक 6: लोकतांत्रिक अधिकार"],
+        "hindi": ["गद्य 1: कहानी का प्लॉट", "गद्य 2: भारत का पुरातन विद्यापीठ", "गद्य 3: ग्राम गीत का मर्म", "गद्य 4: लाल पान की बेगम", "गद्य 5: अष्टावक्र", "गद्य 6: टॉलस्टॉय के घर में", "गद्य 7: पधारो म्हारे देस", "गद्य 8: निबंध", "काव्य 1: रैदास", "काव्य 2: मंझन", "काव्य 3: गुरु गोविंद सिंह", "काव्य 4: हरियौध", "काव्य 5: महादेवी वर्मा", "काव्य 6: नीरजा", "काव्य 7: सुभद्रा कुमारी चौहान"],
+        "sanskrit": ["पाठ 1: ईशस्तुतिः", "पाठ 2: लोभविष्टः चक्रधरः", "पाठ 3: यक्ष-युधिष्ठिर संवादः", "पाठ 4: संस्कृतस्य महत्त्वम्", "पाठ 5: विद्यामहिमा", "पाठ 6: ईद-महोत्सवः", "पाठ 7: ज्ञानं भारः क्रियां विना", "पाठ 8: नीतिपद्यानि", "पाठ 9: बिहारस्य सांस्कृतिक-वैभवम्", "पाठ 10: राष्ट्रनिर्माता डॉ. राजेन्द्र प्रसादः", "पाठ 11: पर्यावरणम्", "पाठ 12: शिखा-सञ्चयः", "पाठ 13: किशोराणां मनोविज्ञानम्", "पाठ 14: वीरकुंवरसिंहः"]
+      }
     };
 
     window.adminLogin = function() {
@@ -154,8 +174,8 @@
           document.getElementById("lockScreen").style.display = "none";
           document.getElementById("adminForm").style.display = "block";
           document.getElementById("admin-greeting").innerText = "स्वागत है सोनू सर! ❤️";
-          window.updateChaptersDropdown();
-        } else { alert("एक्सेस ब्लॉक! आप एडमिन नहीं हैं।"); }
+          window.updateChapters('notes'); window.updateChapters('bulk'); window.updateChapters('del');
+        } else { alert("एक्सेस ब्लॉक! आप सोनू सर नहीं हैं।"); }
       }).catch((e) => alert("त्रुटि: " + e.message));
     };
 
@@ -165,38 +185,48 @@
       document.getElementById(type + "FormSection").classList.add("active-form");
     };
 
-    window.updateChaptersDropdown = function() {
-      var classVal = document.getElementById("notesClass").value;
-      var subjectVal = document.getElementById("notesSubject").value;
-      var chapterSelect = document.getElementById("notesChapter");
+    // UI Toggles
+    window.toggleBulkType = function() {
+      var type = document.querySelector('input[name="bulkType"]:checked').value;
+      document.getElementById("bulkGeneralDiv").style.display = (type === 'general') ? 'block' : 'none';
+      document.getElementById("bulkChapterDiv").style.display = (type === 'chapter') ? 'block' : 'none';
+    };
+    window.toggleDelType = function() {
+      var type = document.querySelector('input[name="delType"]:checked').value;
+      document.getElementById("delGeneralDiv").style.display = (type === 'general') ? 'block' : 'none';
+      document.getElementById("delChapterDiv").style.display = (type === 'chapter') ? 'block' : 'none';
+    };
+
+    // चैप्टर ड्रॉपडाउन अपडेटर
+    window.updateChapters = function(prefix) {
+      var classVal = document.getElementById(prefix + "Class").value;
+      var subjectVal = document.getElementById(prefix + "Subject").value;
+      var chapterSelect = document.getElementById(prefix + "Chapter");
       chapterSelect.innerHTML = "";
-      if(masterSyllabus[classVal] && masterSyllabus[classVal][subjectVal]) {
-        masterSyllabus[classVal][subjectVal].forEach(function(chapName) {
+      if(syllabusData[classVal] && syllabusData[classVal][subjectVal]) {
+        syllabusData[classVal][subjectVal].forEach(function(chapName) {
           var option = document.createElement("option"); option.value = chapName; option.innerText = chapName;
           chapterSelect.appendChild(option);
         });
       }
     };
 
-    window.saveQuestion = async function() {
-      var btn = document.getElementById("saveQuizBtn");
-      var qText = document.getElementById("question").value.trim();
-      var opt1 = document.getElementById("opt1").value.trim(); var opt2 = document.getElementById("opt2").value.trim();
-      var opt3 = document.getElementById("opt3").value.trim(); var opt4 = document.getElementById("opt4").value.trim();
-      var ans = document.getElementById("ans").value.trim();
-      if (!qText || !opt1 || !opt2 || !opt3 || !opt4 || !ans) return alert("सब भरें!");
-      btn.innerText = "सेव हो रहा है... ⏳"; btn.disabled = true;
-      try {
-        await addDoc(collection(db, "quizzes"), { category: document.getElementById("category").value, question: qText, options: [opt1, opt2, opt3, opt4], answer: parseInt(ans), createdAt: serverTimestamp() });
-        alert("सवाल सेव हो गया!"); document.querySelectorAll('#quizFormSection input').forEach(i => i.value = '');
-      } catch (e) { alert(e.message); }
-      btn.innerText = "💾 सवाल डेटाबेस में सेव करें"; btn.disabled = false;
-    };
-
+    // 🚀 जादुई बल्क अपलोड
     window.saveBulkQuestions = async function() {
       var btn = document.getElementById("saveBulkBtn");
       var text = document.getElementById("bulkText").value.trim();
       if (!text) return alert("पेस्ट करें!");
+      
+      // यह पता लगाना कि जनरल में डालना है या चैप्टर में
+      var uploadType = document.querySelector('input[name="bulkType"]:checked').value;
+      var targetCategory = "";
+      if(uploadType === "general") {
+        targetCategory = document.getElementById("bulkCategory").value;
+      } else {
+        targetCategory = document.getElementById("bulkChapter").value;
+        if(!targetCategory) return alert("कृपया चैप्टर चुनें!");
+      }
+
       btn.innerText = "सेव हो रहा है... ⏳"; btn.disabled = true;
       var blocks = text.split("---"); var successCount = 0;
       try {
@@ -213,7 +243,7 @@
             else if (line.startsWith("उत्तर:")) ans = parseInt(line.substring(6).trim());
           }
           if (q && o1 && o2 && o3 && o4 && ans) {
-            await addDoc(collection(db, "quizzes"), { category: document.getElementById("bulkCategory").value, question: q, options: [o1, o2, o3, o4], answer: ans, createdAt: serverTimestamp() });
+            await addDoc(collection(db, "quizzes"), { category: targetCategory, question: q, options: [o1, o2, o3, o4], answer: ans, createdAt: serverTimestamp() });
             successCount++;
           }
         }
@@ -222,42 +252,40 @@
       btn.innerText = "⚡ एक साथ सारे सवाल सेव करें"; btn.disabled = false;
     };
 
-    // 🚨 सवालों की सफाई करने वाला नया जादुई कोड 🚨
+    // 🗑️ डिलीट करने का कोड
     window.clearQuestions = async function() {
-      var cat = document.getElementById("deleteCategory").value;
-      var catName = document.getElementById("deleteCategory").options[document.getElementById("deleteCategory").selectedIndex].text;
-      
-      var confirmDelete = confirm(`क्या आप सच में ${catName} के सारे पुराने सवाल हमेशा के लिए डिलीट करना चाहते हैं?`);
+      var delType = document.querySelector('input[name="delType"]:checked').value;
+      var targetCategory = "";
+      if(delType === "general") {
+        targetCategory = document.getElementById("delCategory").value;
+      } else {
+        targetCategory = document.getElementById("delChapter").value;
+      }
+
+      var confirmDelete = confirm(`क्या आप सच में '${targetCategory}' के सारे पुराने सवाल हमेशा के लिए डिलीट करना चाहते हैं?`);
       if(!confirmDelete) return;
 
       var btn = document.getElementById("clearBtn");
       btn.innerText = "डिलीट हो रहा है... ⏳"; btn.disabled = true;
 
       try {
-        const q = query(collection(db, "quizzes"), where("category", "==", cat));
+        const q = query(collection(db, "quizzes"), where("category", "==", targetCategory));
         const querySnapshot = await getDocs(q);
-        
         let count = 0;
         const deletePromises = [];
-        
         querySnapshot.forEach((docSnap) => {
           deletePromises.push(deleteDoc(docSnap.ref));
           count++;
         });
-        
         await Promise.all(deletePromises);
         
-        if(count === 0) {
-          alert("इस केटेगरी में मिटाने के लिए कोई पुराना सवाल नहीं है!");
-        } else {
-          alert(`✅ सफाई पूरी हुई! ${count} पुराने सवाल डिलीट कर दिए गए। अब आप आज के नए सवाल डाल सकते हैं।`);
-        }
-      } catch(e) {
-        alert("एरर: " + e.message);
-      }
+        if(count === 0) { alert("इस केटेगरी में मिटाने के लिए कोई सवाल नहीं है!"); } 
+        else { alert(`✅ सफाई पूरी हुई! ${count} पुराने सवाल डिलीट कर दिए गए।`); }
+      } catch(e) { alert("एरर: " + e.message); }
       btn.innerText = "🚨 सारे पुराने सवाल डिलीट करें"; btn.disabled = false;
     };
 
+    // 📁 PDF सेव करना
     window.saveNotesLink = async function() {
       var btn = document.getElementById("saveNotesBtn");
       var pdfUrl = document.getElementById("pdfUrl").value.trim();
@@ -270,6 +298,7 @@
       btn.innerText = "💾 पीडीएफ डेटाबेस में भेजें"; btn.disabled = false;
     };
 
+    // 📢 नोटिस
     window.saveNotice = async function() {
       var btn = document.getElementById("saveNoticeBtn");
       var nText = document.getElementById("noticeText").value.trim();
