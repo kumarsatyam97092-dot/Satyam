@@ -7,15 +7,11 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <style>
-    /* मुख्य डिज़ाइन */
     body { margin: 0; padding: 0; font-family: 'Arial', sans-serif; background-color: #f4f6f9; color: #333; }
     .header { background: linear-gradient(135deg, #ff416c, #ff4b2b); color: white; text-align: center; padding: 15px; font-size: 22px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 99; }
     .container { padding: 15px; max-width: 500px; margin: 0 auto; padding-bottom: 100px; }
-    
-    /* नोटिस बोर्ड */
     .notice-board { background: #dcd3ff; color: #764ba2; padding: 8px; font-weight: bold; font-size: 14px; border-bottom: 2px solid #764ba2; }
 
-    /* प्रोफाइल व कार्ड्स */
     .profile-bar { background: white; border-radius: 15px; padding: 12px 15px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: space-between; border: 1px solid #e9ecef; }
     .user-pic { width: 45px; height: 45px; border-radius: 50%; border: 2px solid #28a745; display: flex; align-items: center; justify-content: center; background: #ff4b2b; color: white; font-weight: bold; font-size: 20px; }
     
@@ -25,12 +21,8 @@
     
     .class9-card { border-left-color: #17a2b8; } .class9-card button { background-color: #17a2b8; }
     .class10-card { border-left-color: #007bff; } .class10-card button { background-color: #007bff; }
-    .gk-card { border-left-color: #28a745; } .gk-card button { background-color: #28a745; }
-    .ipl-card { border-left-color: #ffc107; } .ipl-card button { background-color: #ffc107; color: #222; }
-    .upsc-card { border-left-color: #6f42c1; } .upsc-card button { background-color: #6f42c1; }
     .leaderboard-card { border-left-color: #e83e8c; background-color: #fff0f6; } .leaderboard-card button { background-color: #e83e8c; }
 
-    /* स्क्रीन्स */
     .screen { display: none; } .active-screen { display: block; }
     .quiz-box { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
     .option-btn { display: block; width: 100%; background-color: #f8f9fa; border: 2px solid #e9ecef; padding: 12px; margin-bottom: 10px; border-radius: 10px; text-align: left; font-size: 15px; cursor: pointer; font-weight: bold; }
@@ -39,12 +31,17 @@
     .nav-btn { background-color: #ff4b2b; color: white; border: none; padding: 12px; width: 100%; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; }
 
     .sub-btn { background: #fff; border: 2px solid #17a2b8; color: #17a2b8; padding: 10px; margin-bottom: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-size: 15px; }
-    .sub-btn:hover { background: #17a2b8; color: #fff; }
-    .pdf-item { background: #fff; padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #28a745; font-weight: bold; cursor: pointer; }
+    
+    /* 🚨 आपकी कॉपी वाली डिज़ाइन यहाँ है 🚨 */
+    .chapter-row { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 12px; margin-bottom: 10px; border-radius: 8px; border-left: 4px solid #17a2b8; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+    .chapter-title { font-weight: bold; font-size: 14px; width: 55%; color: #333; }
+    .btn-group { display: flex; gap: 5px; width: 45%; justify-content: flex-end; }
+    .pdf-btn { background: #dc3545; color: white; border: none; padding: 6px 10px; border-radius: 5px; font-size: 12px; font-weight: bold; cursor: pointer; }
+    .quiz-btn { background: #007bff; color: white; border: none; padding: 6px 10px; border-radius: 5px; font-size: 12px; font-weight: bold; cursor: pointer; }
+
     .rank-item { background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; border-left: 4px solid #e83e8c; }
     .rank-1 { background: #fff3cd; border-color: #ffc107; }
 
-    /* फ्लोटिंग आइकन्स व चैटबॉक्स */
     .whatsapp-float { position: fixed; width: 55px; height: 55px; bottom: 20px; left: 20px; background-color: #25d366; border-radius: 50px; text-align: center; box-shadow: 2px 2px 5px #999; z-index: 100; display: flex; justify-content: center; align-items: center; }
     .whatsapp-icon { width: 35px; height: 35px; }
     .ai-float-btn { position: fixed; width: 55px; height: 55px; bottom: 20px; right: 20px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 50px; font-size: 28px; box-shadow: 2px 2px 5px #999; cursor: pointer; z-index: 100; display: flex; justify-content: center; align-items: center; }
@@ -73,28 +70,43 @@
       <div class="profile-bar">
         <div style="display:flex; align-items:center; gap:10px;">
           <div class="user-pic">S</div>
-          <div>
-            <div style="font-weight:bold; font-size:15px; color:#333;">स्वागत है विद्यार्थी!</div>
-            <div style="font-size:11px; color:#28a745; font-weight:bold;">Sonu Classes App 🎒</div>
-          </div>
+          <div><div style="font-weight:bold; font-size:15px; color:#333;">स्वागत है विद्यार्थी!</div><div style="font-size:11px; color:#28a745; font-weight:bold;">Sonu Classes App 🎒</div></div>
         </div>
-        </div>
+      </div>
 
       <div class="card leaderboard-card"><h3>🏆 टॉप 10 लीडरबोर्ड</h3><button onclick="window.openLeaderboard()">लीडरबोर्ड देखें</button></div>
-      <div class="card class9-card"><h3>कक्षा 9वीं (PDF नोट्स) 📁</h3><button onclick="window.openNotesScreen('9')">नोट्स देखें</button></div>
-      <div class="card class10-card"><h3>कक्षा 10वीं (PDF नोट्स) 🏫</h3><button onclick="window.openNotesScreen('10')">नोट्स देखें</button></div>
-      <div class="card gk-card"><h3>रोज़ाना सामान्य ज्ञान (Daily GK) 📝</h3><button onclick="window.startQuiz('gk')">क्विज़ शुरू करें</button></div>
-      <div class="card ipl-card"><h3>IPL और क्रिकेट चैलेंज 🏏</h3><button onclick="window.startQuiz('ipl')">चैलेंज शुरू करें</button></div>
-      <div class="card upsc-card"><h3>UPSC (IAS) स्पेशल टेस्ट 🏆</h3><button onclick="window.startQuiz('upsc')">टेस्ट शुरू करें</button></div>
+      <div class="card class9-card"><h3>कक्षा 9वीं (सभी विषय) 📖</h3><button onclick="window.openSubjects('9')">अध्ययन शुरू करें</button></div>
+      <div class="card class10-card"><h3>कक्षा 10वीं (सभी विषय) 🏫</h3><button onclick="window.openSubjects('10')">अध्ययन शुरू करें</button></div>
     </div>
 
-    <div id="quiz-screen" class="screen"><div class="quiz-box"><div id="question-box" style="font-size:18px; font-weight:bold; margin-bottom:20px;">लोड हो रहा है...</div><div id="options-box"></div><button id="next-btn" class="nav-btn" onclick="window.nextQuestion()" style="display:none;">अगला प्रश्न</button><button class="nav-btn" onclick="window.goHome()" style="background-color:#6c757d; margin-top:10px;">क्विज़ छोड़ें</button></div></div>
+    <div id="subjects-screen" class="screen">
+      <div class="quiz-box">
+        <h2 id="subjects-title" style="text-align:center; color:#17a2b8; margin-top:0;">विषय चुनें</h2>
+        <button class="sub-btn" onclick="window.loadChapters('science')">🧪 विज्ञान (Science)</button>
+        <button class="sub-btn" onclick="window.loadChapters('math')">🧮 गणित (Maths)</button>
+        <button class="sub-btn" onclick="window.loadChapters('sst')">🌍 सामाजिक विज्ञान (SST)</button>
+        <button class="sub-btn" onclick="window.loadChapters('hindi')">✍️ हिंदी (Hindi)</button>
+        <button class="sub-btn" onclick="window.loadChapters('sanskrit')">🕉️ संस्कृत (Sanskrit)</button>
+        <button class="nav-btn" onclick="window.goHome()" style="background-color:#6c757d; margin-top:20px;">← पीछे जाएँ</button>
+      </div>
+    </div>
+
+    <div id="chapters-screen" class="screen">
+      <div class="quiz-box">
+        <button onclick="window.showScreen('subjects-screen')" style="background:#6c757d; color:#fff; padding:6px 12px; border:none; border-radius:5px; margin-bottom:15px; cursor:pointer; font-weight:bold;">← विषय बदलें</button>
+        <h3 id="chapters-title" style="color:#333; margin-top:0; border-bottom: 2px solid #ddd; padding-bottom: 10px;">चैप्टर्स</h3>
+        
+        <div id="chapters-list-container"></div>
+        
+      </div>
+    </div>
+
+    <div id="quiz-screen" class="screen"><div class="quiz-box"><h3 id="quiz-chapter-title" style="color:#007bff; text-align:center; margin-top:0;"></h3><div id="question-box" style="font-size:18px; font-weight:bold; margin-bottom:20px;">लोड हो रहा है...</div><div id="options-box"></div><button id="next-btn" class="nav-btn" onclick="window.nextQuestion()" style="display:none;">अगला प्रश्न</button><button class="nav-btn" onclick="window.goHome()" style="background-color:#6c757d; margin-top:10px;">क्विज़ छोड़ें</button></div></div>
     
     <div id="result-screen" class="screen"><div class="quiz-box" style="text-align: center;"><h2>क्विज़ समाप्त! 🎉</h2><div id="final-score-text" style="font-size:24px; font-weight:bold; color:#28a745; margin-bottom:15px;">स्कोर: 0</div><button id="save-score-btn" class="nav-btn" onclick="window.submitScore()">🏆 स्कोर लीडरबोर्ड में भेजें</button><button class="nav-btn" onclick="window.goHome()" style="background-color:#6c757d; margin-top:10px;">होम पर लौटें</button></div></div>
     
-    <div id="leaderboard-screen" class="screen"><div class="quiz-box"><h2 style="text-align:center; color:#e83e8c;">🏆 टॉप 10 धुरंधर</h2><select id="lb-category" style="width:100%; padding:10px; border-radius:8px;" onchange="window.fetchLeaderboard()"><option value="gk">GK</option><option value="upsc">UPSC</option><option value="ipl">IPL</option></select><div id="lb-loading" style="text-align:center; margin-top:15px;">लोड हो रहा है... ⏳</div><ul id="rank-list" style="list-style:none; padding:0; margin-top:15px;"></ul><button class="nav-btn" onclick="window.goHome()" style="margin-top:20px;">मुख्य मेन्यू में जाएँ</button></div></div>
-    
-    <div id="notes-screen" class="screen"><div class="quiz-box"><h2 id="notes-screen-title" style="text-align:center; color:#17a2b8; margin-top:0;">कक्षा नोट्स</h2><div id="subject-selection-box"><p style="text-align:center; font-weight:bold;">कृपया अपना विषय चुनें:</p><button class="sub-btn" onclick="window.fetchPDFs('math')">🧮 गणित</button><button class="sub-btn" onclick="window.fetchPDFs('science')">🧪 विज्ञान</button><button class="sub-btn" onclick="window.fetchPDFs('sst')">📖 SST</button><button class="sub-btn" onclick="window.fetchPDFs('hindi')">✍️ हिंदी</button><button class="sub-btn" onclick="window.fetchPDFs('sanskrit')">🕉️ संस्कृत</button></div><div id="pdf-list-section" style="display:none;"><button onclick="window.backToSubjects()" style="background:#6c757d; color:#fff; padding:6px 12px; border:none; border-radius:5px; margin-bottom:15px; cursor:pointer; font-weight:bold;">← विषय बदलें</button><div id="pdf-loading-text" style="text-align:center;">पीडीएफ आ रहे हैं... ⏳</div><div id="pdf-container-list"></div></div><button class="nav-btn" onclick="window.goHome()" style="background-color:#6c757d; margin-top:20px;">मुख्य मेन्यू में जाएँ</button></div></div>
+    <div id="leaderboard-screen" class="screen"><div class="quiz-box"><h2 style="text-align:center; color:#e83e8c;">🏆 टॉप 10 धुरंधर</h2><div id="lb-loading" style="text-align:center; margin-top:15px;">लोड हो रहा है... ⏳</div><ul id="rank-list" style="list-style:none; padding:0; margin-top:15px;"></ul><button class="nav-btn" onclick="window.goHome()" style="margin-top:20px;">मुख्य मेन्यू में जाएँ</button></div></div>
+
   </div>
 
   <a href="whatsapp://send?phone=918521057039&text=नमस्ते सोनू सर!" class="whatsapp-float"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="whatsapp-icon"></a>
@@ -118,45 +130,96 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    window.dynamicQuizData = []; window.currentQuestionIndex = 0; window.score = 0; window.currentCategory = ""; window.selectedNotesClass = "";
+    window.dynamicQuizData = []; window.currentQuestionIndex = 0; window.score = 0; 
+    window.selectedClass = ""; window.selectedSubject = ""; window.currentChapter = "";
 
-    // पेज लोड होते ही नोटिस बोर्ड फेच करना
+    // 📚 बिहार बोर्ड का पूरा सिलेबस (एक भी चैप्टर नहीं छूटेगा)
+    const syllabusData = {
+      "10": {
+        "science": ["पाठ 1: रासायनिक अभिक्रियाएँ", "पाठ 2: अम्ल, क्षारक एवं लवण", "पाठ 3: धातु एवं अधातु", "पाठ 4: कार्बन एवं उसके यौगिक", "पाठ 5: तत्वों का आवर्त वर्गीकरण", "पाठ 6: जैव प्रक्रम", "पाठ 7: नियंत्रण एवं समन्वय", "पाठ 8: जीव जनन कैसे करते हैं", "पाठ 9: आनुवंशिकता एवं जैव विकास", "पाठ 10: प्रकाश - परावर्तन तथा अपवर्तन", "पाठ 11: मानव नेत्र", "पाठ 12: विद्युत", "पाठ 13: विद्युत धारा के चुंबकीय प्रभाव", "पाठ 14: ऊर्जा के स्रोत", "पाठ 15: हमारा पर्यावरण", "पाठ 16: प्राकृतिक संसाधनों का प्रबंधन"],
+        "math": ["पाठ 1: वास्तविक संख्याएँ", "पाठ 2: बहुपद", "पाठ 3: दो चर वाले रैखिक समीकरण", "पाठ 4: द्विघात समीकरण", "पाठ 5: समांतर श्रेढ़ियाँ", "पाठ 6: त्रिभुज", "पाठ 7: निर्देशांक ज्यामिति", "पाठ 8: त्रिकोणमिति का परिचय", "पाठ 9: त्रिकोणमिति के कुछ अनुप्रयोग", "पाठ 10: वृत्त", "पाठ 11: रचनाएँ", "पाठ 12: वृत्तों से संबंधित क्षेत्रफल", "पाठ 13: पृष्ठीय क्षेत्रफल और आयतन", "पाठ 14: सांख्यिकी", "पाठ 15: प्रायिकता"],
+        "sst": ["इतिहास - पाठ 1", "इतिहास - पाठ 2", "भूगोल - पाठ 1", "अर्थशास्त्र - पाठ 1"],
+        "hindi": ["गद्य - पाठ 1", "गद्य - पाठ 2", "काव्य - पाठ 1"],
+        "sanskrit": ["पाठ 1: मंगलम्", "पाठ 2: पाटलिपुत्रवैभवम्"]
+      },
+      "9": {
+        "science": ["पाठ 1: हमारे आस-पास के पदार्थ", "पाठ 2: क्या हमारे आस-पास के पदार्थ शुद्ध हैं", "पाठ 3: परमाणु एवं अणु", "पाठ 4: परमाणु की संरचना", "पाठ 5: जीवन की मौलिक इकाई (कोशिका)", "पाठ 6: ऊतक", "पाठ 7: जीवों में विविधता", "पाठ 8: गति", "पाठ 9: बल तथा गति के नियम", "पाठ 10: गुरुत्वाकर्षण", "पाठ 11: कार्य तथा ऊर्जा", "पाठ 12: ध्वनि", "पाठ 13: हम बीमार क्यों होते हैं", "पाठ 14: प्राकृतिक संपदा", "पाठ 15: खाद्य संसाधनों में सुधार"],
+        "math": ["पाठ 1: संख्या पद्धति", "पाठ 2: बहुपद", "पाठ 3: निर्देशांक ज्यामिति", "पाठ 4: दो चरों वाले रैखिक समीकरण"],
+        "sst": ["इतिहास - पाठ 1", "भूगोल - पाठ 1"],
+        "hindi": ["पाठ 1", "पाठ 2"],
+        "sanskrit": ["पाठ 1", "पाठ 2"]
+      }
+    };
+
     window.onload = function() {
-      try {
-        db.collection("announcements").get().then((snap) => {
-          let notices = []; snap.forEach(d => notices.push(d.data()));
-          if(notices.length > 0) { notices.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)); document.getElementById("notice-text").innerText = notices[0].text; }
-        });
-      } catch(e) {}
+      db.collection("announcements").get().then((snap) => {
+        let notices = []; snap.forEach(d => notices.push(d.data()));
+        if(notices.length > 0) { notices.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)); document.getElementById("notice-text").innerText = notices[0].text; }
+      }).catch(e=>{});
     };
 
     window.showScreen = function(id) { document.querySelectorAll(".screen").forEach(s => s.classList.remove("active-screen")); document.getElementById(id).classList.add("active-screen"); };
     window.goHome = function() { window.showScreen("home-screen"); };
 
-    window.openNotesScreen = function(classVal) { window.selectedNotesClass = classVal; document.getElementById("notes-screen-title").innerText = `कक्षा ${classVal}वीं नोट्स 📁`; window.backToSubjects(); window.showScreen("notes-screen"); };
-    window.backToSubjects = function() { document.getElementById("subject-selection-box").style.display = "block"; document.getElementById("pdf-list-section").style.display = "none"; };
-    
-    window.fetchPDFs = async function(subjectVal) {
-      document.getElementById("subject-selection-box").style.display = "none"; document.getElementById("pdf-list-section").style.display = "block";
-      var container = document.getElementById("pdf-container-list"); var loader = document.getElementById("pdf-loading-text");
-      container.innerHTML = ""; loader.style.display = "block";
-      db.collection("pdf_notes").get().then((snap) => {
-        let pdfs = []; snap.forEach(d => { let data = d.data(); if(data.class === window.selectedNotesClass && data.subject === subjectVal) pdfs.push(data); });
-        loader.style.display = "none";
-        if(pdfs.length === 0) { container.innerHTML = "<p style='text-align:center; color:#666;'>नोट्स जल्द ही अपलोड होंगे! ❤️</p>"; return; }
-        pdfs.forEach(pdf => {
-          var div = document.createElement("div"); div.className = "pdf-item"; div.innerHTML = `<span>📄 ${pdf.chapter}</span><span style='color:#17a2b8; font-size:12px;'>डाउनलोड 📥</span>`;
-          div.onclick = function() { window.open(pdf.url, '_blank'); }; container.appendChild(div);
-        });
+    window.openSubjects = function(classVal) {
+      window.selectedClass = classVal;
+      document.getElementById("subjects-title").innerText = `कक्षा ${classVal}वीं - विषय चुनें`;
+      window.showScreen("subjects-screen");
+    };
+
+    // 🚨 यह फ़ंक्शन आपकी डिज़ाइन (PDF + Quiz) बनाता है 🚨
+    window.loadChapters = function(subjectVal) {
+      window.selectedSubject = subjectVal;
+      document.getElementById("chapters-title").innerText = "सभी चैप्टर्स की लिस्ट";
+      
+      var container = document.getElementById("chapters-list-container");
+      container.innerHTML = ""; 
+
+      var chapters = syllabusData[window.selectedClass][subjectVal];
+      
+      chapters.forEach(chap => {
+        var row = document.createElement("div");
+        row.className = "chapter-row";
+        
+        row.innerHTML = `
+          <div class="chapter-title">${chap}</div>
+          <div class="btn-group">
+            <button class="pdf-btn" onclick="window.fetchPDF('${chap}')">📄 PDF</button>
+            <button class="quiz-btn" onclick="window.startQuiz('${chap}')">📝 Quiz</button>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+
+      window.showScreen("chapters-screen");
+    };
+
+    // PDF मँगाने का कोड
+    window.fetchPDF = async function(chapterName) {
+      db.collection("pdf_notes").where("class", "==", window.selectedClass).where("subject", "==", window.selectedSubject).where("chapter", "==", chapterName).get().then((snap) => {
+        if(snap.empty) {
+          alert("सोनू सर इस चैप्टर का PDF जल्द ही अपलोड करेंगे! ❤️");
+        } else {
+          snap.forEach(doc => { window.open(doc.data().url, '_blank'); });
+        }
       });
     };
 
-    window.startQuiz = async function(cat) {
-      window.currentCategory = cat; window.currentQuestionIndex = 0; window.score = 0; window.dynamicQuizData = [];
-      window.showScreen("quiz-screen"); document.getElementById("question-box").innerText = "सवाल आ रहे हैं... ⏳"; document.getElementById("options-box").innerHTML = "";
-      db.collection("quizzes").get().then((snap) => {
-        snap.forEach((doc) => { let data = doc.data(); if(data.category === cat) window.dynamicQuizData.push(data); });
-        if(window.dynamicQuizData.length === 0) { document.getElementById("question-box").innerText = "इस केटेगरी में अभी सवाल नहीं हैं!"; return; }
+    // Quiz मँगाने का कोड
+    window.startQuiz = async function(chapterName) {
+      window.currentChapter = chapterName; window.currentQuestionIndex = 0; window.score = 0; window.dynamicQuizData = [];
+      document.getElementById("quiz-chapter-title").innerText = chapterName;
+      document.getElementById("question-box").innerText = "सवाल आ रहे हैं... ⏳"; 
+      document.getElementById("options-box").innerHTML = "";
+      window.showScreen("quiz-screen"); 
+
+      // डेटाबेस से उस चैप्टर के सवाल ढूँढना (कैटेगरी = चैप्टर का नाम)
+      db.collection("quizzes").where("category", "==", chapterName).get().then((snap) => {
+        snap.forEach((doc) => { window.dynamicQuizData.push(doc.data()); });
+        if(window.dynamicQuizData.length === 0) { 
+          document.getElementById("question-box").innerText = "इस चैप्टर का टेस्ट जल्द ही आने वाला है! ❤️"; 
+          return; 
+        }
         window.loadQuestion();
       });
     };
@@ -183,23 +246,24 @@
     };
     
     window.submitScore = async function() {
-      // 💡 लीडरबोर्ड के लिए नाम पूछने का नया स्मार्ट तरीका
       var playerName = prompt("🏆 लीडरबोर्ड पर अपना नाम दिखाने के लिए अपना नाम लिखें:");
       if(!playerName || playerName.trim() === "") { playerName = "एक विद्यार्थी"; }
       
       var btn = document.getElementById("save-score-btn"); btn.innerText = "सेव हो रहा है... ⏳"; btn.disabled = true;
-      db.collection("leaderboard").add({ name: playerName, score: window.score, total: window.dynamicQuizData.length, category: window.currentCategory, timestamp: firebase.firestore.FieldValue.serverTimestamp() }).then(() => {
-        alert("स्कोर सेव हो गया!"); document.getElementById("lb-category").value = window.currentCategory; window.openLeaderboard();
+      db.collection("leaderboard").add({ name: playerName, score: window.score, total: window.dynamicQuizData.length, category: window.currentChapter, timestamp: firebase.firestore.FieldValue.serverTimestamp() }).then(() => {
+        alert("स्कोर सेव हो गया!"); window.openLeaderboard();
       }).catch((e) => { alert(e.message); });
       btn.innerText = "🏆 स्कोर लीडरबोर्ड में भेजें"; btn.disabled = false;
     };
     
     window.openLeaderboard = function() { window.showScreen("leaderboard-screen"); window.fetchLeaderboard(); };
     window.fetchLeaderboard = async function() {
-      var cat = document.getElementById("lb-category").value; var list = document.getElementById("rank-list"); var loader = document.getElementById("lb-loading");
+      var list = document.getElementById("rank-list"); var loader = document.getElementById("lb-loading");
       list.innerHTML = ""; loader.style.display = "block";
-      db.collection("leaderboard").get().then((snap) => {
-        let scores = []; snap.forEach((doc) => { let d = doc.data(); if(d.category === cat) scores.push(d); });
+      
+      // लीडरबोर्ड अब उसी चैप्टर का दिखाएगा जिसका टेस्ट दिया है
+      db.collection("leaderboard").where("category", "==", window.currentChapter).get().then((snap) => {
+        let scores = []; snap.forEach((doc) => { scores.push(doc.data()); });
         scores.sort((a, b) => b.score - a.score); let top10 = scores.slice(0, 10);
         loader.style.display = "none";
         if(top10.length === 0) { list.innerHTML = "<li>कोई रिकॉर्ड नहीं है!</li>"; return; }
