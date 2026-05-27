@@ -153,13 +153,30 @@
       </div>
     </div>
 
-    <div id="result-screen" class="screen"><div class="quiz-box" style="text-align: center;"><h2>क्विज़ समाप्त! 🎉</h2><div id="final-score-text" style="font-size:24px; font-weight:bold; color:#28a745; margin-bottom:15px;">स्कोर: 0</div><button class="nav-btn" onclick="window.openLeaderboard()">🏆 लीडरबोर्ड देखें</button><button class="nav-btn" onclick="window.goHome()" style="background-color:#6c757d; margin-top:10px;">होम पर लौटें</button></div></div>
+    <div id="result-screen" class="screen"><div class="quiz-box" style="text-align: center;"><h2>क्विज़ समाप्त! 🎉</h2><div id="final-score-text" style="font-size:24px; font-weight:bold; color:#28a745; margin-bottom:15px;">स्कोर: 0</div><button id="save-score-btn" class="nav-btn" onclick="window.submitScore()">🏆 स्कोर लीडरबोर्ड में भेजें</button><button class="nav-btn" onclick="window.goHome()" style="background-color:#6c757d; margin-top:10px;">होम पर लौटें</button></div></div>
     <div id="leaderboard-screen" class="screen"><div class="quiz-box"><h2 style="text-align:center; color:#e83e8c;">🏆 टॉप 10 धुरंधर</h2><div id="lb-loading" style="text-align:center; margin-top:15px;">लोड हो रहा है... ⏳</div><ul id="rank-list" style="list-style:none; padding:0; margin-top:15px;"></ul><button class="nav-btn" onclick="window.goHome()" style="margin-top:20px;">मुख्य मेन्यू में जाएँ</button></div></div>
 
   </div>
 
+  <a href="whatsapp://send?phone=918521057039&text=नमस्ते सोनू सर!" class="whatsapp-float"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="whatsapp-icon"></a>
+  <button class="ai-float-btn" onclick="window.toggleAIChat()">🤖</button>
+
+  <div id="aiChatModal" class="chat-modal">
+    <div class="chat-header"><span>🤖 सोनू का एआई असिस्टेंट</span><button onclick="window.toggleAIChat()" style="background:none; border:none; color:#fff; font-size:22px; cursor:pointer;">×</button></div>
+    <div class="chat-box" id="chatBox">
+      <div class="message ai-message">
+        <span>नमस्ते! मैं सोनू का एआई हूँ। पूछिए क्या पूछना है।</span>
+        <button onclick="window.speakText('नमस्ते! मैं सोनू का एआई हूँ। पूछिए क्या पूछना है।')" style="background:none;border:none;cursor:pointer;font-size:16px;">🔊</button>
+      </div>
+    </div>
+    <div class="chat-input-area">
+      <button id="micBtn" class="mic-btn" onclick="window.startDictation()">🎤</button>
+      <input type="text" id="userInput" placeholder="यहाँ पूछें...">
+      <button class="send-btn" onclick="window.sendMessage()">पूछें</button>
+    </div>
+  </div>
+
   <script>
-    // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDxHLilPMimcKi8hM6JqjCBpxcpknTtO4w",
       authDomain: "sonu-classes.firebaseapp.com",
@@ -177,7 +194,7 @@
     window.timerInterval = null;
     window.timeLeft = 30;
 
-    // 📚 पूर्ण सिलेबस
+    // 📚 पूर्ण सिलेबस (आपका वाला ही है)
     const syllabusData = {
       "10": {
         "science": ["पाठ 1: रासायनिक अभिक्रियाएँ", "पाठ 2: अम्ल, क्षारक एवं लवण", "पाठ 3: धातु एवं अधातु", "पाठ 4: कार्बन एवं उसके यौगिक", "पाठ 5: तत्वों का आवर्त वर्गीकरण", "पाठ 6: जैव प्रक्रम", "पाठ 7: नियंत्रण एवं समन्वय", "पाठ 8: जीव जनन कैसे करते हैं", "पाठ 9: आनुवंशिकता एवं जैव विकास", "पाठ 10: प्रकाश - परावर्तन तथा अपवर्तन", "पाठ 11: मानव नेत्र", "पाठ 12: विद्युत", "पाठ 13: विद्युत धारा के चुंबकीय प्रभाव", "पाठ 14: ऊर्जा के स्रोत", "पाठ 15: हमारा पर्यावरण", "पाठ 16: प्राकृतिक संसाधनों का प्रबंधन"],
@@ -189,182 +206,228 @@
       "9": {
         "science": ["पाठ 1: हमारे आस-पास के पदार्थ", "पाठ 2: क्या हमारे आस-पास के पदार्थ शुद्ध हैं", "पाठ 3: परमाणु एवं अणु", "पाठ 4: परमाणु की संरचना", "पाठ 5: जीवन की मौलिक इकाई", "पाठ 6: ऊतक", "पाठ 7: जीवों में विविधता", "पाठ 8: गति", "पाठ 9: बल तथा गति के नियम", "पाठ 10: गुरुत्वाकर्षण", "पाठ 11: कार्य तथा ऊर्जा", "पाठ 12: ध्वनि", "पाठ 13: हम बीमार क्यों होते हैं", "पाठ 14: प्राकृतिक संपदा", "पाठ 15: खाद्य संसाधनों में सुधार"],
         "math": ["पाठ 1: संख्या पद्धति", "पाठ 2: बहुपद", "पाठ 3: निर्देशांक ज्यामिति", "पाठ 4: दो चरों वाले रैखिक समीकरण", "पाठ 5: यूक्लिड की ज्यामिति", "पाठ 6: रेखाएँ और कोण", "पाठ 7: त्रिभुज", "पाठ 8: चतुर्भुज", "पाठ 9: क्षेत्रफल", "पाठ 10: वृत्त", "पाठ 11: रचनाएँ", "पाठ 12: हीरोन का सूत्र", "पाठ 13: पृष्ठीय क्षेत्रफल और आयतन", "पाठ 14: सांख्यिकी", "पाठ 15: प्रायिकता"],
-        "sst": ["इतिहास 1: भौगोलिक खोजें", "इतिहास 2: अमेरिकी स्वतंत्रता संग्राम", "इतिहास 3: फ्रांस की क्रांति", "इतिहास 4: विश्वयुद्धों का इतिहास", "इतिहास 5: नाजीवाद", "इतिहास 6: वन्य समाज", "इतिहास 7: शांति के प्रयास", "इतिहास 8: कृषि और खेतिहर समाज", "भूगोल 1: स्थिति और विस्तार", "भूगोल 2: भौतिक स्वरूप", "भूगोल 3: अपवाह स्वरूप", "भूगोल 4: जलवायु", "भूगोल 5: प्राकृतिक वनस्पति", "भूगोल 6: जनसंख्या", "अर्थशास्त्र 1: बिहार के एक गाँव की कहानी", "अर्थशास्त्र 2: मानव एक संसाधन", "अर्थशास्त्र 3: गरीबी", "अर्थशास्त्र 4: बेकारी"]
+        "sst": ["इतिहास 1: भौगोलिक खोजें", "इतिहास 2: अमेरिकी स्वतंत्रता संग्राम", "इतिहास 3: फ्रांस की क्रांति", "इतिहास 4: विश्वयुद्धों का इतिहास", "इतिहास 5: ناजीवाद", "इतिहास 6: वन्य समाज", "इतिहास 7: शांति के प्रयास", "इतिहास 8: कृषि और खेतिहर समाज", "भूगोल 1: स्थिति और विस्तार", "भूगोल 2: भौतिक स्वरूप", "भूगोल 3: अपवाह स्वरूप", "भूगोल 4: जलवायु", "भूगोल 5: प्राकृतिक वनस्पति", "भूगोल 6: जनसंख्या", "अर्थशास्त्र 1: बिहार के एक गाँव की कहानी", "अर्थशास्त्र 2: मानव एक संसाधन", "अर्थशास्त्र 3: गरीबी", "अर्थशास्त्र 4: बेकारी", "नागरिक 1: लोकतंत्र का क्रमिक विकास", "नागरिक 2: लोकतंत्र क्या और क्यों", "नागरिक 3: संविधान निर्माण", "नागरिक 4: चुनावी राजनीति", "नागरिक 5: संसदीय लोकतंत्र की संस्थाएँ", "नागरिक 6: लोकतांत्रिक अधिकार"],
+        "hindi": ["गद्य 1: कहानी का प्लॉट", "गद्य 2: भारत का पुरातन विद्यापीठ", "गद्य 3: ग्राम गीत का मर्म", "गद्य 4: लाल पान की बेगम", "गद्य 5: अष्टावक्र", "गद्य 6: टॉलस्टॉय के घर में", "गद्य 7: पधारो म्हारे देस", "गद्य 8: निबंध", "काव्य 1: रैदास", "काव्य 2: मंझन", "काव्य 3: गुरु गोविंद सिंह", "काव्य 4: हरियौध", "काव्य 5: महादेवी वर्मा", "काव्य 6: नीरजा", "काव्य 7: सुभद्रा कुमारी चौहान"],
+        "sanskrit": ["पाठ 1: ईशस्तुतिः", "पाठ 2: लोभविष्टः चक्रधरः", "पाठ 3: यक्ष-युधिष्ठिर संवादः", "पाठ 4: संस्कृतस्य महत्त्वम्", "पाठ 5: विद्यामहिमा", "पाठ 6: ईद-महोत्सवः", "पाठ 7: ज्ञानं भारः क्रियां विना", "पाठ 8: नीतिपद्यानि", "पाठ 9: बिहारस्य सांस्कृतिक-वैभवम्", "पाठ 10: राष्ट्रनिर्माता डॉ. राजेन्द्र प्रसादः", "पाठ 11: पर्यावरणम्", "पाठ 12: शिखा-सञ्चयः", "पाठ 13: किशोराणां मनोविज्ञानम्", "पाठ 14: वीरकुंवरसिंहः"]
       }
     };
 
-    // नेविगेशन फक्शन्स
+    window.onload = function() {
+      var savedName = localStorage.getItem("sonu_student_name");
+      if(savedName) {
+        window.studentName = savedName;
+        document.getElementById("user-name-display").innerText = savedName;
+        document.getElementById("user-pic-letter").innerText = savedName.charAt(0).toUpperCase();
+        document.getElementById("entry-screen").style.display = "none";
+      }
+      db.collection("announcements").get().then((snap) => {
+        let notices = []; snap.forEach(d => notices.push(d.data()));
+        if(notices.length > 0) { notices.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)); document.getElementById("notice-text").innerText = notices[0].text; }
+      }).catch(e=>{});
+    };
+
     window.startApp = function() {
-        const nameInput = document.getElementById('student-name').value.trim();
-        if(nameInput === "") { alert("कृपया अपना नाम डालें!"); return; }
-        window.studentName = nameInput;
-        document.getElementById('user-name-display').innerText = nameInput;
-        document.getElementById('user-pic-letter').innerText = nameInput.charAt(0).toUpperCase();
-        document.getElementById('entry-screen').style.display = 'none';
-        
-        // चेक करें कि डेटाबेस में यूज़र है या नहीं, नहीं है तो 0 स्कोर से बनाएँ
-        db.collection("leaderboard").doc(window.studentName).set({
-            name: window.studentName,
-            lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-        }, { merge: true });
+      var name = document.getElementById("student-name").value.trim();
+      var phone = document.getElementById("student-phone").value.trim();
+      var btn = document.getElementById("start-app-btn");
+      if(!name) return alert("कृपया अपना नाम लिखें!");
+      if(!phone || phone.length !== 10) return alert("कृपया 10 अंकों का सही मोबाइल नंबर डालें!");
+      btn.innerText = "लोड हो रहा है... ⏳";
+      db.collection("registered_students").doc(phone).set({
+        name: name, phone: phone, joinedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true }).then(() => {
+        localStorage.setItem("sonu_student_name", name); window.studentName = name;
+        document.getElementById("user-name-display").innerText = name;
+        document.getElementById("user-pic-letter").innerText = name.charAt(0).toUpperCase();
+        document.getElementById("entry-screen").style.display = "none";
+      }).catch((e) => { alert("कोई समस्या आ रही है, फिर से कोशिश करें!"); btn.innerText = "पढ़ाई शुरू करें 🚀"; });
     };
 
-    window.resetApp = function() {
-        document.getElementById('entry-screen').style.display = 'flex';
-        document.getElementById('student-name').value = '';
-        document.getElementById('student-phone').value = '';
+    window.resetApp = function() { localStorage.removeItem("sonu_student_name"); location.reload(); };
+
+    window.showScreen = function(id) { document.querySelectorAll(".screen").forEach(s => s.classList.remove("active-screen")); document.getElementById(id).classList.add("active-screen"); };
+    
+    window.goHome = function() { 
+      clearInterval(window.timerInterval); // होम पर जाने पर टाइमर रोकें
+      window.showScreen("home-screen"); 
     };
 
-    window.showScreen = function(screenId) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
-        document.getElementById(screenId).classList.add('active-screen');
+    window.openSubjects = function(classVal) {
+      window.selectedClass = classVal; document.getElementById("subjects-title").innerText = `कक्षा ${classVal}वीं - विषय चुनें`; window.showScreen("subjects-screen");
     };
 
-    window.goHome = function() {
-        clearInterval(window.timerInterval);
-        window.showScreen('home-screen');
+    window.loadChapters = function(subjectVal) {
+      window.selectedSubject = subjectVal; document.getElementById("chapters-title").innerText = "सभी चैप्टर्स की लिस्ट";
+      var container = document.getElementById("chapters-list-container"); container.innerHTML = ""; 
+      var chapters = syllabusData[window.selectedClass][subjectVal];
+      chapters.forEach(chap => {
+        var row = document.createElement("div"); row.className = "chapter-row";
+        row.innerHTML = `<div class="chapter-title">${chap}</div><div class="btn-group"><button class="pdf-btn" onclick="window.fetchPDF('${chap}')">📄 PDF</button><button class="quiz-btn" onclick="window.startQuiz('${chap}')">📝 Quiz</button></div>`;
+        container.appendChild(row);
+      });
+      window.showScreen("chapters-screen");
     };
 
-    window.openSubjects = function(cls) {
-        window.selectedClass = cls;
-        document.getElementById('subjects-title').innerText = "कक्षा " + cls + "वीं - विषय चुनें";
-        window.showScreen('subjects-screen');
+    window.fetchPDF = async function(chapterName) {
+      db.collection("pdf_notes").where("class", "==", window.selectedClass).where("subject", "==", window.selectedSubject).where("chapter", "==", chapterName).get().then((snap) => {
+        if(snap.empty) { alert("सोनू सर इस चैप्टर का PDF जल्द ही अपलोड करेंगे! ❤️"); } else { snap.forEach(doc => { window.open(doc.data().url, '_blank'); }); }
+      });
     };
 
-    window.loadChapters = function(subject) {
-        window.selectedSubject = subject;
-        const chapters = syllabusData[window.selectedClass][subject];
-        let html = "";
-        chapters.forEach((chap, index) => {
-            html += `<div class="chapter-row">
-                        <div class="chapter-title">${chap}</div>
-                        <div class="btn-group">
-                            <button class="quiz-btn" onclick="window.startQuiz('${chap}')">क्विज़</button>
-                        </div>
-                     </div>`;
-        });
-        document.getElementById('chapters-list-container').innerHTML = html;
-        window.showScreen('chapters-screen');
-    };
+    window.startQuiz = async function(chapterName) {
+      window.currentChapter = chapterName; window.currentQuestionIndex = 0; window.score = 0; window.dynamicQuizData = [];
+      document.getElementById("quiz-chapter-title").innerText = chapterName;
+      document.getElementById("question-box").innerText = "सवाल आ रहे हैं... ⏳"; document.getElementById("options-box").innerHTML = "";
+      window.showScreen("quiz-screen"); 
 
-    // क्विज़ का सिस्टम 
-    window.startQuiz = function(topic) {
-        window.score = 0;
-        window.currentQuestionIndex = 0;
-        window.currentChapter = topic;
-        
-        // डेमो के लिए प्रश्न जेनेरेट कर रहे हैं
-        window.dynamicQuizData = [];
-        for(let i=1; i<=10; i++) {
-            window.dynamicQuizData.push({
-                q: `${topic} से संबंधित यह प्रश्न संख्या ${i} है। सही उत्तर पहचानें?`,
-                options: ["विकल्प A", "विकल्प B", "विकल्प C", "विकल्प D"],
-                ans: Math.floor(Math.random() * 4) 
-            });
-        }
-        
-        document.getElementById('quiz-chapter-title').innerText = topic;
-        window.showScreen('quiz-screen');
+      let query = (chapterName === 'gk' || chapterName === 'ipl' || chapterName === 'upsc') ? 
+                  db.collection("quizzes").where("category", "==", chapterName) : 
+                  db.collection("quizzes").where("category", "==", chapterName);
+                  
+      query.get().then((snap) => {
+        snap.forEach((doc) => { window.dynamicQuizData.push(doc.data()); });
+        if(window.dynamicQuizData.length === 0) { document.getElementById("question-box").innerText = "इस चैप्टर का टेस्ट जल्द ही आने वाला है! ❤️"; return; }
         window.loadQuestion();
+      });
+    };
+    
+    // ⏱️ टाइमर शुरू करने का फंक्शन
+    window.startTimer = function() {
+      clearInterval(window.timerInterval);
+      window.timeLeft = 30; // हर सवाल के लिए 30 सेकंड
+      document.getElementById("timerDisplay").innerText = "⏱️ " + window.timeLeft + "s";
+      
+      window.timerInterval = setInterval(function() {
+        window.timeLeft--;
+        document.getElementById("timerDisplay").innerText = "⏱️ " + window.timeLeft + "s";
+        
+        if(window.timeLeft <= 0) {
+          clearInterval(window.timerInterval);
+          alert("समय समाप्त! हम अगले प्रश्न पर जा रहे हैं।");
+          window.nextQuestion();
+        }
+      }, 1000);
     };
 
     window.loadQuestion = function() {
-        if(window.currentQuestionIndex >= window.dynamicQuizData.length) {
-            window.endQuiz();
-            return;
-        }
-        const qData = window.dynamicQuizData[window.currentQuestionIndex];
-        document.getElementById('question-counter').innerText = `प्रश्न: ${window.currentQuestionIndex + 1} / ${window.dynamicQuizData.length}`;
-        document.getElementById('question-box').innerText = qData.q;
-        
-        let optHtml = "";
-        qData.options.forEach((opt, i) => {
-            optHtml += `<button class="option-btn" onclick="window.checkAnswer(${i}, ${qData.ans}, this)">${opt}</button>`;
-        });
-        document.getElementById('options-box').innerHTML = optHtml;
-        document.getElementById('next-btn').style.display = 'none';
-        
-        // टाइमर
-        window.timeLeft = 30;
-        document.getElementById('timerDisplay').innerText = `⏱️ ${window.timeLeft}s`;
-        clearInterval(window.timerInterval);
-        window.timerInterval = setInterval(() => {
-            window.timeLeft--;
-            document.getElementById('timerDisplay').innerText = `⏱️ ${window.timeLeft}s`;
-            if(window.timeLeft <= 0) {
-                clearInterval(window.timerInterval);
-                window.nextQuestion();
-            }
-        }, 1000);
+      document.getElementById("next-btn").style.display = "none";
+      // काउंटर अपडेट करें
+      document.getElementById("question-counter").innerText = `प्रश्न: ${window.currentQuestionIndex + 1} / ${window.dynamicQuizData.length}`;
+      
+      var qInfo = window.dynamicQuizData[window.currentQuestionIndex]; 
+      document.getElementById("question-box").innerText = qInfo.question;
+      
+      var oBox = document.getElementById("options-box"); oBox.innerHTML = ""; 
+      var correctIndex = parseInt(qInfo.answer) - 1;
+      
+      qInfo.options.forEach(function(opt, idx) {
+        var btn = document.createElement("button"); btn.className = "option-btn"; btn.innerText = opt;
+        btn.onclick = function() { window.checkAnswer(idx, correctIndex, btn); }; oBox.appendChild(btn);
+      });
+      
+      window.startTimer(); // सवाल आते ही टाइमर चालू
     };
-
-    window.checkAnswer = function(selectedIdx, correctIdx, btnElement) {
-        clearInterval(window.timerInterval);
-        const buttons = document.querySelectorAll('.option-btn');
-        buttons.forEach(btn => btn.disabled = true);
-        
-        if(selectedIdx === correctIdx) {
-            btnElement.classList.add('correct');
-            window.score++; 
-            
-            // 🔥 नया सिस्टम: सही जवाब देते ही बैकग्राउंड में 1 अंक Firebase में जुड़ जाएगा 
-            // अगर बच्चा यहाँ से क्विज छोड़ भी दे, तो भी उसके अंक सेव रहेंगे!
-            db.collection("leaderboard").doc(window.studentName).set({
-                name: window.studentName,
-                score: firebase.firestore.FieldValue.increment(1),
-                lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-            }, { merge: true });
-
-        } else {
-            btnElement.classList.add('wrong');
-            buttons[correctIdx].classList.add('correct');
-        }
-        document.getElementById('next-btn').style.display = 'block';
+    
+    window.checkAnswer = function(sIdx, cIdx, btn) {
+      clearInterval(window.timerInterval); // उत्तर देते ही टाइमर रोक दें
+      document.querySelectorAll(".option-btn").forEach(b => b.disabled = true);
+      if (sIdx === cIdx) { btn.classList.add("correct"); window.score++; } else { btn.classList.add("wrong"); var all = document.querySelectorAll(".option-btn"); if(all[cIdx]) all[cIdx].classList.add("correct"); }
+      document.getElementById("next-btn").style.display = "block";
     };
-
+    
     window.nextQuestion = function() {
-        window.currentQuestionIndex++;
-        window.loadQuestion();
+      window.currentQuestionIndex++;
+      if (window.currentQuestionIndex < window.dynamicQuizData.length) { window.loadQuestion(); } else { document.getElementById("final-score-text").innerText = `आपका स्कोर: ${window.score} / ${window.dynamicQuizData.length}`; window.showScreen("result-screen"); }
     };
-
-    window.endQuiz = function() {
-        clearInterval(window.timerInterval);
-        document.getElementById('final-score-text').innerText = "आपने प्राप्त किए: " + window.score + " अंक";
-        window.showScreen('result-screen');
+    
+    window.submitScore = async function() {
+      var btn = document.getElementById("save-score-btn"); btn.innerText = "सेव हो रहा है... ⏳"; btn.disabled = true;
+      db.collection("leaderboard").add({ name: window.studentName, score: window.score, total: window.dynamicQuizData.length, category: window.currentChapter, timestamp: firebase.firestore.FieldValue.serverTimestamp() }).then(() => {
+        alert("स्कोर सेव हो गया!"); window.openLeaderboard();
+      }).catch((e) => { alert(e.message); });
+      btn.innerText = "🏆 स्कोर लीडरबोर्ड में भेजें"; btn.disabled = false;
     };
-
-    // नया लीडरबोर्ड सिस्टम: नाम के सीधे-सीधे अंक
-    window.openLeaderboard = function() {
-        window.showScreen('leaderboard-screen');
-        document.getElementById('lb-loading').style.display = 'block';
-        document.getElementById('rank-list').innerHTML = '';
-        
-        db.collection("leaderboard").orderBy("score", "desc").limit(10).get().then((querySnapshot) => {
-            document.getElementById('lb-loading').style.display = 'none';
-            let html = "";
-            let rank = 1;
-            querySnapshot.forEach((doc) => {
-                let data = doc.data();
-                let rankClass = rank === 1 ? 'rank-1' : '';
-                let medal = rank === 1 ? '🥇' : (rank === 2 ? '🥈' : (rank === 3 ? '🥉' : '🏅'));
-                // नाम और उसके ठीक सामने अंक (Points) दिखा रहे हैं
-                html += `<li class="rank-item ${rankClass}">
-                            <div>${medal} #${rank} - ${data.name}</div>
-                            <div style="color:#e83e8c; font-size:18px;">${data.score || 0} अंक</div>
-                         </li>`;
-                rank++;
-            });
-            if(html === "") html = "<li style='text-align:center;'>अभी कोई डेटा नहीं है।</li>";
-            document.getElementById('rank-list').innerHTML = html;
-        }).catch(err => {
-            document.getElementById('lb-loading').innerText = "डेटा लोड करने में त्रुटि! इंटरनेट चेक करें।";
+    
+    window.openLeaderboard = function() { window.showScreen("leaderboard-screen"); window.fetchLeaderboard(); };
+    window.fetchLeaderboard = async function() {
+      var list = document.getElementById("rank-list"); var loader = document.getElementById("lb-loading");
+      list.innerHTML = ""; loader.style.display = "block";
+      
+      db.collection("leaderboard").where("category", "==", window.currentChapter).get().then((snap) => {
+        let scores = []; snap.forEach((doc) => { scores.push(doc.data()); });
+        scores.sort((a, b) => b.score - a.score); let top10 = scores.slice(0, 10);
+        loader.style.display = "none";
+        if(top10.length === 0) { list.innerHTML = "<li>कोई रिकॉर्ड नहीं है!</li>"; return; }
+        top10.forEach((item, index) => {
+          let rc = index === 0 ? "rank-1" : ""; let m = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : `🏅 #${index+1}`;
+          list.innerHTML += `<li class="rank-item ${rc}"><span>${m} ${item.name}</span><span>${item.score}/${item.total}</span></li>`;
         });
+      });
     };
 
-    // AI Chat Toggle
-    window.toggleAIChat = function() {
-        const modal = document.getElementById('aiChatModal');
-        modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
+    window.toggleAIChat = function() { var m = document.getElementById("aiChatModal"); m.style.display = (m.style.display === "flex") ? "none" : "flex"; };
+    
+    // 🎤 नया फीचर: बोलकर टाइप करना (Speech to Text)
+    window.startDictation = function() {
+      if (window.hasOwnProperty('webkitSpeechRecognition') || window.hasOwnProperty('SpeechRecognition')) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        recognition.lang = "hi-IN";
+        const micBtn = document.getElementById('micBtn');
+        micBtn.style.backgroundColor = "red"; // बोलते समय माइक लाल होगा
+        
+        recognition.start();
+        recognition.onresult = function(e) {
+          document.getElementById('userInput').value = e.results[0][0].transcript;
+          micBtn.style.backgroundColor = "#28a745";
+          recognition.stop();
+        };
+        recognition.onerror = function(e) {
+          micBtn.style.backgroundColor = "#28a745";
+          recognition.stop();
+        }
+      } else {
+        alert("माफ़ करें, आपका ब्राउज़र माइक सपोर्ट नहीं करता।");
+      }
+    };
+
+    // 🔊 नया फीचर: पढ़कर सुनाना (Text to Speech)
+    window.speakText = function(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const msg = new SpeechSynthesisUtterance(text);
+        msg.lang = 'hi-IN';
+        window.speechSynthesis.speak(msg);
+      } else {
+        alert("माफ़ करें, आपका डिवाइस स्पीकर सपोर्ट नहीं करता।");
+      }
+    };
+
+    window.sendMessage = async function() {
+      var input = document.getElementById("userInput"); var text = input.value.trim(); if (!text) return;
+      var box = document.getElementById("chatBox"); box.innerHTML += `<div class="message user-message">${text}</div>`; input.value = "";
+      
+      var tDiv = document.createElement("div"); tDiv.className = "message ai-message"; tDiv.innerText = "सोच रहा हूँ..."; box.appendChild(tDiv); box.scrollTop = box.scrollHeight;
+      
+      try {
+        var res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBSebMG_eu3pU5pR-vUZo1eHmnPTXdmVCQ`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents: [{ parts: [{ text: "You are Sonu's Study AI assistant. Answer in Hindi: " + text }] }] }) });
+        var data = await res.json(); 
+        var aiText = data.candidates[0].content.parts[0].text;
+        
+        // AI का जवाब और स्पीकर बटन लगाना
+        tDiv.innerHTML = "";
+        var textSpan = document.createElement("span");
+        textSpan.innerText = aiText;
+        var spkBtn = document.createElement("button");
+        spkBtn.innerText = "🔊";
+        spkBtn.style = "background:none;border:none;cursor:pointer;font-size:16px; margin-left:8px;";
+        spkBtn.onclick = function() { window.speakText(aiText); };
+        
+        tDiv.appendChild(textSpan);
+        tDiv.appendChild(spkBtn);
+        
+      } catch (err) { tDiv.innerText = "समस्या है, इंटरनेट चेक करें।"; }
+      box.scrollTop = box.scrollHeight;
     };
   </script>
 </body>
