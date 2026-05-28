@@ -109,7 +109,7 @@
         <button class="logout-btn" onclick="window.resetApp()">लॉगआउट</button>
       </div>
 
-      <div class="card leaderboard-card"><h3>🏆 टॉप 10 लीडरबोर्ड</h3><button onclick="window.openLeaderboard()">लीडरबोर्ड देखें</button></div>
+      <div class="card leaderboard-card"><h3>🏆 आज का टॉप 10 लीडरबोर्ड</h3><button onclick="window.openLeaderboard()">लीडरबोर्ड देखें</button></div>
       <div class="card class9-card"><h3>कक्षा 9वीं (सभी विषय) 📖</h3><button onclick="window.openSubjects('9')">अध्ययन शुरू करें</button></div>
       <div class="card class10-card"><h3>कक्षा 10वीं (सभी विषय) 🏫</h3><button onclick="window.openSubjects('10')">अध्ययन शुरू करें</button></div>
       <div class="card gk-card"><h3>रोज़ाना सामान्य ज्ञान (GK) 📝</h3><button onclick="window.startQuiz('gk')">क्विज़ शुरू करें</button></div>
@@ -153,8 +153,8 @@
       </div>
     </div>
 
-    <div id="result-screen" class="screen"><div class="quiz-box" style="text-align: center;"><h2>क्विज़ समाप्त! 🎉</h2><div id="final-score-text" style="font-size:24px; font-weight:bold; color:#28a745; margin-bottom:15px;">स्कोर: 0</div><button class="nav-btn" onclick="window.openLeaderboard()">🏆 लीडरबोर्ड देखें</button><button class="nav-btn" onclick="window.goHome()" style="background-color:#6c757d; margin-top:10px;">होम पर लौटें</button></div></div>
-    <div id="leaderboard-screen" class="screen"><div class="quiz-box"><h2 style="text-align:center; color:#e83e8c;">🏆 टॉप 10 धुरंधर</h2><div id="lb-loading" style="text-align:center; margin-top:15px;">लोड हो रहा है... ⏳</div><ul id="rank-list" style="list-style:none; padding:0; margin-top:15px;"></ul><button class="nav-btn" onclick="window.goHome()" style="margin-top:20px;">मुख्य मेन्यू में जाएँ</button></div></div>
+    <div id="result-screen" class="screen"><div class="quiz-box" style="text-align: center;"><h2>क्विज़ समाप्त! 🎉</h2><div id="final-score-text" style="font-size:24px; font-weight:bold; color:#28a745; margin-bottom:15px;">स्कोर: 0</div><button class="nav-btn" onclick="window.openLeaderboard()">🏆 आज का लीडरबोर्ड देखें</button><button class="nav-btn" onclick="window.goHome()" style="background-color:#6c757d; margin-top:10px;">होम पर लौटें</button></div></div>
+    <div id="leaderboard-screen" class="screen"><div class="quiz-box"><h2 style="text-align:center; color:#e83e8c;">🏆 आज के टॉप 10 धुरंधर</h2><div id="lb-loading" style="text-align:center; margin-top:15px;">लोड हो रहा है... ⏳</div><ul id="rank-list" style="list-style:none; padding:0; margin-top:15px;"></ul><button class="nav-btn" onclick="window.goHome()" style="margin-top:20px;">मुख्य मेन्यू में जाएँ</button></div></div>
 
   </div>
 
@@ -291,7 +291,6 @@
       });
     };
     
-    // ⏱️ टाइमर शुरू करने का फंक्शन
     window.startTimer = function() {
       clearInterval(window.timerInterval);
       window.timeLeft = 30; // हर सवाल के लिए 30 सेकंड
@@ -327,19 +326,24 @@
       window.startTimer(); 
     };
     
-    // 🔥 यहाँ नया लीडरबोर्ड लॉजिक सेट किया गया है (अंक तुरंत जुड़ेंगे)
+    // 🔥 नया सिस्टम: 24 घंटे वाला डेली लीडरबोर्ड 
     window.checkAnswer = function(sIdx, cIdx, btn) {
-      clearInterval(window.timerInterval); // उत्तर देते ही टाइमर रोक दें
+      clearInterval(window.timerInterval); 
       document.querySelectorAll(".option-btn").forEach(b => b.disabled = true);
       
       if (sIdx === cIdx) { 
         btn.classList.add("correct"); 
         window.score++; 
         
-        // लीडरबोर्ड में 1 अंक तुरंत जोड़ा जा रहा है
-        db.collection("leaderboard").doc(window.studentName).set({
+        // आज की तारीख निकालें (जैसे: 28-05-2026)
+        let todayDate = new Date().toLocaleDateString('en-GB'); 
+        let docId = todayDate.replace(/\//g, '-') + "_" + window.studentName;
+
+        // लीडरबोर्ड में सिर्फ आज की तारीख के साथ अंक सेव होगा
+        db.collection("leaderboard").doc(docId).set({
             name: window.studentName,
             score: firebase.firestore.FieldValue.increment(1),
+            date: todayDate,
             lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
         }, { merge: true });
 
@@ -361,7 +365,7 @@
       }
     };
     
-    // 🔥 यहाँ नया लीडरबोर्ड डिज़ाइन सेट किया गया है (नाम और अंक)
+    // 🔥 डेली लीडरबोर्ड मंगाने का नया लॉजिक
     window.openLeaderboard = function() { 
         window.showScreen("leaderboard-screen"); 
         window.fetchLeaderboard(); 
@@ -373,18 +377,27 @@
       list.innerHTML = ""; 
       loader.style.display = "block";
       
-      // पूरे ऐप के सबसे ज्यादा अंक वाले टॉप 10 बच्चे
-      db.collection("leaderboard").orderBy("score", "desc").limit(10).get().then((snap) => {
+      // आज की तारीख निकालें
+      let todayDate = new Date().toLocaleDateString('en-GB');
+      
+      // सिर्फ आज के दिन का डेटा मंगाएं (रात 12 बजे के बाद यह खाली हो जाएगा)
+      db.collection("leaderboard").where("date", "==", todayDate).get().then((snap) => {
         loader.style.display = "none";
-        if(snap.empty) { list.innerHTML = "<li style='text-align:center;'>अभी कोई रिकॉर्ड नहीं है!</li>"; return; }
+        if(snap.empty) { list.innerHTML = "<li style='text-align:center;'>आज अभी तक किसी ने टेस्ट नहीं दिया है! आप पहले बनें।</li>"; return; }
         
+        // डेटा को अंकों के हिसाब से घटते क्रम में सजाएं (Sort)
+        let scores = [];
+        snap.forEach((doc) => { scores.push(doc.data()); });
+        scores.sort((a, b) => b.score - a.score);
+        
+        // टॉप 10 बच्चे निकालें
+        let top10 = scores.slice(0, 10);
         let rank = 1;
-        snap.forEach((doc) => {
-          let item = doc.data();
+        
+        top10.forEach((item) => {
           let rc = rank === 1 ? "rank-1" : "";
           let m = rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : `🏅 #${rank}`;
           
-          // नाम के ठीक सामने अंक दिखाएगा
           list.innerHTML += `<li class="rank-item ${rc}">
                                 <span>${m} ${item.name}</span>
                                 <span style="color:#e83e8c; font-size:18px;">${item.score || 0} अंक</span>
